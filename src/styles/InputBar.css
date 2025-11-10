@@ -1,0 +1,171 @@
+.input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background: var(--color-bg);
+  padding: 0 0 20px 0;
+  margin-top: -10px;
+}
+
+/* === Кнопки выбора === */
+.input-options {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.option-btn {
+  flex: 1;
+  background: var(--color-accent);
+  color: var(--color-white);
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: center;
+  position: relative;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.option-btn:hover {
+  background: #a93d2f;
+  transform: translateY(-1px);
+}
+
+/* === Выпадающее меню, открывающееся вверх === */
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 20;
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-up {
+  bottom: 100%;
+  margin-bottom: 6px;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  color: var(--color-text);
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--color-secondary);
+}
+
+/* === Поле ввода === */
+.input-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 10px 14px;
+  width: 100%;
+  max-width: 700px;
+  transition: transform 0.2s;
+}
+
+.input-box:hover {
+  transform: translateY(-1px);
+}
+
+.chat-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+  padding: 8px 12px;
+  color: #111;
+}
+
+.input-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: var(--color-primary);
+  border: none;
+  color: var(--color-primary);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.icon-btn:hover {
+  background: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+  max-height: 180px; /* ограничим высоту */
+  z-index: 20;
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-up {
+  bottom: 100%;
+  margin-bottom: 6px;
+}
+
+.dropdown-down {
+  top: 100%;
+  margin-top: 6px;
+}
+
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+  color: var(--color-text);
+  text-align: center;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--color-secondary);
+}
