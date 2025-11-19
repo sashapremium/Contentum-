@@ -18,7 +18,7 @@ export async function fetchChats() {
 // -----------------------------
 // Создать новый чат
 // -----------------------------
-export async function createChat() {
+export async function createChat(title = 'Новый чат') {
   const token = localStorage.getItem('access_token');
 
   const res = await fetch(`${API_URL}/chats/`, {
@@ -27,7 +27,7 @@ export async function createChat() {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify({ title }),
   });
 
   return await res.json();

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import InputBar from '../components/InputBar';
-
+import { useNavigate } from 'react-router';
 import { mainSteps, extraSteps } from '../data/promtSteps';
 import {
   fetchChats,
@@ -28,6 +28,7 @@ function ChatPage() {
   const isFinished = stepIndex >= steps.length;
 
   const bottomRef = useRef(null);
+  const navigate = useNavigate();
 
   // Автопрокрутка
   useEffect(() => {
@@ -175,6 +176,12 @@ function ChatPage() {
     setCurrentChat((prev) => ({ ...prev, messages: msgs }));
   }
 
+  // Логаут
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/login');
+  };
+
   // Рендер
   return (
     <div className="app-layout">
@@ -190,7 +197,7 @@ function ChatPage() {
       <div className="chat-area">
         <nav className="navbar">
           <h1 className="nav-title">Contentum</h1>
-          <button className="logout-btn" onClick={logoutUser}>
+          <button className="logout-btn" onClick={handleLogout}>
             Выйти
           </button>
         </nav>
