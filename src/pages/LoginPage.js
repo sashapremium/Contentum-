@@ -3,7 +3,7 @@ import { loginUser } from '../api/authService';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
 
-function LoginPage() {
+function LoginPage({ setAuth }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,8 +11,14 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const data = await loginUser({ email, password });
+
     if (data.access) {
+      // Записали токены
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
+
       navigate('/');
     } else {
       setError(data.detail || 'Ошибка входа');
@@ -31,6 +37,7 @@ function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <input
             type="password"
             placeholder="Пароль"
@@ -38,9 +45,12 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+
           {error && <p className="auth-error">{error}</p>}
+
           <button type="submit">Войти</button>
         </form>
+
         <p>
           Нет аккаунта? <Link to="/register">Регистрация</Link>
         </p>

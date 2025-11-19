@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import InputBar from '../components/InputBar';
+
 import { mainSteps, extraSteps } from '../data/promtSteps';
-import '../App.css';
+import {
+  fetchChats,
+  createChat,
+  deleteChat,
+  fetchChatMessages,
+  sendMessageToChat,
+} from '../api/chatService';
+import { logoutUser } from '../api/authService';
 
-function ChatPage({ user, onLogout }) {
-  const [chats, setChats] = useState(() => {
-    const saved = localStorage.getItem('user_chats');
-    return saved ? JSON.parse(saved) : [];
-  });
-
+function ChatPage() {
+  const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+
   const [input, setInput] = useState('');
   const [answers, setAnswers] = useState({});
   const [stepIndex, setStepIndex] = useState(0);
@@ -22,139 +27,179 @@ function ChatPage({ user, onLogout }) {
   const currentStep = steps[stepIndex];
   const isFinished = stepIndex >= steps.length;
 
-  useEffect(() => {
-    localStorage.setItem('user_chats', JSON.stringify(chats));
-  }, [chats]);
+  const bottomRef = useRef(null);
 
-  const handleNewChat = () => {
-    const startMsg = { from: 'bot', text: 'Давайте начнем. ' + mainSteps[0].prompt };
-    const newChat = {
-      title: `Диалог #${chats.length + 1}`,
-      messages: [startMsg],
-      answers: {},
-    };
-    const updated = [...chats, newChat];
-    setChats(updated);
-    setCurrentChat(newChat);
+  // Автопрокрутка
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [currentChat]);
+
+  // Первый запрос чатов
+  useEffect(() => {
+    loadChats();
+  }, []);
+
+  async function loadChats() {
+    const res = await fetchChats();
+    const list = res?.results || res?.data || [];
+    setChats(list);
+  }
+
+  //---------------------------------------
+  // Выбор чата
+  //---------------------------------------
+  async function handleSelectChat(chat) {
+    setCurrentChat({ ...chat, messages: [] });
+
+    const res = await fetchChatMessages(chat.id);
+    const msgs = res?.results || res?.data || [];
+
+    setCurrentChat((prev) => ({
+      ...prev,
+      messages: msgs,
+    }));
+
     setStepIndex(0);
     setAnswers({});
-  };
+  }
 
-  const handleImageUpload = (file) => {
-    if (!currentChat) return;
-    const imageMessage = {
-      from: 'user',
-      text: `📷 Изображение: ${file.name}`,
+  //---------------------------------------
+  // Новый чат
+  async function handleNewChat() {
+    const res = await createChat();
+
+    console.log('CHAT CREATE RESPONSE:', res);
+
+    if (!res?.data) return;
+
+    const newChat = res.data;
+
+    // ВАЖНО: после создания — загрузить системное сообщение
+    const msgsRes = await fetchChatMessages(newChat.id);
+    const msgs = msgsRes?.results || msgsRes?.data || [];
+
+    // Устанавливаем новый чат с сообщениями
+    const fullChat = {
+      ...newChat,
+      messages: msgs,
     };
 
-    const updated = {
-      ...currentChat,
-      messages: [...currentChat.messages, imageMessage],
-    };
+    setChats((prev) => [...prev, fullChat]);
+    setCurrentChat(fullChat);
 
-    setChats(chats.map((c) => (c === currentChat ? updated : c)));
-    setCurrentChat(updated);
-  };
+    setStepIndex(0);
+    setAnswers({});
+  }
+
+  //---------------------------------------
+  // Удаление чата
+  //---------------------------------------
+  async function handleDeleteChat(title) {
+    const found = chats.find((c) => c.title === title);
+    if (!found) return;
+
+    await deleteChat(found.id);
+
+    setChats((prev) => prev.filter((c) => c.id !== found.id));
+
+    if (currentChat?.id === found.id) {
+      setCurrentChat(null);
+    }
+  }
 
   // Отправка сообщения
-  const handleSend = () => {
+  async function handleSend() {
     if (!input.trim() || !currentChat) return;
 
     const field = currentStep?.field;
     const updatedAnswers = { ...answers, [field]: input };
     setAnswers(updatedAnswers);
 
-    const userMsg = { from: 'user', text: input };
-    const nextPrompt = steps[stepIndex + 1]?.prompt;
+    // 1. Отправка на сервер
+    await sendMessageToChat(currentChat.id, input);
 
-    let botMsg;
-    if (nextPrompt) {
-      botMsg = { from: 'bot', text: nextPrompt };
+    // 2. Загрузка обновлённого списка сообщений
+    const res = await fetchChatMessages(currentChat.id);
+    const msgs = res?.results || res?.data || [];
+
+    setCurrentChat((prev) => ({ ...prev, messages: msgs }));
+
+    // 3. Переход на следующий шаг
+    if (stepIndex + 1 < steps.length) {
+      setStepIndex(stepIndex + 1);
     } else {
       startGeneration(updatedAnswers);
     }
 
-    const newTitle = field === 'event_name' ? input : currentChat.title;
-
-    const updatedChat = {
-      ...currentChat,
-      title: newTitle,
-      messages: [...currentChat.messages, userMsg, botMsg],
-      answers: updatedAnswers,
-    };
-
-    setChats(chats.map((c) => (c.title === currentChat.title ? updatedChat : c)));
-    setCurrentChat(updatedChat);
     setInput('');
-    setStepIndex(stepIndex + 1);
-  };
+  }
 
-  //Имитация генерации контента
-  const startGeneration = (answers) => {
+  // Генерация (анимация)
+  function startGeneration(answers) {
     setIsGenerating(true);
 
-    //  бот пишет точки по очереди
     let dots = 0;
     const interval = setInterval(() => {
       dots = (dots + 1) % 4;
-      const text = 'Начинаю создавать' + '.'.repeat(dots);
+
       setCurrentChat((prev) => ({
         ...prev,
-        messages: [...prev.messages.slice(0, -1), { from: 'bot', text }],
+        messages: [
+          ...prev.messages.filter((m) => !m.temp),
+          { from: 'bot', text: 'Создаю медиа' + '.'.repeat(dots), temp: true },
+        ],
       }));
-    }, 500);
+    }, 400);
 
-    // Через 3 секунды “готово”
     setTimeout(() => {
       clearInterval(interval);
-      const summary = Object.entries(answers)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join('\n');
-
-      const resultMsg = {
-        from: 'bot',
-        text: 'Генерация завершена!',
-      };
 
       setCurrentChat((prev) => ({
         ...prev,
-        messages: [...prev.messages, resultMsg],
+        messages: [...prev.messages.filter((m) => !m.temp), { from: 'bot', text: 'Готово 🔥' }],
       }));
+
       setIsGenerating(false);
     }, 3000);
-  };
+  }
 
-  const handleDeleteChat = (title) => {
-    const filtered = chats.filter((chat) => chat.title !== title);
-    setChats(filtered);
-    if (currentChat?.title === title) setCurrentChat(null);
-  };
+  // Загрузка изображения
+  async function handleImageUpload(file) {
+    if (!currentChat) return;
 
+    await sendMessageToChat(currentChat.id, `📷 ${file.name}`);
+
+    const res = await fetchChatMessages(currentChat.id);
+    const msgs = res?.results || res?.data || [];
+
+    setCurrentChat((prev) => ({ ...prev, messages: msgs }));
+  }
+
+  // Рендер
   return (
     <div className="app-layout">
       <Sidebar
         chats={chats}
-        onSelectChat={setCurrentChat}
+        onSelectChat={handleSelectChat}
         onNewChat={handleNewChat}
         onDeleteChat={handleDeleteChat}
         currentChat={currentChat}
-        user={user}
+        user={{ name: 'User' }}
       />
 
       <div className="chat-area">
         <nav className="navbar">
           <h1 className="nav-title">Contentum</h1>
-          <div>
-            <button className="logout-btn" onClick={onLogout}>
-              Выйти
-            </button>
-          </div>
+          <button className="logout-btn" onClick={logoutUser}>
+            Выйти
+          </button>
         </nav>
 
         {currentChat ? (
           <>
-            <ChatWindow messages={currentChat.messages} />
-            {!isFinished && (
+            <ChatWindow messages={currentChat.messages || []} bottomRef={bottomRef} />
+
+            {!isFinished && !isGenerating && (
               <InputBar
                 value={input}
                 onChange={setInput}
@@ -162,12 +207,18 @@ function ChatPage({ user, onLogout }) {
                 onImageUpload={handleImageUpload}
               />
             )}
+
+            {isGenerating && (
+              <div className="empty-state">
+                <p>Генерация...</p>
+              </div>
+            )}
           </>
         ) : (
           <div className="empty-state">
-            <p>Выберите диалог или начните новый</p>
+            <p>Выберите чат или создайте новый</p>
             <button onClick={handleNewChat} className="create-first-btn">
-              Начать диалог
+              Новый чат
             </button>
           </div>
         )}
