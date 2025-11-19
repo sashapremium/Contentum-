@@ -8,11 +8,6 @@ import ProtectedRoute from './pages/ProtectedRoute';
 import './App.css';
 
 function App() {
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-  };
-
   return (
     <Router>
       <Routes>

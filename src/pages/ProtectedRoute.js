@@ -4,11 +4,9 @@ import { refreshToken } from '../api/authService';
 
 function ProtectedRoute({ children }) {
   const [isAuth, setIsAuth] = useState(null);
-
   useEffect(() => {
     async function validate() {
       const access = localStorage.getItem('access_token');
-
       if (access) {
         setIsAuth(true);
         return;
