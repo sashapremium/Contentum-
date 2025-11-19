@@ -4,7 +4,7 @@ import { API_URL } from './config';
 // REGISTRATION
 // ----------------------
 export async function registerUser({ email, password, passwordConfirm, name }) {
-  const res = await fetch(`${API_URL}/api/users/`, {
+  const res = await fetch(`${API_URL}/users/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -22,7 +22,7 @@ export async function registerUser({ email, password, passwordConfirm, name }) {
 // LOGIN (JWT)
 // ----------------------
 export async function loginUser({ email, password }) {
-  const res = await fetch(`${API_URL}/api/auth/login/`, {
+  const res = await fetch(`${API_URL}/auth/login/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -45,7 +45,7 @@ export async function refreshToken() {
   const refresh = localStorage.getItem('refresh_token');
   if (!refresh) return null;
 
-  const res = await fetch(`${API_URL}/api/auth/refresh/`, {
+  const res = await fetch(`${API_URL}/auth/refresh/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh }),
