@@ -33,6 +33,8 @@ function RegisterPage() {
 
         <form onSubmit={handleSubmit}>
           <input
+            id="registerName"
+            name="registerName"
             type="text"
             placeholder="Имя"
             value={form.name}
@@ -41,6 +43,8 @@ function RegisterPage() {
           />
 
           <input
+            id="registerEmail"
+            name="registerEmail"
             type="email"
             placeholder="Email"
             value={form.email}
@@ -49,6 +53,8 @@ function RegisterPage() {
           />
 
           <input
+            name="registerPassword"
+            id="registerPassword"
             type="password"
             placeholder="Пароль"
             value={form.password}
@@ -56,6 +62,8 @@ function RegisterPage() {
             required
           />
           <input
+            name="registerPasswordConfirm"
+            id="registerPasswordConfirm"
             type="password"
             placeholder="Подтвердите пароль"
             value={form.passwordConfirm}

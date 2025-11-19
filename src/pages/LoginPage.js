@@ -3,7 +3,7 @@ import { loginUser } from '../api/authService';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
 
-function LoginPage({ setAuth }) {
+function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -31,6 +31,8 @@ function LoginPage({ setAuth }) {
         <h1>Вход</h1>
         <form onSubmit={handleLogin}>
           <input
+            id="loginEmail"
+            name="loginEmail"
             type="email"
             placeholder="Email"
             value={email}
@@ -39,6 +41,8 @@ function LoginPage({ setAuth }) {
           />
 
           <input
+            id="loginPassword"
+            name="loginPassword"
             type="password"
             placeholder="Пароль"
             value={password}
