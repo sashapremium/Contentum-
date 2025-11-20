@@ -3,7 +3,7 @@ import Message from './Message';
 
 function ChatWindow({ messages }) {
   return (
-    <div className="chat-window">
+    <>
       {messages.map((msg, i) => (
         <Message
           key={i}
@@ -12,7 +12,7 @@ function ChatWindow({ messages }) {
           image={msg.imageUrl} // Картинка если есть
         />
       ))}
-    </div>
+    </>
   );
 }
 

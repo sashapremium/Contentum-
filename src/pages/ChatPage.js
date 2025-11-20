@@ -3,7 +3,6 @@ import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 import InputBar from '../components/InputBar';
 import { useNavigate } from 'react-router';
-import { mainSteps, extraSteps } from '../data/promtSteps';
 import {
   fetchChats,
   createChat,
@@ -21,7 +20,6 @@ function ChatPage() {
   const [input, setInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isReady, setIsReady] = useState(false);
-  const [link, setLink] = useState('');
   const [id, setId] = useState('');
 
   const bottomRef = useRef(null);
@@ -57,7 +55,6 @@ function ChatPage() {
         const links = lastMessage.content.split('\n');
         const downloadLink = links.at(-1);
         console.log('downloadLink', downloadLink, links);
-        setLink(downloadLink);
         const imageId = downloadLink.split('/').at(5);
         console.log('imageId', imageId);
         setId(imageId);
@@ -67,7 +64,7 @@ function ChatPage() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [isGenerating]);
+  }, [isGenerating, currentChat?.id]);
 
   async function loadChats() {
     const res = await fetchChats();
@@ -206,8 +203,9 @@ function ChatPage() {
 
         {currentChat ? (
           <>
-            <ChatWindow messages={currentChat.messages || []} bottomRef={bottomRef} />
-
+            <div ref={bottomRef} className="chat-window">
+              <ChatWindow messages={currentChat.messages || []} />
+            </div>
             {!isGenerating && !isReady && (
               <InputBar
                 value={input}
