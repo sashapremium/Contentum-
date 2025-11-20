@@ -57,7 +57,7 @@ export async function deleteChat(chatId) {
 export async function fetchChatMessages(chatId) {
   const token = localStorage.getItem('access_token');
 
-  const res = await fetch(`${API_URL}/chats/${chatId}/messages/`, {
+  const res = await fetch(`${API_URL}/chats/${chatId}/messages/?page_size=1000`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

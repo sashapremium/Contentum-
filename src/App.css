@@ -74,12 +74,12 @@ body {
   margin-bottom: 10px;
 }
 
-.message.user {
+.message.USER {
   align-self: flex-end;
   justify-content: flex-end;
 }
 
-.message.bot {
+.message.SYSTEM {
   align-self: flex-start;
 }
 
@@ -91,13 +91,13 @@ body {
   line-height: 1.4;
 }
 
-.message.user .bubble {
+.message.USER .bubble {
   background: var(--color-accent);
   color: var(--color-white);
   border-bottom-right-radius: 4px;
 }
 
-.message.bot .bubble {
+.message.SYSTEM .bubble {
   background: var(--color-surface);
   color: var(--color-text);
   border-bottom-left-radius: 4px;
