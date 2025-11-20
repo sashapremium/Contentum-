@@ -275,7 +275,11 @@ function ChatPage() {
               </div>
             )}
 
-            {!isGenerating && isReady && <div className="option-btn">Открыть изображение</div>}
+            {!isGenerating && isReady && (
+              <div className="option-btn" onClick={handleDownloadImage}>
+                Открыть изображение
+              </div>
+            )}
           </>
         ) : (
           <div className="empty-state">
