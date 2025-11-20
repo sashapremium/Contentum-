@@ -11,6 +11,7 @@ import {
   fetchChatMessages,
   sendMessageToChat,
 } from '../api/chatService';
+import { downloadImage } from '../api/imageService';
 import { logoutUser } from '../api/authService';
 
 function ChatPage() {
@@ -22,14 +23,20 @@ function ChatPage() {
   const [stepIndex, setStepIndex] = useState(0);
   const [extended, setExtended] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-
-  const steps = extended ? [...mainSteps, ...extraSteps] : mainSteps;
-  const currentStep = steps[stepIndex];
-  const isFinished = stepIndex >= steps.length;
+  const [isReady, setIsReady] = useState(false);
+  const [link, setLink] = useState('');
+  const [id, setId] = useState('');
+  // const steps = extended ? [...mainSteps, ...extraSteps] : mainSteps;
+  // const currentStep = steps[stepIndex];
+  // const isFinished = stepIndex >= steps.length;
 
   const bottomRef = useRef(null);
   const navigate = useNavigate();
 
+  console.log(`${new Date().toUTCString()} CHAT STATE\n`, {
+    currentChat,
+    chats,
+  });
   // Автопрокрутка
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,6 +46,35 @@ function ChatPage() {
   useEffect(() => {
     loadChats();
   }, []);
+
+  useEffect(() => {
+    if (!isGenerating) return;
+
+    const intervalId = setInterval(async () => {
+      const res = await fetchChatMessages(currentChat.id);
+      const msgs = res?.results || res?.data || [];
+      const lastMessage = msgs.at(-1);
+      console.log('msgs2', lastMessage);
+      setCurrentChat((prev) => ({ ...prev, messages: msgs }));
+
+      if (lastMessage.content.startsWith('✅ Генерация завершена!')) {
+        setIsGenerating(false);
+        setIsReady(true);
+
+        const links = lastMessage.content.split('\n');
+        const downloadLink = links.at(-1);
+        console.log('downloadLink', downloadLink, links);
+        setLink(downloadLink);
+        const imageId = downloadLink.split('/').at(5);
+        console.log('imageId', imageId);
+        setId(imageId);
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [isGenerating]);
 
   async function loadChats() {
     const res = await fetchChats();
@@ -111,58 +147,72 @@ function ChatPage() {
   // Отправка сообщения
   async function handleSend() {
     if (!input.trim() || !currentChat) return;
+    const localInput = input;
 
-    const field = currentStep?.field;
-    const updatedAnswers = { ...answers, [field]: input };
-    setAnswers(updatedAnswers);
-
-    // 1. Отправка на сервер
-    await sendMessageToChat(currentChat.id, input);
-
-    // 2. Загрузка обновлённого списка сообщений
-    const res = await fetchChatMessages(currentChat.id);
-    const msgs = res?.results || res?.data || [];
-
-    setCurrentChat((prev) => ({ ...prev, messages: msgs }));
-
-    // 3. Переход на следующий шаг
-    if (stepIndex + 1 < steps.length) {
-      setStepIndex(stepIndex + 1);
-    } else {
-      startGeneration(updatedAnswers);
-    }
+    // const field = currentStep?.field;
+    // const updatedAnswers = { ...answers, [field]: input };
+    // setAnswers(updatedAnswers);
+    // 0. Отображение сообщения пользователя на фронте
+    const initialMessages = [
+      ...currentChat.messages,
+      { id: 'local', content: localInput, messageType: 'USER' },
+    ];
 
     setInput('');
+    setCurrentChat((prev) => ({ ...prev, messages: initialMessages }));
+
+    // 1. Отправка на сервер
+    const sendMessageRes = await sendMessageToChat(currentChat.id, input);
+    console.log('sendMessageRes', sendMessageRes);
+    if (sendMessageRes.message.startsWith('Flow завершён')) {
+      setIsGenerating(true);
+    } else {
+      // 2. Загрузка обновлённого списка сообщений
+      const res = await fetchChatMessages(currentChat.id);
+      const msgs = res?.results || res?.data || [];
+
+      setCurrentChat((prev) => ({ ...prev, messages: msgs }));
+
+      const lastMessage = msgs.at(-1);
+      console.log('msgs2', lastMessage);
+    }
+
+    // 3. Переход на следующий шаг
+    // if (stepIndex + 1 < steps.length) {
+    //   setStepIndex(stepIndex + 1);
+    // } else {
+    //   startGeneration(updatedAnswers);
+    // }
   }
 
   // Генерация (анимация)
-  function startGeneration(answers) {
-    setIsGenerating(true);
+  // function startGeneration(answers) {
+  //   setIsGenerating(true);
 
-    let dots = 0;
-    const interval = setInterval(() => {
-      dots = (dots + 1) % 4;
+  //   let dots = 0;
+  //   const interval = setInterval(() => {
+  //     dots = (dots + 1) % 4;
 
-      setCurrentChat((prev) => ({
-        ...prev,
-        messages: [
-          ...prev.messages.filter((m) => !m.temp),
-          { from: 'bot', text: 'Создаю медиа' + '.'.repeat(dots), temp: true },
-        ],
-      }));
-    }, 400);
+  //     setCurrentChat((prev) => ({
+  //       ...prev,
+  //       messages: [
+  //         ...prev.messages.filter((m) => !m.temp),
+  //         { from: 'bot', text: 'Создаю медиа' + '.'.repeat(dots), temp: true },
+  //       ],
+  //     }));
+  //   }, 400);
 
-    setTimeout(() => {
-      clearInterval(interval);
+  //   setTimeout(() => {
+  //     clearInterval(interval);
 
-      setCurrentChat((prev) => ({
-        ...prev,
-        messages: [...prev.messages.filter((m) => !m.temp), { from: 'bot', text: 'Готово 🔥' }],
-      }));
+  //     setCurrentChat((prev) => ({
+  //       ...prev,
+  //       messages: [...prev.messages.filter((m) => !m.temp), { from: 'bot', text: 'Готово 🔥' }],
+  //     }));
 
-      setIsGenerating(false);
-    }, 3000);
-  }
+  //     setIsGenerating(false);
+  //   }, 3000);
+  // }
 
   // Загрузка изображения
   async function handleImageUpload(file) {
@@ -180,6 +230,10 @@ function ChatPage() {
   const handleLogout = () => {
     logoutUser();
     navigate('/login');
+  };
+
+  const handleDownloadImage = async () => {
+    const res = await downloadImage(id);
   };
 
   // Рендер
@@ -206,7 +260,7 @@ function ChatPage() {
           <>
             <ChatWindow messages={currentChat.messages || []} bottomRef={bottomRef} />
 
-            {!isFinished && !isGenerating && (
+            {!isGenerating && !isReady && (
               <InputBar
                 value={input}
                 onChange={setInput}
@@ -215,11 +269,13 @@ function ChatPage() {
               />
             )}
 
-            {isGenerating && (
+            {isGenerating && !isReady && (
               <div className="empty-state">
                 <p>Генерация...</p>
               </div>
             )}
+
+            {!isGenerating && isReady && <div className="option-btn">Открыть изображение</div>}
           </>
         ) : (
           <div className="empty-state">
