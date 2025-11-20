@@ -19,30 +19,23 @@ function ChatPage() {
   const [currentChat, setCurrentChat] = useState(null);
 
   const [input, setInput] = useState('');
-  const [answers, setAnswers] = useState({});
-  const [stepIndex, setStepIndex] = useState(0);
-  const [extended, setExtended] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [link, setLink] = useState('');
   const [id, setId] = useState('');
-  // const steps = extended ? [...mainSteps, ...extraSteps] : mainSteps;
-  // const currentStep = steps[stepIndex];
-  // const isFinished = stepIndex >= steps.length;
 
   const bottomRef = useRef(null);
   const navigate = useNavigate();
 
-  console.log(`${new Date().toUTCString()} CHAT STATE\n`, {
-    currentChat,
-    chats,
-  });
-  // Автопрокрутка
+  // console.log(`${new Date().toUTCString()} CHAT STATE\n`, {
+  //   currentChat,
+  //   chats,
+  // });
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [currentChat]);
 
-  // Первый запрос чатов
   useEffect(() => {
     loadChats();
   }, []);
@@ -95,9 +88,6 @@ function ChatPage() {
       ...prev,
       messages: msgs,
     }));
-
-    setStepIndex(0);
-    setAnswers({});
   }
 
   //---------------------------------------
@@ -123,9 +113,6 @@ function ChatPage() {
 
     setChats((prev) => [...prev, fullChat]);
     setCurrentChat(fullChat);
-
-    setStepIndex(0);
-    setAnswers({});
   }
 
   //---------------------------------------
@@ -149,9 +136,6 @@ function ChatPage() {
     if (!input.trim() || !currentChat) return;
     const localInput = input;
 
-    // const field = currentStep?.field;
-    // const updatedAnswers = { ...answers, [field]: input };
-    // setAnswers(updatedAnswers);
     // 0. Отображение сообщения пользователя на фронте
     const initialMessages = [
       ...currentChat.messages,
@@ -176,43 +160,7 @@ function ChatPage() {
       const lastMessage = msgs.at(-1);
       console.log('msgs2', lastMessage);
     }
-
-    // 3. Переход на следующий шаг
-    // if (stepIndex + 1 < steps.length) {
-    //   setStepIndex(stepIndex + 1);
-    // } else {
-    //   startGeneration(updatedAnswers);
-    // }
   }
-
-  // Генерация (анимация)
-  // function startGeneration(answers) {
-  //   setIsGenerating(true);
-
-  //   let dots = 0;
-  //   const interval = setInterval(() => {
-  //     dots = (dots + 1) % 4;
-
-  //     setCurrentChat((prev) => ({
-  //       ...prev,
-  //       messages: [
-  //         ...prev.messages.filter((m) => !m.temp),
-  //         { from: 'bot', text: 'Создаю медиа' + '.'.repeat(dots), temp: true },
-  //       ],
-  //     }));
-  //   }, 400);
-
-  //   setTimeout(() => {
-  //     clearInterval(interval);
-
-  //     setCurrentChat((prev) => ({
-  //       ...prev,
-  //       messages: [...prev.messages.filter((m) => !m.temp), { from: 'bot', text: 'Готово 🔥' }],
-  //     }));
-
-  //     setIsGenerating(false);
-  //   }, 3000);
-  // }
 
   // Загрузка изображения
   async function handleImageUpload(file) {
@@ -276,9 +224,9 @@ function ChatPage() {
             )}
 
             {!isGenerating && isReady && (
-              <div className="option-btn" onClick={handleDownloadImage}>
+              <button className="option-btn" onClick={handleDownloadImage}>
                 Открыть изображение
-              </div>
+              </button>
             )}
           </>
         ) : (
