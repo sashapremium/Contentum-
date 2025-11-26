@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import HomePage from '@/features/home/pages/HomePage';
 import ChatPage from '@/features/chat/pages/ChatPage';
+import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 
 const router = createBrowserRouter([
   {
@@ -11,11 +12,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <HomePage />,
+    element: (
+      <ProtectedRoute>
+        <HomePage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/chat/:chatId',
-    element: <ChatPage />,
+    element: (
+      <ProtectedRoute>
+        <ChatPage />
+      </ProtectedRoute>
+    ),
   },
 ]);
 
