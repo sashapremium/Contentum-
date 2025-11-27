@@ -28,3 +28,21 @@ export const RefreshResponseSchema = z.object({
 });
 
 export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
+
+export const RegisterRequestSchema = z.object({
+  email: z.email().min(1).max(254),
+  fullName: z.string().min(1).max(255),
+  password: z.string().min(8),
+  passwordConfirm: z.string().min(1),
+});
+
+export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
+
+export const RegisterResponseSchema = z.object({
+  email: z.email().min(1).max(254),
+  fullName: z.string().min(1).max(255),
+  password: z.string().min(8),
+  passwordConfirm: z.string().min(1),
+});
+
+export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
