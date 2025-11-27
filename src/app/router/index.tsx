@@ -17,14 +17,17 @@ const router = createBrowserRouter([
         <HomePage />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/chat/:chatId',
-    element: (
-      <ProtectedRoute>
-        <ChatPage />
-      </ProtectedRoute>
-    ),
+
+    children: [
+      {
+        index: true,
+        element: <div className="text-lg">Welcome! Select a chat.</div>,
+      },
+      {
+        path: 'chat/:chatId',
+        element: <ChatPage />,
+      },
+    ],
   },
 ]);
 
