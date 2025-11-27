@@ -1,8 +1,12 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { useAuthStore } from '../store/auth.store';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // You may add token-based hydration later here
-  // e.g. check localStorage, fetch user, validate token, etc.
+  const restoreFromStorage = useAuthStore((state) => state.restoreFromStorage);
+
+  useEffect(() => {
+    restoreFromStorage();
+  }, [restoreFromStorage]);
 
   return <>{children}</>;
 }
