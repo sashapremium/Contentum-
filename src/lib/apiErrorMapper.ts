@@ -1,28 +1,36 @@
 import type { AxiosError } from 'axios';
+import { z, type ZodError } from 'zod';
 
 const DEFAULT_ERROR = 'Неизвестная ошибка. Повторите попытку позже';
 
-export function mapApiError(error: unknown | null): string {
+export function mapApiError(error: { name: string } | null): string {
   if (!error || typeof error !== 'object') return DEFAULT_ERROR;
 
-  const err = error as AxiosError;
+  if (error.name === 'AxiosError') {
+    const axiosError = error as AxiosError;
+    const backendMessage =
+      (axiosError?.response?.data as { detail: string })?.detail ||
+      (axiosError?.response?.data as { error: string })?.error;
 
-  const backendMessage =
-    (err?.response?.data as { detail: string }).detail ||
-    (err?.response?.data as { error: string }).error;
-
-  if (backendMessage) {
-    if (
-      backendMessage.includes(
+    switch (true) {
+      case backendMessage.includes(
         'No active account found with the given credentials'
-      )
-    )
-      return 'Пользователь не найден';
+      ):
+        return 'Пользователь не найден';
 
-    if (backendMessage.includes('Invalid token'))
-      return 'Неверный токен авторизации';
+      case backendMessage.includes('Invalid token'):
+        return 'Неверный токен авторизации';
 
-    return DEFAULT_ERROR;
+      default:
+        return DEFAULT_ERROR;
+    }
+  }
+
+  if (error.name === 'ZodError') {
+    const zodError = error as ZodError;
+
+    console.log(z.prettifyError(zodError));
+    return z.prettifyError(zodError);
   }
 
   return DEFAULT_ERROR;

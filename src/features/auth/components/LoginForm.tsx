@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { z } from 'zod';
-import { Alert, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { InputPassword } from '@/components/shared/InputPassword';
 import { mapApiError } from '@/lib/apiErrorMapper';
 
@@ -68,7 +68,9 @@ export const LoginForm = () => {
 
         {loginMutation.isError && (
           <Alert variant="destructive">
-            <AlertTitle>{mapApiError(loginMutation.error)}</AlertTitle>
+            <AlertDescription>
+              {mapApiError(loginMutation.error)}
+            </AlertDescription>
           </Alert>
         )}
 
