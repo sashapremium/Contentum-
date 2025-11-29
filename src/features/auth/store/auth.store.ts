@@ -9,14 +9,16 @@ interface AuthTokens {
 interface AuthState {
   tokens: AuthTokens | null;
   isAuthenticated: boolean;
+  isReady: boolean;
   setTokens(tokens: AuthTokens): void;
   logout(): void;
-  restoreFromStorage(): void;
+  setReady(): void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   tokens: null,
   isAuthenticated: false,
+  isReady: false,
 
   setTokens(tokens) {
     tokenStorage.save(tokens);
@@ -28,9 +30,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ tokens: null, isAuthenticated: false });
   },
 
-  restoreFromStorage() {
-    const saved = tokenStorage.load();
-    if (!saved) return;
-    set({ tokens: saved, isAuthenticated: true });
+  setReady() {
+    set({ isReady: true });
   },
 }));
