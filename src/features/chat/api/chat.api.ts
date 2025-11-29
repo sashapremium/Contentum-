@@ -1,0 +1,63 @@
+import { api } from '@/lib/axios';
+import {
+  type Chat,
+  type ChatCreateRequest,
+  type ChatListQueryParams,
+  type ChatListResponse,
+  ChatListResponseSchema,
+  ChatSchema,
+  type ChatUpdateRequest,
+} from '../types/chat.types';
+
+/**
+ * GET /chats
+ * Supports: ordering, search, page, page_size
+ */
+export async function fetchChats(
+  params?: ChatListQueryParams
+): Promise<ChatListResponse> {
+  const response = await api.get('/chats/', {
+    params: {
+      search: params?.search,
+      ordering: params?.ordering,
+      page: params?.page,
+      page_size: params?.pageSize,
+    },
+  });
+
+  return ChatListResponseSchema.parse(response.data);
+}
+
+export async function fetchChat(id: string) {
+  const response = await api.get(`/chats/${id}/`);
+  return ChatSchema.parse(response.data);
+}
+
+/**
+ * POST /chats
+ * Creates a new chat
+ */
+export async function createChat(payload: ChatCreateRequest): Promise<Chat> {
+  const response = await api.post('/chats/', payload);
+  return ChatSchema.parse(response.data);
+}
+
+/**
+ * PATCH /chats/{id}
+ * Updates chat title / isActive
+ */
+export async function updateChat(
+  id: string,
+  payload: ChatUpdateRequest
+): Promise<Chat> {
+  const response = await api.patch(`/chats/${id}/`, payload);
+  return ChatSchema.parse(response.data);
+}
+
+/**
+ * DELETE /chats/{id}
+ * Returns 204 on success
+ */
+export async function deleteChat(id: string): Promise<void> {
+  await api.delete(`/chats/${id}/`);
+}
