@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ZOD_ERRORS } from '../utils/zodErrorMapper';
+import { ZOD_ERRORS } from '../../../lib/zodErrorMapper';
 
 export const LoginRequestSchema = z.object({
   email: z.email().min(1).max(254),

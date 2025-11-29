@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { z } from 'zod';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { InputPassword } from '@/components/shared/InputPassword';
-import { mapApiError } from '../utils/apiErrorMapper';
+import { mapApiError } from '@/lib/apiErrorMapper';
 
 export const LoginForm = () => {
   const loginMutation = useLoginMutation();
@@ -66,6 +66,12 @@ export const LoginForm = () => {
           )}
         />
 
+        {loginMutation.isError && (
+          <Alert variant="destructive">
+            <AlertTitle>{mapApiError(loginMutation.error)}</AlertTitle>
+          </Alert>
+        )}
+
         <Button
           type="submit"
           className="w-full"
@@ -73,12 +79,6 @@ export const LoginForm = () => {
         >
           {loginMutation.isPending ? 'Вход...' : 'Войти'}
         </Button>
-
-        {loginMutation.isError && (
-          <Alert variant="destructive">
-            <AlertTitle>{mapApiError(loginMutation.error)}</AlertTitle>
-          </Alert>
-        )}
       </form>
     </Form>
   );
