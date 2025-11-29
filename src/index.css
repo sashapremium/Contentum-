@@ -124,19 +124,17 @@
 }
 
 @layer base {
-  /* Firefox */
   * {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--border)) transparent;
   }
 
-  /* Chrome, Edge, Safari */
   *::-webkit-scrollbar {
     width: 6px;
   }
 
   *::-webkit-scrollbar-track {
-    background: transparent;
+    background: hsl(var(--border));
   }
 
   *::-webkit-scrollbar-thumb {
