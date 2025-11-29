@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 
 import { z } from 'zod';
 import { Alert, AlertTitle } from '@/components/ui/alert';
+import { InputPassword } from '@/components/shared/InputPassword';
 
 export const LoginForm = () => {
   const loginMutation = useLoginMutation();
@@ -57,7 +58,7 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Пароль</FormLabel>
               <FormControl>
-                <Input {...field} type="password" placeholder="Пароль" />
+                <InputPassword {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
