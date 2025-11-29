@@ -34,7 +34,7 @@ export const RegisterRequestSchema = z.object({
   email: z.email().min(1).max(254),
   fullName: z.string().min(1).max(254),
   password: ZOD_ERRORS.password,
-  passwordConfirm: z.string().min(8),
+  passwordConfirm: ZOD_ERRORS.password,
 });
 
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
@@ -43,7 +43,7 @@ export const RegisterResponseSchema = z.object({
   email: z.email().min(1).max(254),
   fullName: z.string().min(1).max(254),
   password: ZOD_ERRORS.password,
-  passwordConfirm: z.string().min(8),
+  passwordConfirm: ZOD_ERRORS.password,
 });
 
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;

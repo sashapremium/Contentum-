@@ -52,7 +52,7 @@ export const RegistrationForm = () => {
             <FormItem>
               <FormLabel>Электронная почта</FormLabel>
               <FormControl>
-                <Input {...field} type="email" placeholder="Введите email" />
+                <Input {...field} type="email" placeholder="Email" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -66,7 +66,7 @@ export const RegistrationForm = () => {
             <FormItem>
               <FormLabel>Полное имя</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Введите ваше имя полностью" />
+                <Input {...field} placeholder="ФИО" />
               </FormControl>
               <FormMessage />
             </FormItem>
