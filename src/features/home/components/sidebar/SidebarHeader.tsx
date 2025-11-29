@@ -4,8 +4,8 @@ import {
   SidebarMenuButton,
   SidebarHeader as UISidebarHeader,
 } from '@/components/ui/sidebar';
-import { Search, SquarePen, Image } from 'lucide-react';
-import { Link } from 'react-router';
+import { SquarePen } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 const HEADER_ITEMS = [
   {
@@ -13,27 +13,22 @@ const HEADER_ITEMS = [
     icon: SquarePen,
     url: '/',
   },
-  {
-    title: 'Поиск по чатам',
-    icon: Search,
-    url: '#',
-  },
-  {
-    title: 'Галерея',
-    icon: Image,
-    url: '#',
-  },
 ];
 
 export const SidebarHeader = () => {
+  const navigate = useNavigate();
+
   return (
     <UISidebarHeader>
       <SidebarMenu>
         {HEADER_ITEMS.map((item) => (
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={item.title}>
+            <SidebarMenuButton
+              tooltip={item.title}
+              onClick={() => navigate('/')}
+            >
               <item.icon />
-              <Link to={item.url}>{item.title}</Link>
+              <span>{item.title}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
