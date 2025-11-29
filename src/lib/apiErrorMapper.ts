@@ -40,13 +40,13 @@ export function mapApiError(error: { name: string } | null): string {
 function translateBackendMessage(message: string): string {
   switch (true) {
     case message.includes('No active account'):
-      return 'Пользователь не найден';
+      return 'Пользователь не найден.';
     case message.includes('Invalid token'):
-      return 'Неверный токен авторизации';
+      return 'Неверный токен авторизации.';
     case message.includes('exists'):
-      return 'Пользователь уже существует';
+      return 'Пользователь уже существует.';
     case message.includes('required'):
-      return 'Обязательное поле';
+      return 'Обязательное поле.';
     default:
       return DEFAULT_ERROR;
   }

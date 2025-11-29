@@ -1,18 +1,24 @@
+import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 import { z } from 'zod';
-import { ZOD_ERRORS } from '../../../lib/zodErrorMapper';
+
+export const LoginUserSchema = z.object({
+  id: z.uuid(),
+  email: z.email(),
+  fullName: ZOD_FIELDS.fullName,
+  role: z.enum(['EMPLOYEE']),
+});
 
 export const LoginRequestSchema = z.object({
   email: z.email().min(1).max(254),
-  password: ZOD_ERRORS.password,
+  password: ZOD_FIELDS.password,
 });
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
 export const LoginResponseSchema = z.object({
-  email: z.email().min(1).max(254),
-  password: ZOD_ERRORS.password,
-  access: z.string().min(1),
   refresh: z.string().min(1),
+  access: z.string().min(1),
+  user: LoginUserSchema,
 });
 
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
@@ -32,18 +38,9 @@ export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
 
 export const RegisterRequestSchema = z.object({
   email: z.email().min(1).max(254),
-  fullName: ZOD_ERRORS.fullName,
-  password: ZOD_ERRORS.password,
-  passwordConfirm: ZOD_ERRORS.password,
+  fullName: ZOD_FIELDS.fullName,
+  password: ZOD_FIELDS.password,
+  passwordConfirm: ZOD_FIELDS.password,
 });
 
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
-
-export const RegisterResponseSchema = z.object({
-  email: z.email().min(1).max(254),
-  fullName: ZOD_ERRORS.fullName,
-  password: ZOD_ERRORS.password,
-  passwordConfirm: ZOD_ERRORS.password,
-});
-
-export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
