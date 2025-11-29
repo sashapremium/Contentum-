@@ -38,8 +38,8 @@ export type ChatUpdateRequest = z.infer<typeof ChatUpdateSchema>;
 
 export const ChatListResponseSchema = z.object({
   count: z.number().int(),
-  next: z.string().url().nullable(),
-  previous: z.string().url().nullable(),
+  next: z.url().nullable(),
+  previous: z.url().nullable(),
   results: z.array(ChatSchema),
 });
 

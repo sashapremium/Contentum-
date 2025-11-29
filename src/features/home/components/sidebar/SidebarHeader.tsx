@@ -22,7 +22,7 @@ export const SidebarHeader = () => {
     <UISidebarHeader>
       <SidebarMenu>
         {HEADER_ITEMS.map((item) => (
-          <SidebarMenuItem>
+          <SidebarMenuItem key={item.title}>
             <SidebarMenuButton
               tooltip={item.title}
               onClick={() => navigate('/')}
