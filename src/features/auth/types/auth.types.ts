@@ -1,15 +1,16 @@
 import { z } from 'zod';
+import { ZOD_ERRORS } from '../utils/zodErrors';
 
 export const LoginRequestSchema = z.object({
-  email: z.string().min(1),
-  password: z.string().min(1),
+  email: z.email().min(1).max(254),
+  password: ZOD_ERRORS.password,
 });
 
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
 export const LoginResponseSchema = z.object({
-  email: z.string().min(1),
-  password: z.string().min(1),
+  email: z.email().min(1).max(254),
+  password: ZOD_ERRORS.password,
   access: z.string().min(1),
   refresh: z.string().min(1),
 });
@@ -31,18 +32,18 @@ export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
 
 export const RegisterRequestSchema = z.object({
   email: z.email().min(1).max(254),
-  fullName: z.string().min(1).max(255),
-  password: z.string().min(8),
-  passwordConfirm: z.string().min(1),
+  fullName: z.string().min(1).max(254),
+  password: ZOD_ERRORS.password,
+  passwordConfirm: z.string().min(8),
 });
 
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
 
 export const RegisterResponseSchema = z.object({
   email: z.email().min(1).max(254),
-  fullName: z.string().min(1).max(255),
-  password: z.string().min(8),
-  passwordConfirm: z.string().min(1),
+  fullName: z.string().min(1).max(254),
+  password: ZOD_ERRORS.password,
+  passwordConfirm: z.string().min(8),
 });
 
 export type RegisterResponse = z.infer<typeof RegisterResponseSchema>;
