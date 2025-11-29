@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -9,13 +10,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export const AuthForm = () => {
   const [tab, setTab] = useState('login');
 
+  const handleSuccess = () => {
+    setTab('login');
+    toast.success('Пользователь успешно зарегистрирован', {
+      position: 'top-center',
+      duration: 2000,
+    });
+  };
+
   return (
     <Card className="w-full max-w-sm mx-auto">
       <CardHeader className="space-y-4 pb-4">
         <CardTitle className="text-2xl font-semibold text-center">
           Contentum
         </CardTitle>
-
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <TabsList className="grid grid-cols-2 w-full">
             <TabsTrigger value="login">Вход</TabsTrigger>
@@ -31,7 +39,7 @@ export const AuthForm = () => {
           </TabsContent>
 
           <TabsContent value="register">
-            <RegistrationForm />
+            <RegistrationForm onSuccess={handleSuccess} />
           </TabsContent>
         </Tabs>
       </CardContent>

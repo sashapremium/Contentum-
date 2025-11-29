@@ -18,9 +18,12 @@ import { z } from 'zod';
 import { InputPassword } from '@/components/shared/InputPassword';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export const LoginForm = () => {
   const loginMutation = useLoginMutation();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof LoginRequestSchema>>({
     resolver: zodResolver(LoginRequestSchema),
@@ -34,6 +37,12 @@ export const LoginForm = () => {
   const onSubmit = (values: z.infer<typeof LoginRequestSchema>) => {
     loginMutation.mutate(values);
   };
+
+  useEffect(() => {
+    if (loginMutation.isSuccess) {
+      navigate('/');
+    }
+  }, [loginMutation.isSuccess, navigate]);
 
   return (
     <Form {...form}>

@@ -19,8 +19,13 @@ import { InputPassword } from '@/components/shared/InputPassword';
 import { Button } from '@/components/ui/button';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
+import { useEffect } from 'react';
 
-export const RegistrationForm = () => {
+interface RegistrationFormProps {
+  onSuccess: () => void;
+}
+
+export const RegistrationForm = ({ onSuccess }: RegistrationFormProps) => {
   const registerMutation = useRegisterMutation();
 
   const form = useForm<z.infer<typeof RegisterRequestSchema>>({
@@ -37,6 +42,13 @@ export const RegistrationForm = () => {
   const onSubmit = (values: z.infer<typeof RegisterRequestSchema>) => {
     registerMutation.mutate(values);
   };
+
+  useEffect(() => {
+    if (registerMutation.isSuccess) {
+      onSuccess();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registerMutation.isSuccess]);
 
   return (
     <Form {...form}>
