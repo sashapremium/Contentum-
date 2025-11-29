@@ -18,7 +18,7 @@ export const useError = () => {
 
 export const useSuccess = () => {
   return (message: string) =>
-    toast.error(message, {
+    toast.success(message, {
       position: 'top-center',
       style: { backgroundColor: 'var(--color-success)' },
     });

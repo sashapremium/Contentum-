@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 import { LoginForm } from './LoginForm';
 import { RegistrationForm } from './RegistrationForm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSuccess } from '@/hooks/useToast';
 
 export const AuthForm = () => {
   const [tab, setTab] = useState('login');
+  const s = useSuccess();
 
   const handleSuccess = () => {
     setTab('login');
-    toast.success('Пользователь успешно зарегистрирован', {
-      position: 'top-center',
-      duration: 2000,
-    });
+    s('Пользователь успешно зарегистрирован');
   };
 
   return (
