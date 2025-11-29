@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/shared/InputPassword';
 import { Button } from '@/components/ui/button';
 import { mapApiError } from '@/lib/apiErrorMapper';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Error } from '@/components/shared/Error';
 
 export const RegistrationForm = () => {
   const registerMutation = useRegisterMutation();
@@ -102,11 +102,7 @@ export const RegistrationForm = () => {
         />
 
         {registerMutation.isError && (
-          <Alert variant="destructive">
-            <AlertDescription>
-              {mapApiError(registerMutation.error)}
-            </AlertDescription>
-          </Alert>
+          <Error description={mapApiError(registerMutation.error)} />
         )}
 
         <Button

@@ -15,9 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import { z } from 'zod';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { InputPassword } from '@/components/shared/InputPassword';
 import { mapApiError } from '@/lib/apiErrorMapper';
+import { Error } from '@/components/shared/Error';
 
 export const LoginForm = () => {
   const loginMutation = useLoginMutation();
@@ -67,11 +67,7 @@ export const LoginForm = () => {
         />
 
         {loginMutation.isError && (
-          <Alert variant="destructive">
-            <AlertDescription>
-              {mapApiError(loginMutation.error)}
-            </AlertDescription>
-          </Alert>
+          <Error description={mapApiError(loginMutation.error)} />
         )}
 
         <Button

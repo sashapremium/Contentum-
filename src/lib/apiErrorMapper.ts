@@ -6,32 +6,68 @@ const DEFAULT_ERROR = 'Неизвестная ошибка. Повторите �
 export function mapApiError(error: { name: string } | null): string {
   if (!error || typeof error !== 'object') return DEFAULT_ERROR;
 
-  if (error.name === 'AxiosError') {
-    const axiosError = error as AxiosError;
-    const backendMessage =
-      (axiosError?.response?.data as { detail: string })?.detail ||
-      (axiosError?.response?.data as { error: string })?.error;
-
-    switch (true) {
-      case backendMessage.includes(
-        'No active account found with the given credentials'
-      ):
-        return 'Пользователь не найден';
-
-      case backendMessage.includes('Invalid token'):
-        return 'Неверный токен авторизации';
-
-      default:
-        return DEFAULT_ERROR;
-    }
-  }
+  console.log('mapApiError', { error });
 
   if (error.name === 'ZodError') {
     const zodError = error as ZodError;
 
-    console.log(z.prettifyError(zodError));
     return z.prettifyError(zodError);
   }
 
+  if (error.name === 'AxiosError') {
+    const axiosError = error as AxiosError;
+    const data = axiosError.response?.data;
+
+    if (!data || typeof data !== 'object') return DEFAULT_ERROR;
+
+    if (typeof (data as { detail: string }).detail === 'string') {
+      return translateBackendMessage((data as { detail: string }).detail);
+    }
+
+    if (typeof (data as { error: string }).error === 'string') {
+      return translateBackendMessage((data as { error: string }).error);
+    }
+
+    const fieldMessage = extractFieldError(data);
+    if (fieldMessage) return fieldMessage;
+
+    return DEFAULT_ERROR;
+  }
+
   return DEFAULT_ERROR;
+}
+
+function translateBackendMessage(message: string): string {
+  switch (true) {
+    case message.includes('No active account'):
+      return 'Пользователь не найден';
+    case message.includes('Invalid token'):
+      return 'Неверный токен авторизации';
+    case message.includes('exists'):
+      return 'Пользователь уже существует';
+    case message.includes('required'):
+      return 'Обязательное поле';
+    default:
+      return DEFAULT_ERROR;
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractFieldError(data: any): string | null {
+  if (!data || typeof data !== 'object') return null;
+
+  for (const key of Object.keys(data)) {
+    const value = data[key];
+
+    if (Array.isArray(value) && typeof value[0] === 'string') {
+      return value[0];
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      const inner = extractFieldError(value);
+      if (inner) return inner;
+    }
+  }
+
+  return null;
 }
