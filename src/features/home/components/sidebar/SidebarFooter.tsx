@@ -13,6 +13,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { LogOut, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { LogoutDialog } from './LogoutDialog';
 
 const USER = {
   name: 'Куликов Пётр Сергеевич',
@@ -20,6 +22,8 @@ const USER = {
 };
 
 export const SidebarFooter = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <UISidebarFooter>
       <SidebarMenu>
@@ -50,7 +54,7 @@ export const SidebarFooter = () => {
                 Настройки
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setOpen(true)}>
                 <LogOut />
                 Выйти
               </DropdownMenuItem>
@@ -58,6 +62,8 @@ export const SidebarFooter = () => {
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>
+
+      <LogoutDialog open={open} onOpenChange={setOpen} />
     </UISidebarFooter>
   );
 };
