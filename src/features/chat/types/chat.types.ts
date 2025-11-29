@@ -1,9 +1,5 @@
 import { z } from 'zod';
 
-/**
- * Minimal message summary returned inside Chat.messages.
- * Later you can move this to /messages and import it here.
- */
 export const ChatMessageSummarySchema = z.object({
   id: z.uuid(),
   chat: z.uuid(),
@@ -14,9 +10,6 @@ export const ChatMessageSummarySchema = z.object({
 
 export type ChatMessageSummary = z.infer<typeof ChatMessageSummarySchema>;
 
-/**
- * Chat object returned by POST/PATCH /chats and inside GET /chats results.
- */
 export const ChatSchema = z.object({
   id: z.uuid(),
   user: z.uuid(),
@@ -33,9 +26,6 @@ export const ChatSchema = z.object({
 
 export type Chat = z.infer<typeof ChatSchema>;
 
-/**
- * Payload for POST /chats
- */
 export const ChatCreateSchema = z.object({
   title: z.string().min(1).max(255),
   isActive: z.boolean().optional(),
@@ -43,16 +33,9 @@ export const ChatCreateSchema = z.object({
 
 export type ChatCreateRequest = z.infer<typeof ChatCreateSchema>;
 
-/**
- * Payload for PATCH /chats/{id}
- * Swagger says same shape as POST.
- */
 export const ChatUpdateSchema = ChatCreateSchema;
 export type ChatUpdateRequest = z.infer<typeof ChatUpdateSchema>;
 
-/**
- * Paginated list response for GET /chats
- */
 export const ChatListResponseSchema = z.object({
   count: z.number().int(),
   next: z.string().url().nullable(),
@@ -62,10 +45,6 @@ export const ChatListResponseSchema = z.object({
 
 export type ChatListResponse = z.infer<typeof ChatListResponseSchema>;
 
-/**
- * Query params for GET /chats
- * ordering, search, page, page_size
- */
 export interface ChatListQueryParams {
   search?: string;
   ordering?: string;

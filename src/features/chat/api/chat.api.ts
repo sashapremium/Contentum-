@@ -9,10 +9,6 @@ import {
   type ChatUpdateRequest,
 } from '../types/chat.types';
 
-/**
- * GET /chats
- * Supports: ordering, search, page, page_size
- */
 export async function fetchChats(
   params?: ChatListQueryParams
 ): Promise<ChatListResponse> {
@@ -33,19 +29,11 @@ export async function fetchChat(id: string) {
   return ChatSchema.parse(response.data);
 }
 
-/**
- * POST /chats
- * Creates a new chat
- */
 export async function createChat(payload: ChatCreateRequest): Promise<Chat> {
   const response = await api.post('/chats/', payload);
   return ChatSchema.parse(response.data);
 }
 
-/**
- * PATCH /chats/{id}
- * Updates chat title / isActive
- */
 export async function updateChat(
   id: string,
   payload: ChatUpdateRequest
@@ -54,10 +42,6 @@ export async function updateChat(
   return ChatSchema.parse(response.data);
 }
 
-/**
- * DELETE /chats/{id}
- * Returns 204 on success
- */
 export async function deleteChat(id: string): Promise<void> {
   await api.delete(`/chats/${id}/`);
 }
