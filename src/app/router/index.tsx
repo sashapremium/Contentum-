@@ -6,6 +6,7 @@ import ChatPage from '@/features/chat/pages/ChatPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
+import { CreateNewChat } from '@/features/home/components/CreateNewChat';
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <div className="text-lg">Welcome! Select a chat.</div>,
+        element: <CreateNewChat />,
         errorElement: <ErrorPage />,
       },
       {
