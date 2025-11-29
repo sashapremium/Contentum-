@@ -23,3 +23,9 @@ export const useSuccess = () => {
       style: { backgroundColor: 'var(--color-success)' },
     });
 };
+
+export const useTodo = () => {
+  const i = useInfo();
+
+  return (message: string) => i(`TODO: ${message}`);
+};

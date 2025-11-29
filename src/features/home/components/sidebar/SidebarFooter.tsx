@@ -15,6 +15,7 @@ import {
 import { LogOut, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { LogoutDialog } from './LogoutDialog';
+import { useTodo } from '@/hooks/useToast';
 
 const USER = {
   name: 'Куликов Пётр Сергеевич',
@@ -23,6 +24,7 @@ const USER = {
 
 export const SidebarFooter = () => {
   const [open, setOpen] = useState(false);
+  const t = useTodo();
 
   return (
     <UISidebarFooter>
@@ -49,7 +51,7 @@ export const SidebarFooter = () => {
               align="center"
               sideOffset={4}
             >
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => t('Настройки')}>
                 <Settings />
                 Настройки
               </DropdownMenuItem>
