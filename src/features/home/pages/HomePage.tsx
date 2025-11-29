@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { HomeLayout } from '../components/HomeLayout';
+import { HomeLayout } from '../components/layout/HomeLayout';
 
 export default function HomePage() {
   return (

@@ -6,7 +6,7 @@ import ChatPage from '@/features/chat/pages/ChatPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
-import { CreateNewChat } from '@/features/home/components/CreateNewChat';
+import { CreateNewChat } from '@/features/home/components/common/CreateNewChat';
 
 const router = createBrowserRouter([
   {
