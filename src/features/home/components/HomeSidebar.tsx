@@ -220,6 +220,7 @@ export function HomeSidebar({
           ))}
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         {CONTENT_ITEMS.map((item) => (
           <SidebarGroup
@@ -243,6 +244,7 @@ export function HomeSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
