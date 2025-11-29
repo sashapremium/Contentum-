@@ -7,18 +7,27 @@ import {
 } from '../ui/input-group';
 import { Eye, EyeOff } from 'lucide-react';
 
-interface InputPasswordProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-}
-
-export const InputPassword = (props: InputPasswordProps) => {
+export const InputPassword = ({
+  value,
+  'aria-describedby': ad,
+  'aria-invalid': ai,
+  id,
+  name,
+  onBlur,
+  onChange,
+}: React.InputHTMLAttributes<HTMLInputElement>) => {
   const [visible, setVisible] = useState(false);
 
   return (
     <InputGroup>
       <InputGroupInput
-        {...props}
+        value={value}
+        aria-describedby={ad}
+        aria-invalid={ai}
+        id={id}
+        name={name}
+        onBlur={onBlur}
+        onChange={onChange}
         type={visible ? 'text' : 'password'}
         placeholder="Пароль"
       />
