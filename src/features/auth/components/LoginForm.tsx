@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { z } from 'zod';
 import { Alert, AlertTitle } from '@/components/ui/alert';
 import { InputPassword } from '@/components/shared/InputPassword';
+import { mapApiError } from '../utils/apiErrorMapper';
 
 export const LoginForm = () => {
   const loginMutation = useLoginMutation();
@@ -75,7 +76,7 @@ export const LoginForm = () => {
 
         {loginMutation.isError && (
           <Alert variant="destructive">
-            <AlertTitle>Неверный email или пароль</AlertTitle>
+            <AlertTitle>{mapApiError(loginMutation.error)}</AlertTitle>
           </Alert>
         )}
       </form>

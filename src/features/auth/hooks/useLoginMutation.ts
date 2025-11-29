@@ -13,5 +13,8 @@ export const useLoginMutation = () => {
         refresh: data.refresh,
       });
     },
+    onError(error, variables, onMutateResult, context) {
+      console.log('Error', { error, variables, onMutateResult, context });
+    },
   });
 };
