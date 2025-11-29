@@ -1,22 +1,16 @@
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import type { ReactNode } from 'react';
-import { AppSidebar } from './AppSidebar';
+import { HomeSidebar } from './HomeSidebar';
+import { HomeHeader } from './HomeHeader';
+import { HomeContent } from './HomeContent';
 
 export const HomeLayout = ({ children }: { children: ReactNode }) => {
   return (
     <SidebarProvider>
-      <AppSidebar />
-
+      <HomeSidebar />
       <SidebarInset>
-        <header className="border-b p-4 flex items-center justify-between bg-background">
-          <SidebarTrigger />
-        </header>
-
-        <main className="flex flex-1 flex-col gap-4 p-4">{children}</main>
+        <HomeHeader />
+        <HomeContent>{children}</HomeContent>
       </SidebarInset>
     </SidebarProvider>
   );
