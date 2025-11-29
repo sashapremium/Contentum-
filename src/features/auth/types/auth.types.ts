@@ -36,11 +36,16 @@ export const RefreshResponseSchema = z.object({
 
 export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
 
-export const RegisterRequestSchema = z.object({
-  email: z.email().min(1).max(254),
-  fullName: ZOD_FIELDS.fullName,
-  password: ZOD_FIELDS.password,
-  passwordConfirm: ZOD_FIELDS.password,
-});
+export const RegisterRequestSchema = z
+  .object({
+    email: z.email().min(1).max(254),
+    fullName: ZOD_FIELDS.fullName,
+    password: ZOD_FIELDS.password,
+    passwordConfirm: ZOD_FIELDS.password,
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    message: 'Пароли не совпадают',
+    path: ['passwordConfirm'],
+  });
 
 export type RegisterRequest = z.infer<typeof RegisterRequestSchema>;
