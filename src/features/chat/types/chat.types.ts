@@ -20,8 +20,8 @@ export const ChatSchema = z.object({
   is_temporary: z.boolean(),
   flow_step: z.number().int(),
   messages: z.array(ChatMessageSummarySchema).optional(),
-  messageCount: z.string(),
-  lastMessage: z.string().nullable().optional(),
+  messageCount: z.number(),
+  lastMessage: z.any().optional().nullable(),
 });
 
 export type Chat = z.infer<typeof ChatSchema>;
