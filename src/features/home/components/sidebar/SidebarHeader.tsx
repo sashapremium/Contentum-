@@ -1,8 +1,11 @@
+import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarHeader as UISidebarHeader,
+  SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { SquarePen } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -17,9 +20,16 @@ const HEADER_ITEMS = [
 
 export const SidebarHeader = () => {
   const navigate = useNavigate();
+  const { open } = useSidebar();
 
   return (
     <UISidebarHeader>
+      <div className="flex justify-end-safe">
+        <Button variant={'ghost'} size={open ? 'icon-lg' : 'icon-sm'}>
+          <SidebarTrigger />
+        </Button>
+      </div>
+
       <SidebarMenu>
         {HEADER_ITEMS.map((item) => (
           <SidebarMenuItem key={item.title}>
