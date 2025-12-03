@@ -37,6 +37,7 @@ import {
 import { Error } from '@/components/shared/Error';
 import { useDeleteChatMutation } from '../queries/useDeleteChatMutation';
 import { useUpdateChatMutation } from '../queries/useUpdateChatMutation';
+import { useNavigate } from 'react-router';
 
 interface ChatActionDropdownProps {
   chat: Chat;
@@ -49,6 +50,8 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
   const deleteMutation = useDeleteChatMutation();
   const updateMutation = useUpdateChatMutation();
 
+  const navigate = useNavigate();
+
   const form = useForm<ChatRenameForm>({
     resolver: zodResolver(ChatRenameSchema),
     defaultValues: { title: chat.title },
@@ -56,7 +59,10 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
 
   const handleDelete = () => {
     deleteMutation.mutate(chat.id, {
-      onSuccess: () => setDeleteOpen(false),
+      onSuccess: () => {
+        setDeleteOpen(false);
+        navigate('/');
+      },
     });
   };
 

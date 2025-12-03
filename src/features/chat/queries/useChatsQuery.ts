@@ -4,18 +4,11 @@ import type {
   ChatListQueryParams,
   ChatListResponse,
 } from '../types/chat.types';
-import { useError } from '@/hooks/useToast';
 import { CHAT_QUERY_KEYS } from './queryKeys';
 
 export const useChatsQuery = (params?: ChatListQueryParams) => {
-  const e = useError();
   return useQuery<ChatListResponse>({
     queryKey: CHAT_QUERY_KEYS.list(params),
     queryFn: () => fetchChats(params),
-    throwOnError(error) {
-      console.log('error', error);
-      e('Ошибка при загрузке чатов');
-      return false;
-    },
   });
 };
