@@ -86,7 +86,11 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
           <Ellipsis className="h-5 w-5" />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="start" sideOffset={4}>
+        <DropdownMenuContent
+          align="start"
+          sideOffset={4}
+          onClick={(e) => e.stopPropagation()}
+        >
           <DropdownMenuItem onClick={() => setRenameOpen(true)}>
             <SquarePen className="mr-2" />
             Переименовать
@@ -112,7 +116,11 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
       />
 
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent
+          className="max-w-sm"
+          aria-describedby={undefined}
+          onClick={(e) => e.stopPropagation()}
+        >
           <DialogHeader>
             <DialogTitle>Введите новое название чата</DialogTitle>
           </DialogHeader>
