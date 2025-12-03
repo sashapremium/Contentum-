@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 
 const HEADER_ITEMS = [
   {
-    title: 'Новый чат',
+    title: 'Создать чат',
     icon: SquarePen,
     url: '/',
   },
