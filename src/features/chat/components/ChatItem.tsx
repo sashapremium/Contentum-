@@ -20,7 +20,6 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
         isActive={isSelected}
         className="group place-content-between"
         onClick={() => {
-          console.log('navigate');
           navigate(`/chat/${chat.id}`);
         }}
       >
