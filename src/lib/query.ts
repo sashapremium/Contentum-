@@ -1,0 +1,28 @@
+import { QueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { mapApiError } from './apiErrorMapper';
+
+function handleGlobalError(error: string) {
+  toast.error(error, {
+    position: 'top-center',
+    style: { backgroundColor: 'var(--color-error)' },
+  });
+}
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      throwOnError(error) {
+        handleGlobalError(mapApiError(error));
+        return false;
+      },
+    },
+    mutations: {
+      throwOnError(error) {
+        handleGlobalError(mapApiError(error));
+        return false;
+      },
+    },
+  },
+});
