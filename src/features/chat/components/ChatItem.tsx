@@ -22,9 +22,12 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
         onClick={() => {
           navigate(`/chat/${chat.id}`);
         }}
+        asChild
       >
-        <span className="truncate">{chat.title}</span>
-        {isSelected && <ChatActionDropdown chat={chat} />}
+        <div className="cursor-pointer">
+          <span className="truncate">{chat.title}</span>
+          {isSelected && <ChatActionDropdown chat={chat} />}
+        </div>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
