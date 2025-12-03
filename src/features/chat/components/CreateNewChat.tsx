@@ -10,8 +10,8 @@ export const CreateNewChat = () => {
     createChat.mutate(
       { title: 'Новый чат', isActive: true },
       {
-        onSuccess: (chat) => {
-          navigate(`/chat/${chat.id}`);
+        onSuccess: (res) => {
+          navigate(`/chat/${res.data.id}`);
         },
       }
     );

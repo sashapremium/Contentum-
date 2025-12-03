@@ -2,6 +2,8 @@ import { api } from '@/lib/axios';
 import {
   type Chat,
   type ChatCreateRequest,
+  type ChatCreateResponse,
+  ChatCreateResponseSchema,
   type ChatListQueryParams,
   type ChatListResponse,
   ChatListResponseSchema,
@@ -29,9 +31,11 @@ export async function fetchChat(id: string) {
   return ChatSchema.parse(response.data);
 }
 
-export async function createChat(payload: ChatCreateRequest): Promise<Chat> {
+export async function createChat(
+  payload: ChatCreateRequest
+): Promise<ChatCreateResponse> {
   const response = await api.post('/chats/', payload);
-  return ChatSchema.parse(response.data);
+  return ChatCreateResponseSchema.parse(response.data);
 }
 
 export async function updateChat(

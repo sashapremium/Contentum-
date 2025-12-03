@@ -33,6 +33,14 @@ export const ChatCreateSchema = z.object({
 
 export type ChatCreateRequest = z.infer<typeof ChatCreateSchema>;
 
+export const ChatCreateResponseSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: ChatSchema,
+});
+
+export type ChatCreateResponse = z.infer<typeof ChatCreateResponseSchema>;
+
 export const ChatUpdateSchema = ChatCreateSchema;
 export type ChatUpdateRequest = z.infer<typeof ChatUpdateSchema>;
 
