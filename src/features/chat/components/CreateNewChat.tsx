@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { useCreateChatMutation } from '@/features/chat/hooks/useCreateChatMutation';
 import { useNavigate } from 'react-router';
+import { useCreateChatMutation } from '../queries/useCreateChatMutation';
 
 export const CreateNewChat = () => {
   const navigate = useNavigate();

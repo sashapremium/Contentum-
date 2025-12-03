@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginRequestSchema } from '../types/auth.types';
-import { useLoginMutation } from '../hooks/useLoginMutation';
+import { useLoginMutation } from '../queries/useLoginMutation';
 
 import {
   Form,

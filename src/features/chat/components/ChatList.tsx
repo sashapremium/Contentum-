@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
-import { useChatsQuery } from '../hooks/useChatsQuery';
 import { ChatItem } from './ChatItem';
 import { SidebarMenu } from '@/components/ui/sidebar';
+import { useChatsQuery } from '../queries/useChatsQuery';
 
 export const ChatList = () => {
   const { data, isLoading } = useChatsQuery();

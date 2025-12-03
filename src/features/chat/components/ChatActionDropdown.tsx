@@ -21,9 +21,6 @@ import { Input } from '@/components/ui/input';
 
 import { Ellipsis, SquarePen, Trash } from 'lucide-react';
 
-import { useDeleteChatMutation } from '../hooks/useDeleteChatMutation';
-import { useUpdateChatMutation } from '../hooks/useUpdateChatMutation';
-
 import { useForm } from 'react-hook-form';
 import {
   ChatRenameSchema,
@@ -38,6 +35,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Error } from '@/components/shared/Error';
+import { useDeleteChatMutation } from '../queries/useDeleteChatMutation';
+import { useUpdateChatMutation } from '../queries/useUpdateChatMutation';
 
 interface ChatActionDropdownProps {
   chat: Chat;

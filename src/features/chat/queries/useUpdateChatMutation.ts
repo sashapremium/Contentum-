@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateChat } from '../api/chat.api';
 import type { ChatUpdateRequest, Chat } from '../types/chat.types';
-import { CHAT_QUERY_KEYS } from '@/features/chat/hooks/queryKeys';
 import { useError } from '@/hooks/useToast';
+import { CHAT_QUERY_KEYS } from './queryKeys';
 
 interface UpdateChatVariables {
   id: string;

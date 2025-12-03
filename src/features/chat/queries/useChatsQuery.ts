@@ -4,8 +4,8 @@ import type {
   ChatListQueryParams,
   ChatListResponse,
 } from '../types/chat.types';
-import { CHAT_QUERY_KEYS } from '@/features/chat/hooks/queryKeys';
 import { useError } from '@/hooks/useToast';
+import { CHAT_QUERY_KEYS } from './queryKeys';
 
 export const useChatsQuery = (params?: ChatListQueryParams) => {
   const e = useError();

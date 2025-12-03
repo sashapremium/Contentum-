@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { RegisterRequestSchema } from '../types/auth.types';
-import { useRegisterMutation } from '../hooks/useRegisterMutation';
+import { useRegisterMutation } from '../queries/useRegisterMutation';
 
 import {
   Form,
