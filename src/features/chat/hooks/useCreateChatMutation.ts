@@ -9,7 +9,10 @@ export const useCreateChatMutation = () => {
   return useMutation<Chat, unknown, ChatCreateRequest>({
     mutationFn: createChat,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.all });
+      queryClient.invalidateQueries({
+        queryKey: CHAT_QUERY_KEYS.all,
+        exact: false,
+      });
     },
   });
 };

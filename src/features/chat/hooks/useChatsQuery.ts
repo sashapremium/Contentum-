@@ -10,9 +10,8 @@ import { useError } from '@/hooks/useToast';
 export const useChatsQuery = (params?: ChatListQueryParams) => {
   const e = useError();
   return useQuery<ChatListResponse>({
-    queryKey: [CHAT_QUERY_KEYS.all, params],
+    queryKey: CHAT_QUERY_KEYS.list(params),
     queryFn: () => fetchChats(params),
-    staleTime: 30_000,
     throwOnError(error) {
       console.log('error', error);
       e('Ошибка при загрузке чатов');

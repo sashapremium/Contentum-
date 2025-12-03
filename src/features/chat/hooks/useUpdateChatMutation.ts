@@ -16,7 +16,10 @@ export const useUpdateChatMutation = () => {
   return useMutation<Chat, unknown, UpdateChatVariables>({
     mutationFn: ({ id, data }) => updateChat(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.all });
+      queryClient.invalidateQueries({
+        queryKey: CHAT_QUERY_KEYS.all,
+        exact: false,
+      });
     },
     onError: (error) => {
       console.error(error);
