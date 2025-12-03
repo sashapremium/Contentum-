@@ -19,7 +19,7 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
   const isSelected = pathname === `/chat/${chat.id}`;
 
   return (
-    <SidebarMenuItem>
+    <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
       <SidebarMenuButton
         asChild
         isActive={isSelected}
