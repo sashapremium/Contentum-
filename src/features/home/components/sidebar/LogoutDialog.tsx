@@ -1,13 +1,6 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Dialog } from '@/components/ui/dialog';
 import { useAuthStore } from '@/features/auth/store/auth.store';
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 
 export const LogoutDialog = ({
   open,
@@ -16,24 +9,13 @@ export const LogoutDialog = ({
   const logout = useAuthStore((s) => s.logout);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Выйти из аккаунта?</DialogTitle>
-          <DialogDescription>
-            Вы уверены, что хотите завершить сеанс?
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogFooter>
-          <Button variant="ghost" onClick={() => onOpenChange?.(false)}>
-            Отмена
-          </Button>
-          <Button variant="destructive" onClick={logout}>
-            Выйти
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Выйти из аккаунта?"
+      description="Вы уверены, что хотите завершить сеанс?"
+      confirmText="Выйти"
+      onClickConfirm={logout}
+    />
   );
 };
