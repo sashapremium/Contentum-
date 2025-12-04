@@ -2,7 +2,7 @@ import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import type { ReactNode } from 'react';
 
 interface HomeHeaderProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export const MainHeader = ({ children }: HomeHeaderProps) => {
