@@ -6,7 +6,7 @@ export const Messages = () => {
     <ScrollArea className="h-full space-y-4">
       <div className="space-y-3">
         {Array.from({ length: 50 }).map((_, i) => (
-          <Skeleton className="h-6 w-[100%]" />
+          <Skeleton className="h-6 w-[100%]" data-index={i} />
         ))}
       </div>
     </ScrollArea>

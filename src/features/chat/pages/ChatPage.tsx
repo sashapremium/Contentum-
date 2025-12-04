@@ -3,7 +3,6 @@ import { useChatQuery } from '../queries/useChatQuery';
 import { Error } from '@/components/shared/Error';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { ChatPageHeader } from '../components/ChatPageHeader';
-import { ChatPageContent } from '../components/ChatPageContent';
 import { MessageInput } from '@/features/messages/components/MessageInput';
 import { Messages } from '@/features/messages/components/Messages';
 
@@ -32,14 +31,14 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <ChatPageHeader chat={data} />
 
       <div className="sm:px-6 md:px-16 lg:px-32 xl:px-64">
         <Messages />
       </div>
 
-      <div className="px-4 sm:px-6 md:px-16 lg:px-32 xl:px-64">
+      <div className="z-20 bg-background sticky bottom-0 px-4 sm:px-6 md:px-16 lg:px-32 xl:px-64">
         <MessageInput />
       </div>
     </div>
