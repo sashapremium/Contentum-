@@ -2,17 +2,26 @@ import { useParams } from 'react-router-dom';
 import { useChatQuery } from '../queries/useChatQuery';
 import { Error } from '@/components/shared/Error';
 import { mapApiError } from '@/lib/apiErrorMapper';
+import { ChatPageHeader } from '../components/ChatPageHeader';
 
 export default function ChatPage() {
   const { chatId } = useParams();
   const { data, isLoading, isError, error } = useChatQuery(chatId);
 
   if (!chatId) {
-    return <Error description="Чат с данным id не найден" />;
+    return (
+      <div className="m-auto">
+        <Error description="Чат с данным id не найден" />
+      </div>
+    );
   }
 
   if (isError) {
-    return <Error description={mapApiError(error)} />;
+    return (
+      <div className="m-auto">
+        <Error description={mapApiError(error)} />
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -20,10 +29,8 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="font-bold text-xl">{data?.title}</h1>
-
-      <div className="mt-4">Здесь будут сообщения…</div>
-    </div>
+    <>
+      <ChatPageHeader chat={data} />
+    </>
   );
 }
