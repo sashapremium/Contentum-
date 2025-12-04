@@ -9,7 +9,7 @@ export const MainHeader = ({ children }: HomeHeaderProps) => {
   const { isMobile } = useSidebar();
 
   return (
-    <header className="border-b p-3 bg-background">
+    <header className="flex items-center border-b p-3 bg-background gap-2">
       {isMobile && <SidebarTrigger />}
       {children}
     </header>

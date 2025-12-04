@@ -9,7 +9,7 @@ interface ChatPageHeaderProps {
 export const ChatPageHeader = ({ chat }: ChatPageHeaderProps) => {
   return (
     <MainHeader>
-      <div className="flex justify-between">
+      <div className="flex flex-1 justify-between">
         <h1 className="truncate">{chat?.title}</h1>
         <ChatActionDropdown chat={chat!} />
       </div>
