@@ -34,11 +34,11 @@ export default function ChatPage() {
     <div className="flex flex-col gap-4">
       <ChatPageHeader chat={data} />
 
-      <div className="sm:px-6 md:px-16 lg:px-32 xl:px-64">
+      <div className="px-12 sm:px-12 md:px-24 lg:px-32 xl:px-64">
         <Messages />
       </div>
 
-      <div className="z-20 bg-background sticky bottom-0 px-4 sm:px-6 md:px-16 lg:px-32 xl:px-64">
+      <div className="z-2 bg-background sticky bottom-0 px-12 sm:px-12 md:px-24 lg:px-32 xl:px-64">
         <MessageInput />
       </div>
     </div>
