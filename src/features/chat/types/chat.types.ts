@@ -1,14 +1,5 @@
+import { MessagesSchema } from '@/features/messages/types/messages.types';
 import { z } from 'zod';
-
-export const ChatMessageSummarySchema = z.object({
-  id: z.uuid(),
-  chat: z.uuid(),
-  content: z.string(),
-  messageType: z.string().optional().nullable(),
-  createdAt: z.string(),
-});
-
-export type ChatMessageSummary = z.infer<typeof ChatMessageSummarySchema>;
 
 export const ChatSchema = z.object({
   id: z.uuid(),
@@ -19,7 +10,7 @@ export const ChatSchema = z.object({
   isActive: z.boolean(),
   is_temporary: z.boolean(),
   flow_step: z.number().int(),
-  messages: z.array(ChatMessageSummarySchema).optional(),
+  messages: MessagesSchema,
   messageCount: z.number(),
   lastMessage: z.any().optional().nullable(),
 });

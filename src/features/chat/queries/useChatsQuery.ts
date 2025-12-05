@@ -4,7 +4,7 @@ import type {
   ChatListQueryParams,
   ChatListResponse,
 } from '../types/chat.types';
-import { CHAT_QUERY_KEYS } from './queryKeys';
+import { CHAT_QUERY_KEYS } from './chat.queryKeys';
 
 export const useChatsQuery = (params?: ChatListQueryParams) => {
   return useQuery<ChatListResponse>({

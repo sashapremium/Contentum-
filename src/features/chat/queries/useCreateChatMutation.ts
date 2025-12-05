@@ -4,7 +4,7 @@ import type {
   ChatCreateRequest,
   ChatCreateResponse,
 } from '../types/chat.types';
-import { CHAT_QUERY_KEYS } from './queryKeys';
+import { CHAT_QUERY_KEYS } from './chat.queryKeys';
 
 export const useCreateChatMutation = () => {
   const queryClient = useQueryClient();

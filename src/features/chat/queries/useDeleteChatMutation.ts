@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteChat } from '../api/chat.api';
-import { CHAT_QUERY_KEYS } from './queryKeys';
+import { CHAT_QUERY_KEYS } from './chat.queryKeys';
 
 export const useDeleteChatMutation = () => {
   const queryClient = useQueryClient();
