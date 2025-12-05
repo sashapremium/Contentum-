@@ -6,7 +6,7 @@ const DEFAULT_ERROR = 'Неизвестная ошибка. Повторите �
 export function mapApiError(error: { name: string } | null): string {
   if (!error || typeof error !== 'object') return DEFAULT_ERROR;
 
-  console.log('mapApiError', { error });
+  console.error('mapApiError', { error });
 
   if (error.name === 'ZodError') {
     const zodError = error as ZodError;
@@ -16,9 +16,17 @@ export function mapApiError(error: { name: string } | null): string {
 
   if (error.name === 'AxiosError') {
     const axiosError = error as AxiosError;
+    const errorMessage = axiosError.message;
     const data = axiosError.response?.data;
 
-    if (!data || typeof data !== 'object') return DEFAULT_ERROR;
+    if (!data || typeof data !== 'object') {
+      switch (true) {
+        case errorMessage.includes('Network'):
+          return 'Проверьте подключение к сети.';
+        default:
+          return DEFAULT_ERROR;
+      }
+    }
 
     if (typeof (data as { detail: string }).detail === 'string') {
       return translateBackendMessage((data as { detail: string }).detail);
