@@ -1,8 +1,8 @@
 import { Spinner } from '@/components/ui/spinner';
 
-export const LoadingPage = () => {
+export const Loading = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6">
+    <div className="flex items-center justify-center m-auto">
       <Spinner className="size-8" />
     </div>
   );

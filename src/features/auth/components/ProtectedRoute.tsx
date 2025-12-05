@@ -1,13 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import type { ReactNode } from 'react';
-import { LoadingPage } from '@/app/pages/LoadingPage';
+import { Loading } from '@/components/shared/Loading';
 
 export function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isReady } = useAuthStore();
 
   if (!isReady) {
-    return <LoadingPage />;
+    return <Loading />;
   }
 
   if (!isAuthenticated) {

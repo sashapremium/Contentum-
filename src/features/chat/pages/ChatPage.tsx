@@ -5,6 +5,7 @@ import { mapApiError } from '@/lib/apiErrorMapper';
 import { ChatPageHeader } from '../components/ChatPageHeader';
 import { MessageInput } from '@/features/messages/components/MessageInput';
 import { Messages } from '@/features/messages/components/Messages';
+import { Loading } from '@/components/shared/Loading';
 
 export default function ChatPage() {
   const { chatId } = useParams();
@@ -27,7 +28,7 @@ export default function ChatPage() {
   }
 
   if (isLoading) {
-    return null;
+    return <Loading />;
   }
 
   return (
