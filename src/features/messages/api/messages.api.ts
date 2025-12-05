@@ -12,7 +12,7 @@ export async function fetchMessages(chatId: string): Promise<Messages> {
   const res = await api.get(`/chats/${chatId}/messages`);
 
   const parsed = GetMessagesResponseSchema.parse(res.data);
-  return parsed.data;
+  return parsed.results;
 }
 
 export async function sendMessage(

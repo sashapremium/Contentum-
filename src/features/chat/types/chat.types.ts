@@ -52,5 +52,5 @@ export interface ChatListQueryParams {
 }
 
 export interface ChatProps {
-  chat: Chat;
+  chat?: Chat;
 }

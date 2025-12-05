@@ -25,7 +25,7 @@ export const SidebarHeader = () => {
   return (
     <UISidebarHeader>
       <div className="flex justify-end-safe">
-        <Button variant={'ghost'} size={open ? 'icon-lg' : 'icon-sm'}>
+        <Button variant={'ghost'} size={open ? 'icon-lg' : 'icon-sm'} asChild>
           <SidebarTrigger />
         </Button>
       </div>

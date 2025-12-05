@@ -14,9 +14,10 @@ export const MessagesSchema = z.array(MessageSchema);
 export type Messages = Message[];
 
 export const GetMessagesResponseSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  data: MessagesSchema,
+  count: z.number().int(),
+  next: z.url().nullable(),
+  previous: z.url().nullable(),
+  results: z.array(MessageSchema),
 });
 
 export type GetMessagesResponse = z.infer<typeof GetMessagesResponseSchema>;

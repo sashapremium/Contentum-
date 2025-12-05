@@ -12,7 +12,7 @@ export default function ChatPage() {
   const { chatId } = useParams();
   const { data: chat, isLoading, isError, error } = useChatQuery(chatId);
 
-  if (!chatId || !chat) {
+  if (!chatId) {
     return (
       <div className="m-auto">
         <Error description="Чат с данным id не найден" />

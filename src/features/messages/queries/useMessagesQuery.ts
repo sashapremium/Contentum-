@@ -7,6 +7,6 @@ export const useMessagesQuery = (chatId: string | undefined) => {
   return useQuery<Messages>({
     queryKey: MESSAGES_QUERY_KEYS.list(chatId!),
     queryFn: () => fetchMessages(chatId!),
-    enabled: Boolean(chatId),
+    enabled: typeof chatId === 'string' && chatId.length > 0,
   });
 };
