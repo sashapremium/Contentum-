@@ -5,6 +5,7 @@ import type {
   SendMessageBody,
   SendMessageResponse,
   Message,
+  Messages,
 } from '../types/messages.types';
 import { v4 as uuid } from 'uuid';
 
@@ -19,7 +20,7 @@ export const useSendMessageMutation = (chatId: string) => {
         queryKey: MESSAGES_QUERY_KEYS.list(chatId),
       });
 
-      const previousMessages = qc.getQueryData<Message[]>(
+      const previousMessages = qc.getQueryData<Messages>(
         MESSAGES_QUERY_KEYS.list(chatId)
       );
 
@@ -33,7 +34,7 @@ export const useSendMessageMutation = (chatId: string) => {
         createdAt: new Date().toISOString(),
       };
 
-      qc.setQueryData<Message[]>(
+      qc.setQueryData<Messages>(
         MESSAGES_QUERY_KEYS.list(chatId),
         (old = []) => [...old, optimistic]
       );
@@ -44,9 +45,9 @@ export const useSendMessageMutation = (chatId: string) => {
     onError: (_error, _body, ctx) => {
       if (!ctx) return;
 
-      qc.setQueryData<Message[]>(
+      qc.setQueryData<Messages>(
         MESSAGES_QUERY_KEYS.list(chatId),
-        ctx.previousMessages ?? []
+        (ctx as { previousMessages: Messages }).previousMessages ?? []
       );
     },
 
