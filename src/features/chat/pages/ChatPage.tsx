@@ -6,6 +6,7 @@ import { ChatPageHeader } from '../components/ChatPageHeader';
 import { MessageInput } from '@/features/messages/components/MessageInput';
 import { Messages } from '@/features/messages/components/Messages';
 import { Loading } from '@/components/shared/Loading';
+import { PageWrapper } from '@/components/shared/PageWrapper';
 
 export default function ChatPage() {
   const { chatId } = useParams();
@@ -34,14 +35,10 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col gap-4">
       <ChatPageHeader chat={data} />
-
-      <div className="px-12 sm:px-12 md:px-24 lg:px-32 xl:px-64">
+      <PageWrapper className="flex flex-col gap-4">
         <Messages />
-      </div>
-
-      <div className="z-2 bg-background sticky bottom-0 px-12 sm:px-12 md:px-24 lg:px-32 xl:px-64">
         <MessageInput />
-      </div>
+      </PageWrapper>
     </div>
   );
 }
