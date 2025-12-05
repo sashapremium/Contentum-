@@ -8,7 +8,7 @@ import { ArrowUpIcon } from 'lucide-react';
 
 export const MessageInput = () => {
   return (
-    <div className="z-2 bg-background sticky bottom-0 pb-4">
+    <div className="z-2 bg-background sticky bottom-0 pb-6">
       <InputGroup>
         <InputGroupTextarea placeholder="Введите ваше сообщение..." />
         <InputGroupAddon align="inline-end">
