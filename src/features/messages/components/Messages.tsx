@@ -14,6 +14,7 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   const {
     data: messages,
     isLoading,
+    isFetching,
     isError,
     error,
   } = useMessagesQuery(chatId);
@@ -44,7 +45,7 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
         <Message key={msg.id} message={msg} />
       ))}
 
-      {sendLoading && <Loading className="inline-flex p-2" />}
+      {(sendLoading || isFetching) && <Loading className="inline-flex p-2" />}
 
       <div ref={bottomRef} />
     </div>

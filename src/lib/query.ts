@@ -17,6 +17,7 @@ export const queryClient = new QueryClient({
         handleGlobalError(mapApiError(error));
         return false;
       },
+      refetchOnWindowFocus: false,
     },
     mutations: {
       throwOnError(error) {
