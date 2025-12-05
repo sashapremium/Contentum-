@@ -20,7 +20,11 @@ export default function ChatPage() {
     );
   }
 
-  if (isError) {
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError || !chat) {
     return (
       <div className="m-auto">
         <Error description={mapApiError(error)} />
@@ -28,16 +32,12 @@ export default function ChatPage() {
     );
   }
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <ChatPageHeader chat={chat} />
-      <PageWrapper className="flex flex-col gap-4">
-        <Messages chatId={chat?.id} />
-        <MessageInput chatId={chat?.id} />
+      <PageWrapper>
+        <Messages chatId={chat.id} />
+        <MessageInput chatId={chat.id} />
       </PageWrapper>
     </div>
   );
