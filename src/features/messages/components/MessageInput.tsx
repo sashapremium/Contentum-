@@ -10,11 +10,11 @@ import { useState } from 'react';
 
 interface MessageInputProps {
   chatId: string;
+  mutation: ReturnType<typeof useSendMessageMutation>;
 }
 
-export const MessageInput = ({ chatId }: MessageInputProps) => {
+export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
   const [value, setValue] = useState('');
-  const mutation = useSendMessageMutation(chatId);
 
   const handleSend = () => {
     if (!value.trim()) return;
@@ -28,6 +28,7 @@ export const MessageInput = ({ chatId }: MessageInputProps) => {
     setValue('');
   };
 
+  console.log('MessageInput', { isPending: mutation.isPending });
   return (
     <div className="z-2 bg-background sticky bottom-0 pb-6">
       <InputGroup>

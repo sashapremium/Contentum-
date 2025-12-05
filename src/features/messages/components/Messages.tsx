@@ -3,12 +3,14 @@ import { Loading } from '@/components/shared/Loading';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
 import { Message } from './Message';
+import { useEffect, useRef } from 'react';
 
 interface MessagesProps {
-  chatId?: string;
+  chatId: string;
+  sendLoading: boolean;
 }
 
-export const Messages = ({ chatId }: MessagesProps) => {
+export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   const {
     data: messages,
     isLoading,
@@ -16,10 +18,16 @@ export const Messages = ({ chatId }: MessagesProps) => {
     error,
   } = useMessagesQuery(chatId);
 
-  console.log('Messages', { chatId, messages, isLoading, isError, error });
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!messages) return;
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages?.length]);
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="pb-6" />;
   }
 
   if (isError || !messages) {
@@ -35,6 +43,10 @@ export const Messages = ({ chatId }: MessagesProps) => {
       {messages.map((msg) => (
         <Message key={msg.id} message={msg} />
       ))}
+
+      {sendLoading && <Loading className="inline-flex p-2" />}
+
+      <div ref={bottomRef} />
     </div>
   );
 };

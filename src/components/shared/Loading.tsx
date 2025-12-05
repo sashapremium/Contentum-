@@ -1,8 +1,12 @@
 import { Spinner } from '@/components/ui/spinner';
+import { cx } from 'class-variance-authority';
 
-export const Loading = () => {
+interface LoadingProps {
+  className?: string;
+}
+export const Loading = ({ className }: LoadingProps) => {
   return (
-    <div className="flex items-center justify-center m-auto">
+    <div className={cx('flex items-center justify-center m-auto', className)}>
       <Spinner className="size-8" />
     </div>
   );
