@@ -10,9 +10,9 @@ import { PageWrapper } from '@/components/shared/PageWrapper';
 
 export default function ChatPage() {
   const { chatId } = useParams();
-  const { data, isLoading, isError, error } = useChatQuery(chatId);
+  const { data: chat, isLoading, isError, error } = useChatQuery(chatId);
 
-  if (!chatId) {
+  if (!chatId || !chat) {
     return (
       <div className="m-auto">
         <Error description="Чат с данным id не найден" />
@@ -34,10 +34,10 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <ChatPageHeader chat={data} />
+      <ChatPageHeader chat={chat} />
       <PageWrapper className="flex flex-col gap-4">
-        <Messages />
-        <MessageInput />
+        <Messages chat={chat} />
+        <MessageInput chat={chat} />
       </PageWrapper>
     </div>
   );

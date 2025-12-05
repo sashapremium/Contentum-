@@ -50,3 +50,7 @@ export interface ChatListQueryParams {
   page?: number;
   pageSize?: number;
 }
+
+export interface ChatProps {
+  chat: Chat;
+}

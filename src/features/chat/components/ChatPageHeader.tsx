@@ -1,12 +1,8 @@
 import { MainHeader } from '@/components/shared/MainHeader';
-import type { Chat } from '../types/chat.types';
+import type { ChatProps } from '../types/chat.types';
 import { ChatActionDropdown } from './ChatActionDropdown';
 
-interface ChatPageHeaderProps {
-  chat: Chat | undefined;
-}
-
-export const ChatPageHeader = ({ chat }: ChatPageHeaderProps) => {
+export const ChatPageHeader = ({ chat }: ChatProps) => {
   return (
     <MainHeader>
       <div className="flex flex-1 justify-between">
