@@ -4,9 +4,10 @@ import {
   InputGroupAddon,
   InputGroupButton,
 } from '@/components/ui/input-group';
-import { ArrowUpIcon } from 'lucide-react';
+import { ArrowUpIcon, Plus } from 'lucide-react';
 import { useSendMessageMutation } from '../queries/useSendMessageMutation';
 import { useState } from 'react';
+import { useTodo } from '@/hooks/useToast';
 
 interface MessageInputProps {
   chatId: string;
@@ -15,6 +16,7 @@ interface MessageInputProps {
 
 export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
   const [value, setValue] = useState('');
+  const t = useTodo();
 
   const handleSend = () => {
     if (!value.trim()) return;
@@ -31,7 +33,17 @@ export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
   console.log('MessageInput', { isPending: mutation.isPending });
   return (
     <div className="z-2 bg-background sticky bottom-0 pb-6">
-      <InputGroup>
+      <InputGroup className="rounded-xl items-start">
+        <InputGroupAddon align="inline-start" className="pl-6 py-4">
+          <InputGroupButton
+            variant="default"
+            size="icon-sm"
+            onClick={() => t('Загрузка файлов')}
+          >
+            <Plus />
+          </InputGroupButton>
+        </InputGroupAddon>
+
         <InputGroupTextarea
           placeholder="Введите ваше сообщение..."
           value={value}
@@ -42,11 +54,12 @@ export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
             }
           }}
           onChange={(e) => setValue(e.target.value)}
+          className="md:text-base p-5"
         />
-        <InputGroupAddon align="inline-end">
+
+        <InputGroupAddon align="inline-end" className="pr-6 py-4">
           <InputGroupButton
             variant="default"
-            className="rounded-full"
             size="icon-sm"
             onClick={handleSend}
             disabled={mutation.isPending || !value.trim()}
