@@ -36,8 +36,8 @@ export default function ChatPage() {
     <div className="flex flex-col gap-4">
       <ChatPageHeader chat={chat} />
       <PageWrapper className="flex flex-col gap-4">
-        <Messages chat={chat} />
-        <MessageInput chat={chat} />
+        <Messages chatId={chat?.id} />
+        <MessageInput chatId={chat?.id} />
       </PageWrapper>
     </div>
   );

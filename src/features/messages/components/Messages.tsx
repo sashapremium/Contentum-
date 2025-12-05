@@ -1,19 +1,22 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMessagesQuery } from '../queries/useMessagesQuery';
-import type { ChatProps } from '@/features/chat/types/chat.types';
 import { Loading } from '@/components/shared/Loading';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
 
-export const Messages = ({ chat }: ChatProps) => {
+interface MessagesProps {
+  chatId?: string;
+}
+
+export const Messages = ({ chatId }: MessagesProps) => {
   const {
     data: messages,
     isLoading,
     isError,
     error,
-  } = useMessagesQuery(chat?.id);
+  } = useMessagesQuery(chatId);
 
-  console.log('Messages', { chat, messages, isLoading, isError, error });
+  console.log('Messages', { chatId, messages, isLoading, isError, error });
 
   if (isLoading) {
     return <Loading />;
