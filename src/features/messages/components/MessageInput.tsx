@@ -54,7 +54,7 @@ export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
             }
           }}
           onChange={(e) => setValue(e.target.value)}
-          className="md:text-base p-5"
+          className="md:text-base p-5 max-h-72 overflow-y-auto textarea-scroll"
         />
 
         <InputGroupAddon align="inline-end" className="pr-6 py-4">
