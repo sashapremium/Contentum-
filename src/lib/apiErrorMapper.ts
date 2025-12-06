@@ -58,6 +58,8 @@ function translateBackendMessage(message: string): string {
       return 'Пользователь уже существует.';
     case message.includes('required'):
       return 'Обязательное поле.';
+    case message.includes('Страница не найдена.'):
+      return 'Страница не найдена.';
     default:
       return DEFAULT_ERROR;
   }
