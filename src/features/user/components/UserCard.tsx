@@ -5,16 +5,25 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User } from 'lucide-react';
+import { User, UserCog } from 'lucide-react';
 import { UserMenu } from './UserMenu';
-
-const USER = {
-  name: 'Куликов Глубокослав Сергеевич',
-  email: 'p.kulikov.dev@gmaiффффффффффффl.com',
-};
+import { useUserMeQuery } from '../queries/useUserMeQuery';
+import { Error } from '@/components/shared/Error';
+import { mapApiError } from '@/lib/apiErrorMapper';
 
 export const UserCard = () => {
-  const loading = true;
+  const { data: user, isLoading, isError, error } = useUserMeQuery();
+
+  if (isError) {
+    return (
+      <Error
+        description={mapApiError(
+          error,
+          'Ошибка при загрузке данных о пользователе.'
+        )}
+      />
+    );
+  }
 
   return (
     <DropdownMenu>
@@ -24,21 +33,25 @@ export const UserCard = () => {
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarFallback className="rounded-lg">
-              <User />
-            </AvatarFallback>
+            {isLoading ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
+            ) : (
+              <AvatarFallback className="rounded-lg">
+                {user?.role === 'EMPLOYEE' ? <User /> : <UserCog />}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight gap-1">
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="w-[180px] h-[17.5px]" />
             ) : (
-              <span className="truncate font-medium">{USER.name}</span>
+              <span className="truncate font-medium">{user?.fullName}</span>
             )}
 
-            {loading ? (
+            {isLoading ? (
               <Skeleton className="w-[150px] h-[14px]" />
             ) : (
-              <span className="truncate text-xs">{USER.email}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             )}
           </div>
         </SidebarMenuButton>

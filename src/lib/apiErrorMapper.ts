@@ -3,8 +3,11 @@ import { z, type ZodError } from 'zod';
 
 const DEFAULT_ERROR = 'Неизвестная ошибка. Повторите попытку позже';
 
-export function mapApiError(error: { name: string } | null): string {
-  if (!error || typeof error !== 'object') return DEFAULT_ERROR;
+export function mapApiError(
+  error: { name: string } | null,
+  defaultError: string = DEFAULT_ERROR
+): string {
+  if (!error || typeof error !== 'object') return defaultError;
 
   console.error('mapApiError', { error });
 
@@ -24,7 +27,7 @@ export function mapApiError(error: { name: string } | null): string {
         case errorMessage.includes('Network'):
           return 'Проверьте подключение к сети.';
         default:
-          return DEFAULT_ERROR;
+          return defaultError;
       }
     }
 
@@ -39,10 +42,10 @@ export function mapApiError(error: { name: string } | null): string {
     const fieldMessage = extractFieldError(data);
     if (fieldMessage) return fieldMessage;
 
-    return DEFAULT_ERROR;
+    return defaultError;
   }
 
-  return DEFAULT_ERROR;
+  return defaultError;
 }
 
 function translateBackendMessage(message: string): string {
