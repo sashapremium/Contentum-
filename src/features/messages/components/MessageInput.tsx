@@ -30,7 +30,6 @@ export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
     setValue('');
   };
 
-  console.log('MessageInput', { isPending: mutation.isPending });
   return (
     <div className="z-2 bg-background sticky bottom-0 pb-6">
       <InputGroup className="rounded-xl items-start">
