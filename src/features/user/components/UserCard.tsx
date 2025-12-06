@@ -1,17 +1,12 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { LogoutDialog } from '@/features/home/components/sidebar/LogoutDialog';
-import { useTodo } from '@/hooks/useToast';
-import { User, Settings, LogOut } from 'lucide-react';
-import { useState } from 'react';
+import { User } from 'lucide-react';
+import { UserMenu } from './UserMenu';
 
 const USER = {
   name: 'Куликов Глубокослав Сергеевич',
@@ -19,9 +14,6 @@ const USER = {
 };
 
 export const UserCard = () => {
-  const [open, setOpen] = useState(false);
-  const t = useTodo();
-
   const loading = true;
 
   return (
@@ -51,24 +43,8 @@ export const UserCard = () => {
           </div>
         </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-        side="top"
-        align="center"
-        sideOffset={4}
-      >
-        <DropdownMenuItem onClick={() => t('Настройки')}>
-          <Settings />
-          Настройки
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setOpen(true)}>
-          <LogOut />
-          Выйти
-        </DropdownMenuItem>
-      </DropdownMenuContent>
 
-      <LogoutDialog open={open} onOpenChange={setOpen} />
+      <UserMenu />
     </DropdownMenu>
   );
 };
