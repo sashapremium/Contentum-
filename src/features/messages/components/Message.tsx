@@ -8,6 +8,25 @@ interface MessageProps {
 export const Message = ({ message }: MessageProps) => {
   const isUser = message.messageType === 'USER';
 
+  const renderTextMessage = () => {
+    return message.content.info as string;
+  };
+
+  const renderImageMessage = () => {
+    return null;
+  };
+
+  const renderMessageContent = () => {
+    switch (message.content.type) {
+      case 'text':
+        return renderTextMessage();
+      case 'image':
+        return renderImageMessage();
+      default:
+        renderTextMessage();
+    }
+  };
+
   return (
     <div
       className={cx('flex w-full', isUser ? 'justify-end' : 'justify-start')}
@@ -23,7 +42,7 @@ export const Message = ({ message }: MessageProps) => {
           isUser ? 'rounded-br-none' : 'rounded-bl-none'
         )}
       >
-        {message.content}
+        {renderMessageContent()}
       </div>
     </div>
   );
