@@ -1,9 +1,25 @@
 import { z } from 'zod';
 
+export const MessageContentSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('text'),
+    info: z.string().min(1),
+  }),
+
+  z.object({
+    type: z.literal('image'),
+    info: z.object({
+      imageId: z.string().min(1),
+    }),
+  }),
+]);
+
+export type MessageContent = z.infer<typeof MessageContentSchema>;
+
 export const MessageSchema = z.object({
   id: z.uuid(),
   chat: z.uuid(),
-  content: z.string().min(1),
+  content: MessageContentSchema,
   messageType: z.enum(['SYSTEM', 'USER']),
   createdAt: z.string(),
 });

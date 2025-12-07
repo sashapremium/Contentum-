@@ -9,7 +9,9 @@ import {
 } from '../types/messages.types';
 
 export async function fetchMessages(chatId: string): Promise<Messages> {
-  const res = await api.get(`/chats/${chatId}/messages/`);
+  const res = await api.get(`/chats/${chatId}/messages/`, {
+    params: { page_size: 100 },
+  });
 
   const parsed = GetMessagesResponseSchema.parse(res.data);
   return parsed.results;

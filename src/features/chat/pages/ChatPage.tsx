@@ -44,3 +44,5 @@ export default function ChatPage() {
     </div>
   );
 }
+
+// Right now sending and receiving messages works completely fine. The general flow of how generation works on backend is this - it sends me 9 fixed messages. Each message is a question. There is a total of 9 system messages. After sending an answer to a the final message, backend will start generating an image. Right now this happens right after i call useSendMessageMutation. After it successfully completes, response contains information about image generation - it's file id on backend and other stuff. I can fetch the list of images related to chat
