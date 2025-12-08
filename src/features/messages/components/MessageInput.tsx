@@ -23,7 +23,7 @@ export const MessageInput = ({ chatId, mutation }: MessageInputProps) => {
 
     mutation.mutate({
       chat: chatId,
-      content: value,
+      content: { type: 'text', info: value },
       messageType: 'USER',
     });
 

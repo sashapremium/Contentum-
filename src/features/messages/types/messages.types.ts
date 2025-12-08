@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+export const ImageInfoSchema = z.object({
+  task_id: z.uuid(),
+  prompt: z.string(),
+  image_url: z.url(),
+  download_url: z.url(),
+  regeneration_attempts: z.number().int().nonnegative(),
+  total_attempts: z.number().int().nonnegative(),
+});
+
+export type ImageInfo = z.infer<typeof ImageInfoSchema>;
+
 export const MessageContentSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('text'),
@@ -8,9 +19,7 @@ export const MessageContentSchema = z.discriminatedUnion('type', [
 
   z.object({
     type: z.literal('image'),
-    info: z.object({
-      imageId: z.string().min(1),
-    }),
+    info: ImageInfoSchema,
   }),
 ]);
 
@@ -40,7 +49,7 @@ export type GetMessagesResponse = z.infer<typeof GetMessagesResponseSchema>;
 
 export const SendMessageBodySchema = z.object({
   chat: z.uuid(),
-  content: z.string().min(1),
+  content: MessageContentSchema,
   messageType: z.enum(['USER', 'SYSTEM']).default('USER'),
 });
 

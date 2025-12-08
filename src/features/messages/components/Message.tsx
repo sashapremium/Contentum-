@@ -1,4 +1,7 @@
-import type { Message as MessageType } from '../types/messages.types';
+import type {
+  ImageInfo,
+  Message as MessageType,
+} from '../types/messages.types';
 import { cx } from 'class-variance-authority';
 
 interface MessageProps {
@@ -9,11 +12,33 @@ export const Message = ({ message }: MessageProps) => {
   const isUser = message.messageType === 'USER';
 
   const renderTextMessage = () => {
-    return message.content.info as string;
+    return (
+      <div
+        className={cx(
+          'max-w-[75%] px-4 py-2 text-sm shadow-sm rounded-xl',
+
+          isUser
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted text-foreground',
+
+          isUser ? 'rounded-br-none' : 'rounded-bl-none'
+        )}
+      >
+        {message.content.info as string}
+      </div>
+    );
   };
 
   const renderImageMessage = () => {
-    return null;
+    const content = message.content.info as ImageInfo;
+
+    return (
+      <img
+        className="rounded-xl"
+        src={content.image_url}
+        alt="Сгерерированное изображение"
+      />
+    );
   };
 
   const renderMessageContent = () => {
@@ -31,19 +56,7 @@ export const Message = ({ message }: MessageProps) => {
     <div
       className={cx('flex w-full', isUser ? 'justify-end' : 'justify-start')}
     >
-      <div
-        className={cx(
-          'max-w-[75%] px-4 py-2 text-sm shadow-sm rounded-xl',
-
-          isUser
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-muted text-foreground',
-
-          isUser ? 'rounded-br-none' : 'rounded-bl-none'
-        )}
-      >
-        {renderMessageContent()}
-      </div>
+      {renderMessageContent()}
     </div>
   );
 };
