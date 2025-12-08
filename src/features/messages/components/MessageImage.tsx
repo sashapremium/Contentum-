@@ -1,4 +1,11 @@
+import { useState } from 'react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import type { ImageInfo } from '../types/messages.types';
 import { cx } from 'class-variance-authority';
 
@@ -7,19 +14,42 @@ interface MessageImageProps {
 }
 
 export const MessageImage = ({ info }: MessageImageProps) => {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div
-      className={cx(
-        'bg-muted w-full max-w-[75%] overflow-hidden rounded-xl shadow-sm'
-      )}
-    >
-      <AspectRatio ratio={4 / 5} className="bg-black/10 rounded-xl">
-        <img
-          src={info.image_url}
-          alt="Сгенерированное изображение"
-          className="h-full w-full object-contain rounded-xl"
-        />
-      </AspectRatio>
-    </div>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <div
+            className={cx(
+              'bg-muted w-full max-w-[75%] overflow-hidden rounded-xl shadow-sm cursor-pointer'
+            )}
+          >
+            <AspectRatio ratio={4 / 5} className="bg-black/10 rounded-xl">
+              <img
+                src={info.image_url}
+                alt="Сгенерированное изображение"
+                className="h-full w-full object-contain rounded-xl transition hover:opacity-90"
+              />
+            </AspectRatio>
+          </div>
+        </DialogTrigger>
+
+        <DialogContent
+          className="max-w-4xl p-0 bg-background border-none shadow-none"
+          aria-describedby={undefined}
+        >
+          <div className="flex justify-center items-center">
+            <img
+              src={info.image_url}
+              alt="Сгенерированное изображение (полный размер)"
+              className="max-h-[90vh] w-auto rounded-xl object-contain"
+            />
+          </div>
+        </DialogContent>
+
+        <DialogClose />
+      </Dialog>
+    </>
   );
 };
