@@ -8,11 +8,13 @@ import { Messages } from '@/features/messages/components/Messages';
 import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { useSendMessageMutation } from '@/features/messages/queries/useSendMessageMutation';
+import { Card, CardContent, CardTitle } from '@/components/ui/card';
 
 export default function ChatPage() {
   const { chatId } = useParams();
   const { data: chat, isLoading, isError, error } = useChatQuery(chatId);
   const mutation = useSendMessageMutation(chat?.id || '');
+  const hideInput = chat?.lastMessage.content.type === 'image';
 
   if (!chatId) {
     return (
@@ -39,10 +41,21 @@ export default function ChatPage() {
       <ChatPageHeader chat={chat} />
       <PageWrapper>
         <Messages chatId={chat.id} sendLoading={mutation.isPending} />
-        <MessageInput chatId={chat.id} mutation={mutation} />
+        {hideInput ? (
+          <div className="z-2 bg-background sticky bottom-0 pb-6">
+            <Card>
+              <CardContent>
+                <CardTitle>
+                  Чат окончен. Чтобы сгенерировать новое изображение, создайте
+                  новый чат
+                </CardTitle>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <MessageInput chatId={chat.id} mutation={mutation} />
+        )}
       </PageWrapper>
     </div>
   );
 }
-
-// Right now sending and receiving messages works completely fine. The general flow of how generation works on backend is this - it sends me 9 fixed messages. Each message is a question. There is a total of 9 system messages. After sending an answer to a the final message, backend will start generating an image. Right now this happens right after i call useSendMessageMutation. After it successfully completes, response contains information about image generation - it's file id on backend and other stuff. I can fetch the list of images related to chat

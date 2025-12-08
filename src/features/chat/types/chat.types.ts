@@ -1,4 +1,7 @@
-import { MessagesSchema } from '@/features/messages/types/messages.types';
+import {
+  MessageSchema,
+  MessagesSchema,
+} from '@/features/messages/types/messages.types';
 import { z } from 'zod';
 
 export const ChatSchema = z.object({
@@ -12,7 +15,7 @@ export const ChatSchema = z.object({
   flow_step: z.number().int(),
   messages: MessagesSchema,
   messageCount: z.number(),
-  lastMessage: z.any().optional().nullable(),
+  lastMessage: MessageSchema,
 });
 
 export type Chat = z.infer<typeof ChatSchema>;
