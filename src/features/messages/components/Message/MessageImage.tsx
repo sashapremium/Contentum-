@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import type { ImageInfo } from '../types/messages.types';
 import { cx } from 'class-variance-authority';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
+import type { ImageInfo } from '../../types/messages.types';
 
 interface MessageImageProps {
   info: ImageInfo;

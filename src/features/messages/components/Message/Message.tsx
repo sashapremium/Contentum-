@@ -1,9 +1,10 @@
 import type {
   ImageInfo,
   Message as MessageType,
-} from '../types/messages.types';
+} from '../../types/messages.types';
 import { cx } from 'class-variance-authority';
 import { MessageImage } from './MessageImage';
+import { MessageActions } from '../MessageActions/MessageActions';
 
 interface MessageProps {
   message: MessageType;
@@ -49,9 +50,15 @@ export const Message = ({ message }: MessageProps) => {
 
   return (
     <div
-      className={cx('flex w-full', isUser ? 'justify-end' : 'justify-start')}
+      className={cx(
+        'group',
+        'flex flex-col',
+        isUser ? 'items-end' : 'items-start'
+      )}
     >
       {renderMessageContent()}
+
+      <MessageActions message={message} />
     </div>
   );
 };

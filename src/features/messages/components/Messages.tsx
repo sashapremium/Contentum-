@@ -2,7 +2,7 @@ import { useMessagesQuery } from '../queries/useMessagesQuery';
 import { Loading } from '@/components/shared/Loading';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
-import { Message } from './Message';
+import { Message } from './Message/Message';
 import { useEffect, useRef } from 'react';
 
 interface MessagesProps {
