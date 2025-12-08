@@ -3,6 +3,7 @@ import type {
   Message as MessageType,
 } from '../types/messages.types';
 import { cx } from 'class-variance-authority';
+import { MessageImage } from './MessageImage';
 
 interface MessageProps {
   message: MessageType;
@@ -30,15 +31,9 @@ export const Message = ({ message }: MessageProps) => {
   };
 
   const renderImageMessage = () => {
-    const content = message.content.info as ImageInfo;
+    const info = message.content.info as ImageInfo;
 
-    return (
-      <img
-        className="rounded-xl"
-        src={content.image_url}
-        alt="Сгерерированное изображение"
-      />
-    );
+    return <MessageImage info={info} />;
   };
 
   const renderMessageContent = () => {
