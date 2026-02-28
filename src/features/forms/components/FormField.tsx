@@ -38,6 +38,10 @@ interface FormFieldProps {
   field: FormFieldType;
 }
 
+const NOT_FOUND = 'Ничего не найдено';
+const SELECT_PLACEHOLDER = 'Выберите значение';
+const TEXT_PLACEHOLDER = 'Введите значение';
+
 export const FormField = ({ field }: FormFieldProps) => {
   const { control } = useFormContext();
   const anchor = useComboboxAnchor();
@@ -79,6 +83,8 @@ export const FormField = ({ field }: FormFieldProps) => {
             <FormLabel>{field.label}</FormLabel>
             <FormControl>
               <Textarea
+                className="min-h-9"
+                placeholder={TEXT_PLACEHOLDER}
                 value={value as string}
                 onChange={(e) => onChange(e.target.value)}
                 // Optionally connect validation attributes
@@ -114,9 +120,9 @@ export const FormField = ({ field }: FormFieldProps) => {
                     onChange((value as FieldOption).value)
                   }
                 >
-                  <ComboboxInput />
+                  <ComboboxInput placeholder={SELECT_PLACEHOLDER} />
                   <ComboboxContent>
-                    <ComboboxEmpty>No items found</ComboboxEmpty>
+                    <ComboboxEmpty>{NOT_FOUND}</ComboboxEmpty>
                     <ComboboxList>
                       {(opt) => (
                         <ComboboxItem key={opt.value} value={opt}>
@@ -152,8 +158,8 @@ export const FormField = ({ field }: FormFieldProps) => {
                 value={(value as string) ?? ''}
                 onValueChange={(v) => onChange(v)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите значение" />
+                <SelectTrigger className="w-[100%]">
+                  <SelectValue placeholder={SELECT_PLACEHOLDER} />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -182,7 +188,7 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { onChange }, fieldState }) => {
+        render={({ field: { value, onChange }, fieldState }) => {
           return (
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
@@ -195,7 +201,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                     onChange(value.map((v) => (v as FieldOption).value))
                   }
                 >
-                  <ComboboxChips ref={anchor} className="w-full max-w-xs">
+                  <ComboboxChips ref={anchor} className="w-[100%]">
                     <ComboboxValue>
                       {(values) => (
                         <React.Fragment>
@@ -204,13 +210,17 @@ export const FormField = ({ field }: FormFieldProps) => {
                               {value.label}
                             </ComboboxChip>
                           ))}
-                          <ComboboxChipsInput />
+                          <ComboboxChipsInput
+                            placeholder={
+                              value?.length > 0 ? undefined : SELECT_PLACEHOLDER
+                            }
+                          />
                         </React.Fragment>
                       )}
                     </ComboboxValue>
                   </ComboboxChips>
                   <ComboboxContent anchor={anchor}>
-                    <ComboboxEmpty>No items found</ComboboxEmpty>
+                    <ComboboxEmpty>{NOT_FOUND}</ComboboxEmpty>
                     <ComboboxList>
                       {(opt) => (
                         <ComboboxItem key={opt.value} value={opt}>
