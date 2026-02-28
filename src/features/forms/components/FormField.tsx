@@ -1,8 +1,5 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import type {
-  FieldOption,
-  FormField as FormFieldType,
-} from '../types/formField.types';
+import type { FormField as FormFieldType } from '../types/formField.types';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   FormItem,
@@ -41,6 +38,7 @@ import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 import { ChevronDownIcon, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Search } from './Search';
 
 interface FormFieldProps {
   field: FormFieldType;
@@ -116,24 +114,7 @@ export const FormField = ({ field }: FormFieldProps) => {
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
-                <Combobox
-                  items={options}
-                  onValueChange={(value) =>
-                    onChange((value as FieldOption).value)
-                  }
-                >
-                  <ComboboxInput />
-                  <ComboboxContent>
-                    <ComboboxEmpty>No items found</ComboboxEmpty>
-                    <ComboboxList>
-                      {options.map((opt) => (
-                        <ComboboxItem key={opt.value} value={opt}>
-                          {opt.label}
-                        </ComboboxItem>
-                      ))}
-                    </ComboboxList>
-                  </ComboboxContent>
-                </Combobox>
+                <Search options={options} onChange={onChange} />
               </FormControl>
               {fieldState.error && (
                 <FormMessage>{fieldState.error.message}</FormMessage>
@@ -281,7 +262,6 @@ export const FormField = ({ field }: FormFieldProps) => {
 
               <FormControl>
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                  {/* Date */}
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -308,7 +288,6 @@ export const FormField = ({ field }: FormFieldProps) => {
                     </PopoverContent>
                   </Popover>
 
-                  {/* Time */}
                   <Input
                     type="time"
                     step="1"
