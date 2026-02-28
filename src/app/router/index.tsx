@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
 import { CreateNewChat } from '@/features/chat/components/CreateNewChat';
+import TestFormsPage from '../pages/TestForms';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
       {
         path: 'chat/:chatId',
         element: <ChatPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'testForms',
+        element: <TestFormsPage />,
         errorElement: <ErrorPage />,
       },
     ],

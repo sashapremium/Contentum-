@@ -1,0 +1,80 @@
+import { useState, useEffect } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { FormStep } from '../types/formStep.types';
+import { buildDefaultValues, buildZodSchema } from '../formAdapter';
+import { FormModeButton } from './FormModeButton';
+// import { FieldGroup } from './FieldGroup';
+import { Button } from '@/components/ui/button';
+import { FieldGroup } from './FieldGroup';
+
+interface FormContainerProps {
+  formStep: FormStep;
+  chatId: string;
+  onSubmit: (values: Record<string, unknown>) => void;
+}
+
+export const FormContainer = ({
+  formStep,
+  chatId,
+  onSubmit,
+}: FormContainerProps) => {
+  const [selectedMode, setSelectedMode] = useState(formStep.modes[0]);
+
+  const defaultValues = buildDefaultValues(formStep, selectedMode.name);
+  const schema = buildZodSchema(formStep, selectedMode.name);
+
+  const form = useForm({
+    resolver: zodResolver(schema),
+    defaultValues,
+  });
+
+  useEffect(() => {
+    form.reset(buildDefaultValues(formStep, selectedMode.name));
+  }, [selectedMode.name, formStep]);
+
+  const handleSubmit = form.handleSubmit((values) => {
+    onSubmit({
+      step: formStep.step,
+      mode: selectedMode.name,
+      fields: values,
+    });
+  });
+
+  return (
+    <FormProvider {...form}>
+      <div className="space-y-6 p-6 bg-card rounded-lg shadow">
+        {/* header */}
+        <header className="space-y-2">
+          <h1 className="text-xl font-semibold">{formStep.title}</h1>
+          {formStep.description && (
+            <p className="text-sm text-muted-foreground">
+              {formStep.description}
+            </p>
+          )}
+        </header>
+
+        {/* modes if >1 */}
+        {formStep.modes.length > 1 && (
+          <FormModeButton
+            modes={formStep.modes}
+            selectedMode={selectedMode}
+            onChange={setSelectedMode}
+          />
+        )}
+
+        {/* fields */}
+        <div className="space-y-4">
+          {selectedMode.fieldsGroups.map((group) => (
+            <FieldGroup key={group.groupName} group={group} />
+          ))}
+        </div>
+
+        {/* footer */}
+        <footer className="flex justify-end">
+          <Button onClick={handleSubmit}>Далее</Button>
+        </footer>
+      </div>
+    </FormProvider>
+  );
+};
