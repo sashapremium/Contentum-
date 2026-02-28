@@ -19,9 +19,8 @@ export const FormModeButton = ({
         const mode = modes.find((m) => m.name === value);
         if (mode) onChange(mode);
       }}
-      className="w-full"
     >
-      <TabsList className="grid grid-cols-2 border-b">
+      <TabsList className="w-[100%] grid grid-cols-2 border-b">
         {modes.map((mode) => (
           <TabsTrigger key={mode.name} value={mode.name}>
             {mode.label ?? mode.name}

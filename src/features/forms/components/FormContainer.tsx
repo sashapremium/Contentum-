@@ -64,7 +64,7 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <div className="space-y-4">
+        <div className="space-y-8">
           {selectedMode.fieldsGroups.map((group) => (
             <FieldGroup key={group.groupName} group={group} />
           ))}

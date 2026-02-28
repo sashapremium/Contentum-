@@ -7,7 +7,7 @@ interface FieldGroupProps {
 
 export const FieldGroup = ({ group }: FieldGroupProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {group.groupLabel && (
         <h2 className="text-sm font-medium text-muted-foreground">
           {group.groupLabel}
