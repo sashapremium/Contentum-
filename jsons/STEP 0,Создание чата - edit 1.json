@@ -1,0 +1,34 @@
+// STEP 0 — Создание чата
+{
+  "step": 0,
+  "type": "form",
+  "title": "Создание нового поста",
+  "description": "Выберите тип публикации",
+  "disabled": false,
+  "modes": [
+    {
+      "name": "default",
+      "label": null,
+      "fieldsGroups": [
+        {
+          "groupName": "default",
+          "groupLabel": null,
+          "groupFields": [
+            {
+              "name": "postType",
+              "type": "select",
+              "label": "Тип поста",
+              "required": true,
+              "value": null,
+              "options": [
+                {"value": "announcement", "label": "Анонс мероприятия"    },
+                {"value": "reminder",     "label": "Напоминание о событии"},
+                {"value": "info",         "label": "Информационный пост"  }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+// STEP 1 — Мероприятие
+{
+  "step": 1,
+  "type": "form",
+  "title": "Информация о мероприятии",
+  "description": "Выберите существующее мероприятие или создайте новое",
+  "disabled": false,
+  "modes": [
+    {
+      "name": "selectExisting",
+      "label": "Выбрать мероприятие",
+      "fieldsGroups": [
+        {
+          "groupName": "existingEvent",
+          "groupLabel": null,
+          "groupFields": [
+            {
+              "name": "eventId",
+              "type": "search",
+              "label": "Поиск мероприятия",
+              "required": true,
+              "value": null,
+              // Лучше все таки передать все опции из базы сразу
+              // Добавить возможность поиска мероприятий, но пока не прикручивать его к выбору
+              // И если поиск будет только по названиям, то нужно добавить проверку на бэке. Если название уже занято, отправлять на фронт ошибку, я буду подсвечивать поле. Придумаем формат потом
+              "options": [],
+              // Для всяких артефактов (типа URL или еще что-то) связанных с конкретными полями можно не делать отдельные поля, а засовывать их внутрь fieldData
+              // И добавлять fieldData ТОЛЬКО если есть такие артефакты, если нет их, то не передавать это поле совсем
+              "fieldData": {"searchUrl": "/api/events/{id}"}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "createNew",
+      "label": "Создать мероприятие",
+      "fieldsGroups": [
+        {
+          "groupName": "newEvent",
+          "groupLabel": null,
+          "groupFields": [
+            {
+              "name": "title",
+              "type": "text",
+              "label": "Название",
+              "required": true,
+              "value": null,
+              "validation": {"minLength": 3, "maxLength": 150}
+            },
+            {
+              "name": "eventType",
+              "type": "select",
+              "label": "Тип события",
+              "required": true,
+              "value": null,
+              "options": [
+                {"value": "concert",     "label": "Концерт"  },
+                {"value": "performance", "label": "Спектакль"},
+                {"value": "festival",    "label": "Фестиваль"},
+                {"value": "show",        "label": "Шоу"      },
+                {"value": "other",       "label": "Другое"   }
+              ]
+            },
+            {
+              "name": "description",
+              "type": "text",
+              "label": "Описание",
+              "required": true,
+              "value": null,
+              "validation": {"minLength": 20, "maxLength": 3000}
+            },
+            {
+              "name": "ageLimit",
+              "type": "select",
+              "label": "Возрастной ценз",
+              "required": true,
+              "value": null,
+              "options": [
+                {"value": "0",  "label": "0+" },
+                {"value": "6",  "label": "6+" },
+                {"value": "12", "label": "12+"},
+                {"value": "16", "label": "16+"},
+                {"value": "18", "label": "18+"}
+              ]
+            },
+            {
+              "name": "genre",
+              "type": "text",
+              "label": "Жанр",
+              "required": true,
+              "value": null,
+              "validation": {"minLength": 3, "maxLength": 100}
+            },
+            {
+              "name": "dateAndTime",
+              "type": "datetime",
+              "label": "Дата и время",
+              "required": true,
+              "value": null,
+              "validation": {"mustBeFuture": true}
+            },
+            {
+              "name": "place",
+              "type": "text",
+              "label": "Место проведения",
+              "required": true,
+              "value": null,
+              "validation": {"minLength": 3, "maxLength": 200}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

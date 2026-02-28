@@ -1,0 +1,11 @@
+{
+  "step": 4,
+  "type": "generatedText",
+  "payload": {
+    "content": [
+      {"text": "version 1", "metrics": {}},
+      {"text": "version 1", "metrics": {}},
+      {"text": "version 1", "metrics": {}}
+    ]
+  }
+}
