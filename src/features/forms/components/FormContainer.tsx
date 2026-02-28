@@ -69,7 +69,7 @@ export const FormContainer = ({
         {/* fields */}
         <ScrollArea className={`h-128`}>
           <div
-            className={`space-y-8 px-4 ${disabled ? 'opacity-75 pointer-events-none' : ''}`}
+            className={`space-y-8 px-4 ${disabled ? 'pointer-events-none' : ''}`}
           >
             {selectedMode.fieldsGroups.map((group) => (
               <FieldGroup key={group.groupName} group={group} />

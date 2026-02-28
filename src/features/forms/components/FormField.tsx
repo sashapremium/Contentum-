@@ -51,12 +51,13 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         control={control}
         name={field.name}
-        render={({ field: { value, onChange }, fieldState }) => (
+        render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             {/* Label for checkbox */}
             <FormLabel className="flex items-center space-x-2">
               <FormControl>
                 <Checkbox
+                  disabled={disabled}
                   checked={!!value}
                   onCheckedChange={(checked) => onChange(checked)}
                 />
@@ -78,11 +79,12 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => (
+        render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel>{field.label}</FormLabel>
             <FormControl>
               <Textarea
+                disabled={disabled}
                 className="min-h-9"
                 placeholder={TEXT_PLACEHOLDER}
                 value={value as string}
@@ -109,19 +111,23 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => {
+        render={({ field: { disabled, value, onChange }, fieldState }) => {
           return (
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
                 <Combobox
-                  value={value}
+                  disabled={disabled}
+                  value={disabled ? value : undefined}
                   items={options}
                   onValueChange={(value) =>
                     onChange((value as FieldOption).value)
                   }
                 >
-                  <ComboboxInput placeholder={SELECT_PLACEHOLDER} />
+                  <ComboboxInput
+                    disabled={disabled}
+                    placeholder={SELECT_PLACEHOLDER}
+                  />
                   <ComboboxContent>
                     <ComboboxEmpty>{NOT_FOUND}</ComboboxEmpty>
                     <ComboboxList>
@@ -151,11 +157,12 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => (
+        render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel>{field.label}</FormLabel>
             <FormControl>
               <Select
+                disabled={disabled}
                 value={(value as string) ?? ''}
                 onValueChange={(v) => onChange(v)}
               >
@@ -189,30 +196,32 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => {
+        render={({ field: { disabled, value, onChange }, fieldState }) => {
           return (
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
                 <Combobox
+                  disabled={disabled}
                   multiple
                   autoHighlight
-                  value={value}
+                  value={disabled ? value : undefined}
                   items={options}
                   onValueChange={(value) =>
-                    onChange(value.map((v) => (v as FieldOption).value))
+                    onChange(value?.map((v) => (v as FieldOption).value))
                   }
                 >
                   <ComboboxChips ref={anchor} className="w-[100%]">
                     <ComboboxValue>
                       {(values) => (
                         <React.Fragment>
-                          {values.map((value: FieldOption) => (
+                          {values?.map((value: FieldOption) => (
                             <ComboboxChip key={value.value}>
                               {value.label}
                             </ComboboxChip>
                           ))}
                           <ComboboxChipsInput
+                            disabled={disabled}
                             placeholder={
                               value?.length > 0 ? undefined : SELECT_PLACEHOLDER
                             }
@@ -251,11 +260,12 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => (
+        render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel>{field.label}</FormLabel>
             <FormControl>
               <DateTimePicker
+                disabled={disabled}
                 value={value as string}
                 onChange={(next) => onChange(next)}
                 mustBeFuture={mustBeFuture}
