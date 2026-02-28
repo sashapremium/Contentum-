@@ -4,7 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { FormStep } from '../types/formStep.types';
 import { buildDefaultValues, buildZodSchema } from '../formAdapter';
 import { FormModeButton } from './FormModeButton';
-// import { FieldGroup } from './FieldGroup';
 import { Button } from '@/components/ui/button';
 import { FieldGroup } from './FieldGroup';
 

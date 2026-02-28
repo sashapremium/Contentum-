@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
 
 interface FormFieldProps {
   field: FormFieldType;
@@ -35,6 +36,33 @@ export const FormField = ({ field }: FormFieldProps) => {
               <span>{field.label}</span>
             </FormLabel>
             {/* Error message */}
+            {fieldState.error && (
+              <FormMessage>{fieldState.error.message}</FormMessage>
+            )}
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (field.type === 'text') {
+    return (
+      <Controller
+        name={field.name}
+        control={control}
+        render={({ field: { value, onChange }, fieldState }) => (
+          <FormItem>
+            <FormLabel>{field.label}</FormLabel>
+            <FormControl>
+              <Textarea
+                value={value as string}
+                onChange={(e) => onChange(e.target.value)}
+                // Optionally connect validation attributes
+                {...(field.validation?.maxLength
+                  ? { maxLength: field.validation.maxLength }
+                  : {})}
+              />
+            </FormControl>
             {fieldState.error && (
               <FormMessage>{fieldState.error.message}</FormMessage>
             )}
