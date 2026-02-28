@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
@@ -47,6 +47,7 @@ export const DateTimePicker = ({
   const [open, setOpen] = useState(false);
   const iso = typeof value === 'string' ? value : '';
   const selectedDate = useMemo(() => (iso ? new Date(iso) : undefined), [iso]);
+  const timeRef = useRef<HTMLInputElement>(null);
 
   const timeValue = useMemo(
     () => getTimeFromIso(iso, defaultTime),
@@ -58,6 +59,7 @@ export const DateTimePicker = ({
   const handleDateSelect = (d: Date | undefined) => {
     onChange(toIso(d, timeValue));
     setOpen(false);
+    timeRef.current?.focus();
   };
 
   const handleTimeChange = (time: string) => {
@@ -100,6 +102,7 @@ export const DateTimePicker = ({
       </Popover>
 
       <Input
+        ref={timeRef}
         type="time"
         step={60}
         value={timeValue}
