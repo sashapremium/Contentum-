@@ -14,6 +14,7 @@ import { ru } from 'date-fns/locale';
 interface DateTimePickerProps {
   value: string | null | undefined; // ISO string or empty
   onChange: (next: string) => void; // ISO string or ''
+  disabled?: boolean;
   mustBeFuture?: boolean;
   placeholder?: string;
   defaultTime?: string; // 'HH:mm:ss'
@@ -43,6 +44,7 @@ export const DateTimePicker = ({
   mustBeFuture,
   placeholder = 'Выберите дату',
   defaultTime = DEFAULT_TIME,
+  disabled,
 }: DateTimePickerProps) => {
   const [open, setOpen] = useState(false);
   const iso = typeof value === 'string' ? value : '';
@@ -72,6 +74,7 @@ export const DateTimePicker = ({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            disabled={disabled}
             variant="outline"
             id="date-picker-optional"
             className="min-w-[48%] justify-between font-normal"
@@ -85,6 +88,7 @@ export const DateTimePicker = ({
 
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
+            disabled={disabled}
             mode="single"
             selected={selectedDate}
             captionLayout="dropdown"
@@ -102,6 +106,7 @@ export const DateTimePicker = ({
       </Popover>
 
       <Input
+        disabled={disabled}
         ref={timeRef}
         type="time"
         step={60}

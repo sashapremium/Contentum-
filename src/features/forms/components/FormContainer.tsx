@@ -27,6 +27,7 @@ export const FormContainer = ({
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues,
+    disabled: formStep.disabled,
   });
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export const FormContainer = ({
         </header>
 
         {/* modes if >1 */}
-        {formStep.modes.length > 1 && (
+        {!formStep.disabled && formStep.modes.length > 1 && (
           <FormModeButton
             modes={formStep.modes}
             selectedMode={selectedMode}
@@ -65,8 +66,10 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <ScrollArea className="h-128">
-          <div className="space-y-8  px-4">
+        <ScrollArea className={`h-128`}>
+          <div
+            className={`space-y-8 px-4 ${formStep.disabled ? 'opacity-75 pointer-events-none' : ''}`}
+          >
             {selectedMode.fieldsGroups.map((group) => (
               <FieldGroup key={group.groupName} group={group} />
             ))}
