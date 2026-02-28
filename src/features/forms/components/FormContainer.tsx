@@ -33,6 +33,7 @@ export const FormContainer = ({
   }, [selectedMode.name, formStep]);
 
   const handleSubmit = form.handleSubmit((values) => {
+    console.log('Submitted values', values);
     onSubmit({
       step: formStep.step,
       mode: selectedMode.name,

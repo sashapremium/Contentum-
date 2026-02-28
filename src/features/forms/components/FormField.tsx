@@ -1,7 +1,10 @@
 'use client';
 
 import { Controller, useFormContext } from 'react-hook-form';
-import type { FormField as FormFieldType } from '../types/formField.types';
+import type {
+  FieldOption,
+  FormField as FormFieldType,
+} from '../types/formField.types';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   FormItem,
@@ -10,6 +13,14 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox';
 
 interface FormFieldProps {
   field: FormFieldType;
@@ -68,6 +79,47 @@ export const FormField = ({ field }: FormFieldProps) => {
             )}
           </FormItem>
         )}
+      />
+    );
+  }
+
+  if (field.type === 'search') {
+    const options = field.options ?? [];
+
+    return (
+      <Controller
+        name={field.name}
+        control={control}
+        render={({ field: { onChange }, fieldState }) => {
+          return (
+            <FormItem>
+              <FormLabel>{field.label}</FormLabel>
+              <FormControl>
+                <Combobox
+                  items={options}
+                  onValueChange={(value) =>
+                    onChange((value as FieldOption).value)
+                  }
+                >
+                  <ComboboxInput />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No items found</ComboboxEmpty>
+                    <ComboboxList>
+                      {options.map((opt) => (
+                        <ComboboxItem key={opt.value} value={opt}>
+                          {opt.label}
+                        </ComboboxItem>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </FormControl>
+              {fieldState.error && (
+                <FormMessage>{fieldState.error.message}</FormMessage>
+              )}
+            </FormItem>
+          );
+        }}
       />
     );
   }
