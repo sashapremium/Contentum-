@@ -130,27 +130,27 @@ export const exampleForm = {
             },
           ],
         },
-        // {
-        //   groupName: 'dateGroup',
-        //   groupLabel: 'Datetime Fields',
-        //   groupFields: [
-        //     {
-        //       name: 'appointment',
-        //       type: 'datetime' as const,
-        //       label: 'Appointment (mustBeFuture)',
-        //       required: true,
-        //       value: null,
-        //       validation: { mustBeFuture: true },
-        //     },
-        //     {
-        //       name: 'reminderDate',
-        //       type: 'datetime' as const,
-        //       label: 'Reminder (optional)',
-        //       required: false,
-        //       value: null,
-        //     },
-        //   ],
-        // },
+        {
+          groupName: 'dateGroup',
+          groupLabel: 'Datetime Fields',
+          groupFields: [
+            {
+              name: 'appointment',
+              type: 'datetime' as const,
+              label: 'Appointment (mustBeFuture)',
+              required: true,
+              value: null,
+              validation: { mustBeFuture: true },
+            },
+            {
+              name: 'reminderDate',
+              type: 'datetime' as const,
+              label: 'Reminder (optional)',
+              required: false,
+              value: null,
+            },
+          ],
+        },
       ],
     },
     {

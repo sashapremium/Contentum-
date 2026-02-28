@@ -32,16 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import React from 'react';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Input } from '@/components/ui/input';
-import { format } from 'date-fns';
-import { ChevronDownIcon, Calendar } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Search } from './Search';
+import { DateTimePicker } from './DateTimePicker';
 
 interface FormFieldProps {
   field: FormFieldType;
@@ -117,7 +108,24 @@ export const FormField = ({ field }: FormFieldProps) => {
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
-                <Search options={options} onChange={onChange} />
+                <Combobox
+                  items={options}
+                  onValueChange={(value) =>
+                    onChange((value as FieldOption).value)
+                  }
+                >
+                  <ComboboxInput />
+                  <ComboboxContent>
+                    <ComboboxEmpty>No items found</ComboboxEmpty>
+                    <ComboboxList>
+                      {(opt) => (
+                        <ComboboxItem key={opt.value} value={opt}>
+                          {opt.label}
+                        </ComboboxItem>
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
               </FormControl>
               {fieldState.error && (
                 <FormMessage>{fieldState.error.message}</FormMessage>
@@ -225,91 +233,28 @@ export const FormField = ({ field }: FormFieldProps) => {
   }
 
   if (field.type === 'datetime') {
+    const mustBeFuture = Boolean(field.validation?.mustBeFuture);
+
     return (
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { value, onChange }, fieldState }) => {
-          // Store value in RHF as ISO string (or '' when empty)
-          const iso = typeof value === 'string' ? value : '';
-          const datePart = iso ? new Date(iso) : undefined;
+        render={({ field: { value, onChange }, fieldState }) => (
+          <FormItem>
+            <FormLabel>{field.label}</FormLabel>
+            <FormControl>
+              <DateTimePicker
+                value={value as string}
+                onChange={(next) => onChange(next)}
+                mustBeFuture={mustBeFuture}
+              />
+            </FormControl>
 
-          const timeFromIso = () => {
-            if (!iso) return '10:30:00';
-            const d = new Date(iso);
-            const hh = String(d.getHours()).padStart(2, '0');
-            const mm = String(d.getMinutes()).padStart(2, '0');
-            const ss = String(d.getSeconds()).padStart(2, '0');
-            return `${hh}:${mm}:${ss}`;
-          };
-
-          const toIso = (d: Date | undefined, time: string) => {
-            if (!d) return '';
-            const [hh, mm, ss] = (time || '00:00:00').split(':');
-            const next = new Date(d);
-            next.setHours(Number(hh ?? 0), Number(mm ?? 0), Number(ss ?? 0), 0);
-            return next.toISOString();
-          };
-
-          const handleDateSelect = (d: Date | undefined) => {
-            onChange(toIso(d, timeFromIso()));
-          };
-
-          const handleTimeChange = (time: string) => {
-            onChange(toIso(datePart, time));
-          };
-
-          const mustBeFuture = Boolean(field.validation?.mustBeFuture);
-          const minDate = mustBeFuture ? new Date() : undefined;
-
-          return (
-            <FormItem>
-              <FormLabel>{field.label}</FormLabel>
-
-              <FormControl>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-between font-normal sm:w-40"
-                        type="button"
-                      >
-                        {datePart ? format(datePart, 'PPP') : 'Выберите дату'}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={datePart}
-                        captionLayout="dropdown"
-                        defaultMonth={datePart}
-                        fromDate={minDate}
-                        onSelect={(d) => handleDateSelect(d)}
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-                  <Input
-                    type="time"
-                    step="1"
-                    value={timeFromIso()}
-                    onChange={(e) => handleTimeChange(e.target.value)}
-                    className="bg-background appearance-none sm:w-40 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                  />
-                </div>
-              </FormControl>
-
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          );
-        }}
+            {fieldState.error && (
+              <FormMessage>{fieldState.error.message}</FormMessage>
+            )}
+          </FormItem>
+        )}
       />
     );
   }
