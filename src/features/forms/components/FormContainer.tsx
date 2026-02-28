@@ -20,14 +20,15 @@ export const FormContainer = ({
   onSubmit,
 }: FormContainerProps) => {
   const [selectedMode, setSelectedMode] = useState(formStep.modes[0]);
+  const disabled = formStep.disabled;
 
   const defaultValues = buildDefaultValues(formStep, selectedMode.name);
   const schema = buildZodSchema(formStep, selectedMode.name);
-
+  console.log('defaultValues', defaultValues);
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues,
-    disabled: formStep.disabled,
+    disabled,
   });
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export const FormContainer = ({
         </header>
 
         {/* modes if >1 */}
-        {!formStep.disabled && formStep.modes.length > 1 && (
+        {!disabled && formStep.modes.length > 1 && (
           <FormModeButton
             modes={formStep.modes}
             selectedMode={selectedMode}
@@ -68,7 +69,7 @@ export const FormContainer = ({
         {/* fields */}
         <ScrollArea className={`h-128`}>
           <div
-            className={`space-y-8 px-4 ${formStep.disabled ? 'opacity-75 pointer-events-none' : ''}`}
+            className={`space-y-8 px-4 ${disabled ? 'opacity-75 pointer-events-none' : ''}`}
           >
             {selectedMode.fieldsGroups.map((group) => (
               <FieldGroup key={group.groupName} group={group} />
@@ -77,9 +78,11 @@ export const FormContainer = ({
         </ScrollArea>
 
         {/* footer */}
-        <footer className="flex justify-end">
-          <Button onClick={handleSubmit}>Далее</Button>
-        </footer>
+        {!disabled && (
+          <footer className="flex justify-end">
+            <Button onClick={handleSubmit}>Далее</Button>
+          </footer>
+        )}
       </div>
     </FormProvider>
   );

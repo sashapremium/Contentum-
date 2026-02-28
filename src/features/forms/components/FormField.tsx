@@ -109,12 +109,13 @@ export const FormField = ({ field }: FormFieldProps) => {
       <Controller
         name={field.name}
         control={control}
-        render={({ field: { onChange }, fieldState }) => {
+        render={({ field: { value, onChange }, fieldState }) => {
           return (
             <FormItem>
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
                 <Combobox
+                  value={value}
                   items={options}
                   onValueChange={(value) =>
                     onChange((value as FieldOption).value)
@@ -196,6 +197,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                 <Combobox
                   multiple
                   autoHighlight
+                  value={value}
                   items={options}
                   onValueChange={(value) =>
                     onChange(value.map((v) => (v as FieldOption).value))

@@ -4,7 +4,7 @@ export const exampleForm = {
   title: 'Example Test Form',
   description:
     'This form includes every field type to test the UI + validation logic.',
-  disabled: true,
+  disabled: false,
   modes: [
     {
       name: 'basic',
@@ -19,7 +19,7 @@ export const exampleForm = {
               type: 'text' as const,
               label: 'Short Text (minLength 3)',
               required: true,
-              value: null,
+              value: 'test',
               validation: { minLength: 3, maxLength: 20 },
             },
             {
@@ -27,7 +27,7 @@ export const exampleForm = {
               type: 'text' as const,
               label: 'Long Text (maxLength 300)',
               required: false,
-              value: null,
+              value: 'test',
               validation: { maxLength: 300 },
             },
             {
@@ -35,7 +35,7 @@ export const exampleForm = {
               type: 'search' as const,
               label: 'Searchable Option',
               required: false,
-              value: null,
+              value: { value: 'optA', label: 'Option A' },
               options: [
                 { value: 'optA', label: 'Option A' },
                 { value: 'optB', label: 'Option B' },
@@ -65,7 +65,7 @@ export const exampleForm = {
               type: 'select' as const,
               label: 'Simple Select',
               required: true,
-              value: null,
+              value: 'a',
               options: [
                 { value: 'a', label: 'A' },
                 { value: 'b', label: 'B' },
@@ -88,7 +88,10 @@ export const exampleForm = {
               type: 'multiple' as const,
               label: 'Multiple Select (maxItems 3)',
               required: true,
-              value: null,
+              value: [
+                { value: 'm1', label: 'M1' },
+                { value: 'm3', label: 'M3' },
+              ],
               options: [
                 { value: 'm1', label: 'M1' },
                 { value: 'm2', label: 'M2' },
