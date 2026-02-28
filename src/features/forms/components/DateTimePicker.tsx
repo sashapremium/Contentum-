@@ -74,7 +74,7 @@ export const DateTimePicker = ({
           <Button
             variant="outline"
             id="date-picker-optional"
-            className="min-w-[50%] justify-between font-normal"
+            className="min-w-[48%] justify-between font-normal"
           >
             {selectedDate
               ? format(selectedDate, 'PPP', { locale: ru })
@@ -107,7 +107,7 @@ export const DateTimePicker = ({
         step={60}
         value={timeValue}
         onChange={(e) => handleTimeChange(e.target.value)}
-        className="min-w-[50%] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+        className="min-w-[48%] bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
       />
     </div>
   );

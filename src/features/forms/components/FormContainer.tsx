@@ -6,6 +6,7 @@ import { buildDefaultValues, buildZodSchema } from '../formAdapter';
 import { FormModeButton } from './FormModeButton';
 import { Button } from '@/components/ui/button';
 import { FieldGroup } from './FieldGroup';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FormContainerProps {
   formStep: FormStep;
@@ -64,11 +65,13 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <div className="space-y-8">
-          {selectedMode.fieldsGroups.map((group) => (
-            <FieldGroup key={group.groupName} group={group} />
-          ))}
-        </div>
+        <ScrollArea className="h-128">
+          <div className="space-y-8  px-4">
+            {selectedMode.fieldsGroups.map((group) => (
+              <FieldGroup key={group.groupName} group={group} />
+            ))}
+          </div>
+        </ScrollArea>
 
         {/* footer */}
         <footer className="flex justify-end">
