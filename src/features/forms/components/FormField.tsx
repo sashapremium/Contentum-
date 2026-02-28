@@ -1,5 +1,8 @@
 import { Controller, useFormContext } from 'react-hook-form';
-import type { FormField as FormFieldType } from '../types/formField.types';
+import type {
+  FieldOption,
+  FormField as FormFieldType,
+} from '../types/formField.types';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   FormItem,
@@ -177,32 +180,35 @@ export const FormField = ({ field }: FormFieldProps) => {
               <FormLabel>{field.label}</FormLabel>
               <FormControl>
                 <Combobox
-                  items={options}
                   multiple
                   autoHighlight
-                  onValueChange={onChange}
+                  items={options}
+                  onValueChange={(value) =>
+                    onChange(value.map((v) => (v as FieldOption).value))
+                  }
                 >
                   <ComboboxChips ref={anchor} className="w-full max-w-xs">
                     <ComboboxValue>
                       {(values) => (
                         <React.Fragment>
-                          {values.map((value: string) => (
-                            <ComboboxChip key={value}>{value}</ComboboxChip>
+                          {values.map((value: FieldOption) => (
+                            <ComboboxChip key={value.value}>
+                              {value.label}
+                            </ComboboxChip>
                           ))}
                           <ComboboxChipsInput />
                         </React.Fragment>
                       )}
                     </ComboboxValue>
                   </ComboboxChips>
-                  <ComboboxInput />
                   <ComboboxContent anchor={anchor}>
                     <ComboboxEmpty>No items found</ComboboxEmpty>
                     <ComboboxList>
-                      {options.map((opt) => (
+                      {(opt) => (
                         <ComboboxItem key={opt.value} value={opt}>
                           {opt.label}
                         </ComboboxItem>
-                      ))}
+                      )}
                     </ComboboxList>
                   </ComboboxContent>
                 </Combobox>
