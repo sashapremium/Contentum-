@@ -13,6 +13,7 @@ export default function ChatPage() {
   const { data: chat, isLoading, isError, error } = useChatQuery(chatId);
   const mutation = useSendMessageMutation(chat?.id || '');
 
+  console.log('ChatPage', { chatId, chat });
   if (!chatId) {
     return (
       <div className="m-auto">

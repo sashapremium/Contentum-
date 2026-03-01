@@ -41,29 +41,38 @@ export const PayloadSchema = z.union([
 
 export type Payload = z.infer<typeof PayloadSchema>;
 
+export const ChatMessageIdSchema = z.uuid().nullable();
+export type ChatMessageId = z.infer<typeof ChatMessageIdSchema>;
+
+const BaseMessageSchema = z.object({
+  id: ChatMessageIdSchema,
+});
+
+export const FormMessageSchema = BaseMessageSchema.extend({
+  type: z.literal('form'),
+  payload: FormPayloadSchema,
+});
+export type FormMessage = z.infer<typeof FormMessageSchema>;
+
+export const GeneratedTextMessageSchema = BaseMessageSchema.extend({
+  type: z.literal('generated_text'),
+  payload: GeneratedTextPayloadSchema,
+});
+export type GeneratedTextMessage = z.infer<typeof GeneratedTextMessageSchema>;
+
+export const RegenerationRequestMessageSchema = BaseMessageSchema.extend({
+  type: z.literal('regeneration_request'),
+  payload: RegenerationRequestPayloadSchema,
+});
+export type RegenerationRequestMessage = z.infer<
+  typeof RegenerationRequestMessageSchema
+>;
+
 export const ChatMessageSchema = z.discriminatedUnion('type', [
-  z.object({
-    id: z.uuid(),
-    chat: z.uuid(),
-    type: z.literal('form'),
-    payload: FormPayloadSchema,
-  }),
-
-  z.object({
-    id: z.uuid(),
-    chat: z.uuid(),
-    type: z.literal('generated_text'),
-    payload: GeneratedTextPayloadSchema,
-  }),
-
-  z.object({
-    id: z.uuid(),
-    chat: z.uuid(),
-    type: z.literal('regeneration_request'),
-    payload: RegenerationRequestPayloadSchema,
-  }),
+  FormMessageSchema,
+  GeneratedTextMessageSchema,
+  RegenerationRequestMessageSchema,
 ]);
-
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 
 export const ChatMessagesSchema = z.array(ChatMessageSchema);
