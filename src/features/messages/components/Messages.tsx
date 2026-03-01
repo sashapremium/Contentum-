@@ -1,9 +1,9 @@
-import { useMessagesQuery } from '../queries/useMessagesQuery';
 import { Loading } from '@/components/shared/Loading';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
 import { Message } from './Message/Message';
 import { useEffect, useRef } from 'react';
+import { useChatQuery } from '@/features/chat/queries/useChatQuery';
 
 interface MessagesProps {
   chatId: string;
@@ -12,14 +12,16 @@ interface MessagesProps {
 
 export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   const {
-    data: messages,
+    data: chat,
     isLoading,
+    isPending,
     isFetching,
     isError,
     error,
-  } = useMessagesQuery(chatId);
+  } = useChatQuery(chatId);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const messages = chat?.messages;
 
   useEffect(() => {
     if (!messages) return;
@@ -41,11 +43,13 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
 
   return (
     <div className="">
-      {messages.map((msg) => (
+      {/* {messages.map((msg) => (
         <Message key={msg.id} message={msg} />
-      ))}
+      ))} */}
 
-      {(sendLoading || isFetching) && <Loading className="inline-flex p-2" />}
+      {(sendLoading || isFetching || isPending) && (
+        <Loading className="inline-flex p-2" />
+      )}
 
       <div ref={bottomRef} />
     </div>

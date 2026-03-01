@@ -6,12 +6,16 @@ import { ChatPageHeader } from '../components/ChatPageHeader';
 import { Messages } from '@/features/messages/components/Messages';
 import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
-import { useSendMessageMutation } from '@/features/messages/queries/useSendMessageMutation';
 
 export default function ChatPage() {
   const { chatId } = useParams();
-  const { data: chat, isLoading, isError, error } = useChatQuery(chatId);
-  const mutation = useSendMessageMutation(chat?.id || '');
+  const {
+    data: chat,
+    isLoading,
+    isPending,
+    isError,
+    error,
+  } = useChatQuery(chatId);
 
   console.log('ChatPage', { chatId, chat });
   if (!chatId) {
@@ -38,7 +42,7 @@ export default function ChatPage() {
     <div className="flex flex-col gap-4">
       <ChatPageHeader chat={chat} />
       <PageWrapper>
-        <Messages chatId={chat.id} sendLoading={mutation.isPending} />
+        <Messages chatId={chat.id} sendLoading={isPending} />
       </PageWrapper>
     </div>
   );
