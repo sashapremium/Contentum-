@@ -77,7 +77,7 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
         {/* fields */}
         <ScrollArea className={`${flatFieldsCount > 6 ? 'h-96' : 'h-full'}`}>
           <div
-            className={`space-y-8 pr-4 ${disabled ? 'pointer-events-none' : ''}`}
+            className={`space-y-8 pr-4 pl-1 pb-1 ${disabled ? 'pointer-events-none' : ''}`}
           >
             {selectedMode.fieldsGroups.map((group) => (
               <FieldGroup key={group.groupName} group={group} />

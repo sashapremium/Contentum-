@@ -127,7 +127,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                   value={
                     (value as string) !== ''
                       ? options.find((o) => o.value === value)
-                      : undefined
+                      : value
                   }
                   items={options}
                   onValueChange={(value) =>
@@ -224,7 +224,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                       ? value.map((v: string) =>
                           options.find((o) => o.value === v),
                         )
-                      : []
+                      : value
                   }
                   items={options}
                   onValueChange={(value) =>
