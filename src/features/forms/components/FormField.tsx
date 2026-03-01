@@ -54,7 +54,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             {/* Label for checkbox */}
-            <FormLabel className="flex items-center space-x-2">
+            <FormLabel
+              className={`${disabled && 'text-muted-foreground'} flex items-center space-x-2`}
+            >
               <FormControl>
                 <Checkbox
                   disabled={disabled}
@@ -81,7 +83,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         control={control}
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
-            <FormLabel>{field.label}</FormLabel>
+            <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
+              {field.label}
+            </FormLabel>
             <FormControl>
               <Textarea
                 disabled={disabled}
@@ -114,7 +118,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => {
           return (
             <FormItem>
-              <FormLabel>{field.label}</FormLabel>
+              <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
+                {field.label}
+              </FormLabel>
               <FormControl>
                 <Combobox
                   disabled={disabled}
@@ -159,7 +165,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         control={control}
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
-            <FormLabel>{field.label}</FormLabel>
+            <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
+              {field.label}
+            </FormLabel>
             <FormControl>
               <Select
                 disabled={disabled}
@@ -199,7 +207,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => {
           return (
             <FormItem>
-              <FormLabel>{field.label}</FormLabel>
+              <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
+                {field.label}
+              </FormLabel>
               <FormControl>
                 <Combobox
                   disabled={disabled}
@@ -257,7 +267,9 @@ export const FormField = ({ field }: FormFieldProps) => {
         control={control}
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
-            <FormLabel>{field.label}</FormLabel>
+            <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
+              {field.label}
+            </FormLabel>
             <FormControl>
               <DateTimePicker
                 disabled={disabled}

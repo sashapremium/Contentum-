@@ -9,9 +9,7 @@ export const FieldGroup = ({ group }: FieldGroupProps) => {
   return (
     <div className="space-y-3">
       {group.groupLabel && (
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {group.groupLabel}
-        </h2>
+        <h2 className="text-sm font-medium">{group.groupLabel}</h2>
       )}
 
       <div className="flex flex-col gap-3">
