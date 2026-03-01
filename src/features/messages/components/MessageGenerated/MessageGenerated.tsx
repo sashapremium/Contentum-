@@ -48,8 +48,8 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
         const title = `Вариант ${idx + 1}`;
 
         return (
-          <Card key={idx}>
-            <CardHeader className="pb-3">
+          <Card key={idx} className="gap-2">
+            <CardHeader>
               <CardTitle className="text-base">{title}</CardTitle>
             </CardHeader>
 
@@ -64,7 +64,7 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
                     Метрики отсутствуют
                   </div>
                 ) : (
-                  <dl className="grid gap-2 sm:grid-cols-2">
+                  <dl className="grid gap-x-4 gap-y-2 sm:grid-cols-2">
                     {metricsEntries.map(([key, value]) => (
                       <div
                         key={key}
