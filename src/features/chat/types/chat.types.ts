@@ -16,19 +16,22 @@ export const FormPayloadSchema = FormStepSchema;
 
 export type FormPayload = z.infer<typeof FormPayloadSchema>;
 
-export const GeneratedTextPayloadSchema = z.object({
-  content: z.array(z.string()), // ["...", "...", "..."]
+export const GeneratedTextSchema = z.object({
+  text: z.string(),
   metrics: z.record(z.string(), z.unknown()), // flexible for now
+});
+export type GeneratedText = z.infer<typeof GeneratedTextSchema>;
+
+export const GeneratedTextPayloadSchema = z.object({
+  content: z.array(GeneratedTextSchema), // ["...", "...", "..."]
   version_number: z.number().int(),
 });
-
 export type GeneratedTextPayload = z.infer<typeof GeneratedTextPayloadSchema>;
 
 export const RegenerationRequestPayloadSchema = z.object({
   mode: z.string().min(1), // e.g. "comment_only"
   comment: z.string(),
 });
-
 export type RegenerationRequestPayload = z.infer<
   typeof RegenerationRequestPayloadSchema
 >;
@@ -38,7 +41,6 @@ export const PayloadSchema = z.union([
   GeneratedTextPayloadSchema,
   RegenerationRequestPayloadSchema,
 ]);
-
 export type Payload = z.infer<typeof PayloadSchema>;
 
 export const ChatMessageIdSchema = z.uuid().nullable();
