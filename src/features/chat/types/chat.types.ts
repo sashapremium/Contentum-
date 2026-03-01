@@ -107,14 +107,12 @@ export const ChatListResponseSchema = z.object({
   chats: z.array(ChatSchema),
   payload: FormStepSchema,
 });
-
 export type ChatListResponse = z.infer<typeof ChatListResponseSchema>;
 
 export const ChatCreateSchema = z.object({
   user: UserIdSchema,
   fields: FieldsSchema,
 });
-
 export type ChatCreateRequest = z.infer<typeof ChatCreateSchema>;
 
 export const ChatCreateResponseSchema = z.object({
@@ -122,7 +120,6 @@ export const ChatCreateResponseSchema = z.object({
   type: z.string().min(1), // currently "form", future-proof
   payload: z.unknown(),
 });
-
 export type ChatCreateResponse = z.infer<typeof ChatCreateResponseSchema>;
 
 export const ChatRenameSchema = z.object({
@@ -132,6 +129,7 @@ export const ChatRenameSchema = z.object({
     .max(255, 'Максимум 255 символов'),
 });
 export type ChatRenameForm = z.infer<typeof ChatRenameSchema>;
+export type ChatRenameRequest = z.infer<typeof ChatRenameSchema>;
 
 export const ChatUpdateSchema = z.object({
   step: StepSchema,

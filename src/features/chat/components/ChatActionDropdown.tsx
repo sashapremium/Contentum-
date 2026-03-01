@@ -36,8 +36,8 @@ import {
 } from '@/components/ui/form';
 import { Error } from '@/components/shared/Error';
 import { useDeleteChatMutation } from '../queries/useDeleteChatMutation';
-import { useUpdateChatMutation } from '../queries/useUpdateChatMutation';
 import { useNavigate } from 'react-router';
+import { useRenameChatMutation } from '../queries/useRenameChatMutation';
 
 interface ChatActionDropdownProps {
   chat: Chat;
@@ -48,7 +48,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const deleteMutation = useDeleteChatMutation();
-  const updateMutation = useUpdateChatMutation();
+  const renameMutation = useRenameChatMutation();
 
   const navigate = useNavigate();
 
@@ -67,12 +67,11 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
   };
 
   const handleRename = (values: ChatRenameForm) => {
-    updateMutation.mutate(
+    renameMutation.mutate(
       {
         id: chat.id,
         data: {
           title: values.title,
-          isActive: chat.isActive,
         },
       },
       {
@@ -149,7 +148,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
                 )}
               />
 
-              {updateMutation.isError && (
+              {renameMutation.isError && (
                 <Error description="Ошибка при переименовании чата" />
               )}
 
@@ -162,8 +161,8 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
                   Отмена
                 </Button>
 
-                <Button type="submit" disabled={updateMutation.isPending}>
-                  {updateMutation.isPending
+                <Button type="submit" disabled={renameMutation.isPending}>
+                  {renameMutation.isPending
                     ? 'Переименование...'
                     : 'Переименовать'}
                 </Button>

@@ -7,6 +7,7 @@ import {
   type ChatListQueryParams,
   type ChatListResponse,
   ChatListResponseSchema,
+  type ChatRenameRequest,
   ChatSchema,
   type ChatUpdateRequest,
 } from '../types/chat.types';
@@ -36,6 +37,10 @@ export async function createChat(
 ): Promise<ChatCreateResponse> {
   const response = await api.post('/chats/', payload);
   return ChatCreateResponseSchema.parse(response.data);
+}
+
+export async function renameChat(id: string, payload: ChatRenameRequest) {
+  await api.patch(`/chats/${id}/`, payload);
 }
 
 export async function updateChat(
