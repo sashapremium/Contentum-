@@ -35,16 +35,16 @@ export const UserCard = () => {
                   <Skeleton className="h-8 w-8 rounded-full" />
                 ) : (
                   <AvatarFallback className="rounded-lg">
-                    {user?.role === 'EMPLOYEE' ? <User /> : <UserCog />}
+                    {user?.role === 'user' ? <User /> : <UserCog />}
                   </AvatarFallback>
                 )}
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight gap-1">
-                {isLoading ? (
+                {/* {isLoading ? (
                   <Skeleton className="w-[180px] h-[17.5px]" />
                 ) : (
                   <span className="truncate font-medium">{user?.fullName}</span>
-                )}
+                )} */}
 
                 {isLoading ? (
                   <Skeleton className="w-[150px] h-[14px]" />

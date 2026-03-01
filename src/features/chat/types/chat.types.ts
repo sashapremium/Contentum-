@@ -1,5 +1,6 @@
 import { FieldsSchema } from '@/features/forms/types/formField.types';
 import { FormStepSchema } from '@/features/forms/types/formStep.types';
+import { UserIdSchema } from '@/features/user/types/user.types';
 import { z } from 'zod';
 
 export const ChatMessageTypeSchema = z.enum([
@@ -115,7 +116,7 @@ export const ChatListResponseSchema = z.object({
 export type ChatListResponse = z.infer<typeof ChatListResponseSchema>;
 
 export const ChatCreateSchema = z.object({
-  user: z.uuid(),
+  user: UserIdSchema,
   fields: FieldsSchema,
 });
 

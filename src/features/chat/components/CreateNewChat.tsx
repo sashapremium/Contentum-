@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { Button } from '@/components/ui/button';
@@ -7,15 +7,16 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 import { FormContainer } from '@/features/forms/components/FormContainer';
-import type { FormStep } from '@/features/forms/types/formStep.types';
 
 import { useCreateChatMutation } from '../queries/useCreateChatMutation';
 import type { FormSubmit } from '@/features/forms/types/formField.types';
+import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';
 
 export const CreateNewChat = () => {
   const navigate = useNavigate();
   const createChat = useCreateChatMutation();
   const { isMobile } = useSidebar();
+  const { data: user } = useUserMeQuery();
 
   const [open, setOpen] = useState(false);
 
@@ -23,7 +24,7 @@ export const CreateNewChat = () => {
     console.log('data', data);
     createChat.mutate(
       {
-        user: MOCK_USER_ID,
+        user: user!.id,
         fields: data.fields,
       },
       {
