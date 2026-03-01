@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { FieldGroup } from './FieldGroup';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { FormSubmit } from '../types/formField.types';
+import { cx } from 'class-variance-authority';
 
 interface FormContainerProps {
   formStep: FormStep;
@@ -54,7 +55,14 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
       <div className="space-y-6 rounded-lg shadow">
         {/* header */}
         <header className="space-y-2">
-          <h1 className="text-xl font-semibold">{formStep.title}</h1>
+          <span
+            className={cx(
+              'text-xl font-semibold',
+              disabled && 'text-muted-foreground',
+            )}
+          >
+            {formStep.title}
+          </span>
           {formStep.description && (
             <p className="text-sm text-muted-foreground">
               {formStep.description}
@@ -77,7 +85,11 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
             className={`space-y-8 pr-4 pl-1 pb-1 ${disabled ? 'pointer-events-none' : ''}`}
           >
             {selectedMode.fieldsGroups.map((group) => (
-              <FieldGroup key={group.groupName} group={group} />
+              <FieldGroup
+                key={group.groupName}
+                disabled={disabled}
+                group={group}
+              />
             ))}
           </div>
         </ScrollArea>

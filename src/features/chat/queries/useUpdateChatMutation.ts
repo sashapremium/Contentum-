@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateChat } from '../api/chat.api';
-import type { ChatUpdateRequest, Chat } from '../types/chat.types';
+import type {
+  ChatUpdateRequest,
+  ChatUpdateResponse,
+} from '../types/chat.types';
 import { CHAT_QUERY_KEYS } from './chat.queryKeys';
 
 interface UpdateChatVariables {
@@ -11,7 +14,7 @@ interface UpdateChatVariables {
 export const useUpdateChatMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Chat, unknown, UpdateChatVariables>({
+  return useMutation<ChatUpdateResponse, unknown, UpdateChatVariables>({
     mutationFn: ({ id, data }) => updateChat(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({

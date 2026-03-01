@@ -1,6 +1,5 @@
 import { api } from '@/lib/axios';
 import {
-  type Chat,
   type ChatCreateRequest,
   type ChatCreateResponse,
   ChatCreateResponseSchema,
@@ -10,6 +9,8 @@ import {
   type ChatRenameRequest,
   ChatSchema,
   type ChatUpdateRequest,
+  type ChatUpdateResponse,
+  ChatUpdateResponseSchema,
 } from '../types/chat.types';
 
 export async function fetchChats(
@@ -46,9 +47,9 @@ export async function renameChat(id: string, payload: ChatRenameRequest) {
 export async function updateChat(
   id: string,
   payload: ChatUpdateRequest,
-): Promise<Chat> {
+): Promise<ChatUpdateResponse> {
   const response = await api.patch(`/chats/${id}/`, payload);
-  return ChatSchema.parse(response.data);
+  return ChatUpdateResponseSchema.parse(response.data);
 }
 
 export async function deleteChat(id: string): Promise<void> {

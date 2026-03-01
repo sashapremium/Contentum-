@@ -1,24 +1,25 @@
 import { cx } from 'class-variance-authority';
-import type { ChatMessage } from '@/features/chat/types/chat.types';
+import type { ChatId, ChatMessage } from '@/features/chat/types/chat.types';
 import { MessageRegen } from '../MessageRegen/MessageRegen';
 import { MessageGenerated } from '../MessageGenerated/MessageGenerated';
 import { MessageForm } from '../MessageForm/MessageForm';
 
 interface MessageProps {
   message: ChatMessage;
+  chatId: ChatId;
 }
 
-export const Message = ({ message }: MessageProps) => {
-  const isUser = message.type === 'regeneration_request';
+export const Message = ({ message, chatId }: MessageProps) => {
+  const isUser = message.type === 'regenerationRequest';
 
   const renderMessageContent = () => {
     switch (message.type) {
-      case 'regeneration_request':
+      case 'regenerationRequest':
         return <MessageRegen message={message} />;
-      case 'generated_text':
+      case 'generatedText':
         return <MessageGenerated message={message} />;
       case 'form':
-        return <MessageForm message={message} />;
+        return <MessageForm chatId={chatId} message={message} />;
       default:
         return (
           <>
@@ -44,6 +45,7 @@ export const Message = ({ message }: MessageProps) => {
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
           isUser ? 'rounded-br-none' : 'rounded-bl-none',
+          message.type === 'form' && 'min-w-[75%]',
         )}
       >
         {renderMessageContent()}

@@ -6,14 +6,12 @@ import { z } from 'zod';
 
 export const ChatMessageTypeSchema = z.enum([
   'form',
-  'generated_text',
-  'regeneration_request',
+  'generatedText',
+  'regenerationRequest',
 ]);
-
 export type ChatMessageType = z.infer<typeof ChatMessageTypeSchema>;
 
 export const FormPayloadSchema = FormStepSchema;
-
 export type FormPayload = z.infer<typeof FormPayloadSchema>;
 
 export const GeneratedTextSchema = z.object({
@@ -24,7 +22,7 @@ export type GeneratedText = z.infer<typeof GeneratedTextSchema>;
 
 export const GeneratedTextPayloadSchema = z.object({
   content: z.array(GeneratedTextSchema), // ["...", "...", "..."]
-  version_number: z.number().int(),
+  versionNumber: z.number().int(),
 });
 export type GeneratedTextPayload = z.infer<typeof GeneratedTextPayloadSchema>;
 
@@ -43,7 +41,7 @@ export const PayloadSchema = z.union([
 ]);
 export type Payload = z.infer<typeof PayloadSchema>;
 
-export const ChatMessageIdSchema = z.uuid().nullable();
+export const ChatMessageIdSchema = z.number().int().nullable();
 export type ChatMessageId = z.infer<typeof ChatMessageIdSchema>;
 
 const BaseMessageSchema = z.object({
@@ -57,13 +55,13 @@ export const FormMessageSchema = BaseMessageSchema.extend({
 export type FormMessage = z.infer<typeof FormMessageSchema>;
 
 export const GeneratedTextMessageSchema = BaseMessageSchema.extend({
-  type: z.literal('generated_text'),
+  type: z.literal('generatedText'),
   payload: GeneratedTextPayloadSchema,
 });
 export type GeneratedTextMessage = z.infer<typeof GeneratedTextMessageSchema>;
 
 export const RegenerationRequestMessageSchema = BaseMessageSchema.extend({
-  type: z.literal('regeneration_request'),
+  type: z.literal('regenerationRequest'),
   payload: RegenerationRequestPayloadSchema,
 });
 export type RegenerationRequestMessage = z.infer<
@@ -148,6 +146,12 @@ export const ChatUpdateSchema = z.object({
   fields: FieldsSchema,
 });
 export type ChatUpdateRequest = z.infer<typeof ChatUpdateSchema>;
+
+export const ChatUpdateResponseSchema = z.object({
+  payload: PayloadSchema,
+  type: z.string().min(1),
+});
+export type ChatUpdateResponse = z.infer<typeof ChatUpdateResponseSchema>;
 
 export interface ChatListQueryParams {
   search?: string;

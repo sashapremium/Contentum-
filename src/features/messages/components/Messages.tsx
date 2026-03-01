@@ -4,9 +4,10 @@ import { Error } from '@/components/shared/Error';
 import { Message } from './Message/Message';
 import { useEffect, useRef } from 'react';
 import { useChatQuery } from '@/features/chat/queries/useChatQuery';
+import type { ChatId } from '@/features/chat/types/chat.types';
 
 interface MessagesProps {
-  chatId: string;
+  chatId: ChatId;
   sendLoading: boolean;
 }
 
@@ -42,9 +43,9 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   }
 
   return (
-    <div className="">
+    <div className="space-y-6">
       {messages.map((msg, idx) => (
-        <Message key={msg.id ?? idx} message={msg} />
+        <Message chatId={chatId} key={msg.id ?? idx} message={msg} />
       ))}
 
       {(sendLoading || isFetching || isPending) && (
