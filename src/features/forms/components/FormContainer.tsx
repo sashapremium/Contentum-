@@ -7,11 +7,12 @@ import { FormModeButton } from './FormModeButton';
 import { Button } from '@/components/ui/button';
 import { FieldGroup } from './FieldGroup';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import type { FormSubmit } from '../types/formField.types';
 
 interface FormContainerProps {
   formStep: FormStep;
   chatId: string;
-  onSubmit: (values: Record<string, unknown>) => void;
+  onSubmit: (data: FormSubmit) => void;
 }
 
 export const FormContainer = ({
@@ -66,7 +67,7 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <ScrollArea className={`h-128`}>
+        <ScrollArea className={`max-h-128`}>
           <div
             className={`space-y-8 px-4 ${disabled ? 'pointer-events-none' : ''}`}
           >

@@ -22,8 +22,6 @@
               "value": null,
               "options": [
                 {"value": "announcement", "label": "Анонс мероприятия"    },
-                {"value": "reminder",     "label": "Напоминание о событии"},
-                {"value": "info",         "label": "Информационный пост"  }
               ]
             }
           ]

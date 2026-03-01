@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { FormFieldSchema } from './formField.types';
+import { StepSchema } from './step.types';
 
 /**
  * Placeholder for fields until you describe field types.
@@ -36,7 +37,7 @@ export type FormMode = z.infer<typeof FormModeSchema>;
  * Later you’ll likely also have result/generation steps — we’ll add a discriminated union then.
  */
 export const FormStepSchema = z.object({
-  step: z.number().int().nonnegative(),
+  step: StepSchema,
   type: z.literal('form'),
   title: z.string().min(1),
   description: z.string().nullable().optional(), // allow missing or null if backend varies

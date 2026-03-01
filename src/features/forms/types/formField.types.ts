@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { StepSchema } from './step.types';
 
 export const FieldOptionSchema = z.object({
   value: z.string(),
@@ -104,3 +105,13 @@ export const FormFieldSchema = z.discriminatedUnion('type', [
 
 export type FormField = z.infer<typeof FormFieldSchema>;
 export type FormFieldType = FormField['type'];
+
+export const FieldsSchema = z.record(z.string().min(1), z.unknown());
+export type Fields = z.infer<typeof FieldsSchema>;
+
+export const FormSubmitSchema = z.object({
+  step: StepSchema,
+  mode: z.string().min(1),
+  fields: FieldsSchema,
+});
+export type FormSubmit = z.infer<typeof FormSubmitSchema>;
