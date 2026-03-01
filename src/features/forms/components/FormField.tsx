@@ -220,11 +220,11 @@ export const FormField = ({ field }: FormFieldProps) => {
                   multiple
                   autoHighlight
                   value={
-                    disabled
+                    (value as string[]).length > 0
                       ? value.map((v: string) =>
                           options.find((o) => o.value === v),
                         )
-                      : undefined
+                      : []
                   }
                   items={options}
                   onValueChange={(value) =>

@@ -100,7 +100,7 @@ export const exampleForm = {
               type: 'multiple' as const,
               label: 'Optional Multiple',
               required: false,
-              value: null,
+              value: ['o1', 'o2'],
               options: [
                 { value: 'o1', label: 'O1' },
                 { value: 'o2', label: 'O2' },
