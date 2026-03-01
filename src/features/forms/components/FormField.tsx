@@ -42,7 +42,7 @@ const NOT_FOUND = 'Ничего не найдено';
 const SELECT_PLACEHOLDER = 'Выберите значение';
 const TEXT_PLACEHOLDER = 'Введите значение';
 
-const getValueForCombobox = (value: string[], options: FieldOption[]) => {
+const getValueForMultiple = (value: string[], options: FieldOption[]) => {
   return value.map((v) => options.find((o) => o.value === v) as FieldOption);
 };
 
@@ -223,7 +223,13 @@ export const FormField = ({ field }: FormFieldProps) => {
                   disabled={disabled}
                   multiple
                   autoHighlight
-                  value={disabled ? value : undefined}
+                  value={
+                    disabled
+                      ? value.map((v: string) =>
+                          options.find((o) => o.value === v),
+                        )
+                      : undefined
+                  }
                   items={options}
                   onValueChange={(value) =>
                     onChange(value?.map((v) => (v as FieldOption).value))

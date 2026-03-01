@@ -6,4 +6,9 @@ export const ZOD_FIELDS = {
     .string()
     .min(3, 'Минимальная длина ФИО - 3 символа')
     .max(254, 'Слишком длиное ФИО'),
+  min: (min: number, message?: string) =>
+    message ?? `Минимальная длина ${min} символов`,
+  max: (max: number, message?: string) =>
+    message ?? `Максимальная длина ${max} символов`,
+  required: (message?: string) => message ?? 'Обязательное поле',
 };

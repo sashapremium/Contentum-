@@ -1,6 +1,7 @@
 import { z, ZodType } from 'zod';
 import type { FormStep } from './types/formStep.types';
 import type { FormField } from './types/formField.types';
+import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 
 /**
  * Derives proper default values for React Hook Form
@@ -77,29 +78,45 @@ function buildFieldSchema(field: FormField): z.ZodTypeAny {
     case 'text': {
       let schema = z.string();
 
-      if (required) schema = schema.min(1);
-      if (validation?.minLength) schema = schema.min(validation.minLength);
-      if (validation?.maxLength) schema = schema.max(validation.maxLength);
+      if (required) schema = schema.min(1, ZOD_FIELDS.required());
+      if (validation?.minLength)
+        schema = schema.min(
+          validation.minLength,
+          ZOD_FIELDS.min(validation.minLength),
+        );
+      if (validation?.maxLength)
+        schema = schema.max(
+          validation.maxLength,
+          ZOD_FIELDS.max(validation.maxLength),
+        );
       return schema;
     }
 
     case 'search': {
       let schema = z.string();
-      if (required) schema = schema.min(1);
-      if (validation?.minLength) schema = schema.min(validation.minLength);
-      if (validation?.maxLength) schema = schema.max(validation.maxLength);
+      if (required) schema = schema.min(1, ZOD_FIELDS.required());
+      if (validation?.minLength)
+        schema = schema.min(
+          validation.minLength,
+          ZOD_FIELDS.min(validation.minLength),
+        );
+      if (validation?.maxLength)
+        schema = schema.max(
+          validation.maxLength,
+          ZOD_FIELDS.max(validation.maxLength),
+        );
       return schema;
     }
 
     case 'select': {
       let schema = z.string();
-      if (required) schema = schema.min(1);
+      if (required) schema = schema.min(1, ZOD_FIELDS.required());
       return schema;
     }
 
     case 'multiple': {
       let schema = z.array(z.string());
-      if (required) schema = schema.min(1);
+      if (required) schema = schema.min(1, ZOD_FIELDS.required());
       if (validation?.maxItems) schema = schema.max(validation.maxItems);
       return schema;
     }
