@@ -5,7 +5,7 @@ const DEFAULT_ERROR = 'Неизвестная ошибка. Повторите �
 
 export function mapApiError(
   error: { name: string } | null,
-  defaultError: string = DEFAULT_ERROR
+  defaultError: string = DEFAULT_ERROR,
 ): string {
   if (!error || typeof error !== 'object') return defaultError;
 
@@ -61,7 +61,7 @@ function translateBackendMessage(message: string): string {
     case message.includes('Страница не найдена.'):
       return 'Страница не найдена.';
     default:
-      return DEFAULT_ERROR;
+      return message;
   }
 }
 
