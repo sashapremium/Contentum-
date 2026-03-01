@@ -104,10 +104,12 @@ export const ChatSchema = z.object({
 export type Chat = z.infer<typeof ChatSchema>;
 
 export const ChatListResponseSchema = z.object({
-  count: z.number().int(),
-  next: z.url().nullable(),
-  previous: z.url().nullable(),
-  results: z.array(ChatSchema),
+  // count: z.number().int(),
+  // next: z.url().nullable(),
+  // previous: z.url().nullable(),
+  // results: z.array(ChatSchema),
+  chats: z.array(ChatSchema),
+  payload: FormStepSchema,
 });
 
 export type ChatListResponse = z.infer<typeof ChatListResponseSchema>;
