@@ -56,7 +56,7 @@ export const CreateNewChat = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-2xl p-0">
+            <DialogContent className="max-w-2xl">
               <FormContainer
                 formStep={chats!.payload}
                 chatId="new"

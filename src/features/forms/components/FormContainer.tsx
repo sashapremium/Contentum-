@@ -15,9 +15,6 @@ interface FormContainerProps {
   onSubmit: (data: FormSubmit) => void;
 }
 
-const MEDIAN_FIELD_HEIGHT = 58;
-const RELATIVE_FIELD_HEIGHT = 4;
-
 export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
   const [selectedMode, setSelectedMode] = useState(formStep.modes[0]);
   const [disabled] = useState(formStep.disabled);
@@ -54,7 +51,7 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
 
   return (
     <FormProvider {...form}>
-      <div className="space-y-6 p-6 bg-card rounded-lg shadow">
+      <div className="space-y-6 rounded-lg shadow">
         {/* header */}
         <header className="space-y-2">
           <h1 className="text-xl font-semibold">{formStep.title}</h1>
@@ -75,7 +72,7 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
         )}
 
         {/* fields */}
-        <ScrollArea className={`${flatFieldsCount > 6 ? 'h-96' : 'h-full'}`}>
+        <ScrollArea className={`${flatFieldsCount > 6 ? 'h-96' : ''}`}>
           <div
             className={`space-y-8 pr-4 pl-1 pb-1 ${disabled ? 'pointer-events-none' : ''}`}
           >

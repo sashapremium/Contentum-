@@ -127,7 +127,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                   value={
                     (value as string) !== ''
                       ? options.find((o) => o.value === value)
-                      : value
+                      : undefined
                   }
                   items={options}
                   onValueChange={(value) =>
@@ -220,11 +220,11 @@ export const FormField = ({ field }: FormFieldProps) => {
                   multiple
                   autoHighlight
                   value={
-                    (value as string[]).length > 0
+                    (value as string[])?.length > 0
                       ? value.map((v: string) =>
                           options.find((o) => o.value === v),
                         )
-                      : value
+                      : []
                   }
                   items={options}
                   onValueChange={(value) =>
@@ -243,7 +243,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                           <ComboboxChipsInput
                             disabled={disabled}
                             placeholder={
-                              (value as string[]).length > 0
+                              (value as string[])?.length > 0
                                 ? undefined
                                 : SELECT_PLACEHOLDER
                             }
