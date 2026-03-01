@@ -145,7 +145,7 @@ export const exampleForm = {
               type: 'datetime' as const,
               label: 'Reminder (optional)',
               required: false,
-              value: null,
+              value: '2026-03-26T15:30',
             },
           ],
         },

@@ -24,7 +24,6 @@ export const FormContainer = ({
 
   const defaultValues = buildDefaultValues(formStep, selectedMode.name);
   const schema = buildZodSchema(formStep, selectedMode.name);
-  console.log('defaultValues', defaultValues);
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues,

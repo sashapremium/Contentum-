@@ -2,6 +2,7 @@ import { z, ZodType } from 'zod';
 import type { FormStep } from './types/formStep.types';
 import type { FormField } from './types/formField.types';
 import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
+import { localToDate } from '@/lib/dateTime';
 
 /**
  * Derives proper default values for React Hook Form
@@ -36,13 +37,12 @@ function defaultByType(type: string): unknown {
     case 'text':
     case 'search':
     case 'select':
+    case 'datetime':
       return '';
     case 'multiple':
       return [];
     case 'checkbox':
       return false;
-    case 'datetime':
-      return null;
     default:
       return '';
   }
@@ -146,19 +146,28 @@ function buildFieldSchema(field: FormField): z.ZodTypeAny {
     }
 
     case 'datetime': {
-      let schema = z.preprocess(
-        (v) => (v ? new Date(v as string) : null),
-        z.date().nullable(),
+      let schema = z.string();
+
+      if (required) {
+        schema = schema.min(1, ZOD_FIELDS.required());
+      }
+
+      schema = schema.refine(
+        (v) => v === '' || !Number.isNaN(new Date(v).getTime()),
+        { message: ZOD_FIELDS.invalidDateTime?.() ?? ZOD_FIELDS.required() },
       );
 
-      if (required)
-        schema = schema.refine((v) => v !== null, {
-          message: ZOD_FIELDS.required(),
-        });
-      if (validation?.mustBeFuture)
-        schema = schema.refine((d) => !d || d > new Date(), {
-          message: ZOD_FIELDS.mustBeFuture(),
-        });
+      if (required) {
+        schema = schema.min(1, ZOD_FIELDS.required());
+      }
+
+      if (validation?.mustBeFuture) {
+        schema = schema.refine((v) => {
+          if (v === '') return true;
+          const d = localToDate(v);
+          return d ? d.getTime() > Date.now() : false;
+        }, ZOD_FIELDS.mustBeFuture());
+      }
 
       return schema;
     }

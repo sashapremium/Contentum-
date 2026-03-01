@@ -10,6 +10,7 @@ import {
 import { format } from 'date-fns';
 import { ChevronDownIcon } from 'lucide-react';
 import { ru } from 'date-fns/locale';
+import { buildLocalDateTime, parseLocalDateTime } from '@/lib/dateTime';
 
 interface DateTimePickerProps {
   value: string | null | undefined; // ISO string or empty
@@ -19,22 +20,6 @@ interface DateTimePickerProps {
   placeholder?: string;
   defaultTime?: string; // 'HH:mm:ss'
 }
-
-const pad2 = (n: number) => String(n).padStart(2, '0');
-
-const getTimeFromIso = (iso: string, fallback: string) => {
-  if (!iso) return fallback; // fallback must be 'HH:mm'
-  const d = new Date(iso);
-  return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-};
-
-const toIso = (date: Date | undefined, time: string) => {
-  if (!date) return '';
-  const [hh, mm] = (time || '00:00').split(':');
-  const next = new Date(date);
-  next.setHours(Number(hh ?? 0), Number(mm ?? 0), 0, 0);
-  return next.toISOString();
-};
 
 const DEFAULT_TIME = '17:00';
 
@@ -48,24 +33,33 @@ export const DateTimePicker = ({
 }: DateTimePickerProps) => {
   const [open, setOpen] = useState(false);
   const iso = typeof value === 'string' ? value : '';
-  const selectedDate = useMemo(() => (iso ? new Date(iso) : undefined), [iso]);
-  const timeRef = useRef<HTMLInputElement>(null);
-
-  const timeValue = useMemo(
-    () => getTimeFromIso(iso, defaultTime),
-    [iso, defaultTime],
+  const parsed = useMemo(
+    () => (value ? parseLocalDateTime(value) : null),
+    [value],
   );
 
+  const selectedDate = useMemo(() => {
+    if (!parsed) return undefined;
+    // Create date in local time at midnight; no timezone shift for just date UI.
+    return new Date(parsed.y, parsed.m - 1, parsed.d);
+  }, [parsed]);
+
+  const timeValue = useMemo(() => {
+    if (!parsed) return defaultTime; // 'HH:mm'
+    return `${String(parsed.hh).padStart(2, '0')}:${String(parsed.mm).padStart(2, '0')}`;
+  }, [parsed, defaultTime]);
+
+  const timeRef = useRef<HTMLInputElement>(null);
   const minDate = mustBeFuture ? new Date() : undefined;
 
   const handleDateSelect = (d: Date | undefined) => {
-    onChange(toIso(d, timeValue));
+    onChange(buildLocalDateTime(d, timeValue));
     setOpen(false);
     timeRef.current?.focus();
   };
 
   const handleTimeChange = (time: string) => {
-    onChange(toIso(selectedDate, time));
+    onChange(buildLocalDateTime(selectedDate, time));
     setOpen(false);
   };
 

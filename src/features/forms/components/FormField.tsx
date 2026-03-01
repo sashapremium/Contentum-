@@ -42,10 +42,6 @@ const NOT_FOUND = 'Ничего не найдено';
 const SELECT_PLACEHOLDER = 'Выберите значение';
 const TEXT_PLACEHOLDER = 'Введите значение';
 
-const getValueForMultiple = (value: string[], options: FieldOption[]) => {
-  return value.map((v) => options.find((o) => o.value === v) as FieldOption);
-};
-
 export const FormField = ({ field }: FormFieldProps) => {
   const { control } = useFormContext();
   const anchor = useComboboxAnchor();

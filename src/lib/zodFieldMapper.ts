@@ -12,4 +12,5 @@ export const ZOD_FIELDS = {
     message ?? `Максимальная длина ${max} символов`,
   required: (message?: string) => message ?? 'Обязательное поле',
   mustBeFuture: (message?: string) => message ?? 'Дата должна быть в будущем',
+  invalidDateTime: (message?: string) => message ?? 'Неверная дата или время',
 };
