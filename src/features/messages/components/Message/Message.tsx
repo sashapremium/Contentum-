@@ -1,7 +1,7 @@
-import type { ImageInfo } from '../../types/messages.types';
 import { cx } from 'class-variance-authority';
-import { MessageImage } from './MessageImage';
 import type { ChatMessage } from '@/features/chat/types/chat.types';
+import { MessageRegen } from '../MessageRegen/MessageRegen';
+import { MessageGenerated } from '../MessageGenerated/MessageGenerated';
 
 interface MessageProps {
   message: ChatMessage;
@@ -10,36 +10,19 @@ interface MessageProps {
 export const Message = ({ message }: MessageProps) => {
   const isUser = message.type === 'regeneration_request';
 
-  const renderTextMessage = () => {
-    return (
-      <div
-        className={cx(
-          'max-w-[75%] px-4 py-2 text-sm shadow-sm rounded-xl',
-
-          isUser
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-muted text-foreground',
-
-          isUser ? 'rounded-br-none' : 'rounded-bl-none',
-        )}
-      >
-        {message.content.info as string}
-      </div>
-    );
-  };
-
-  const renderImageMessage = () => {
-    const info = message.content.info as ImageInfo;
-
-    return <MessageImage info={info} />;
-  };
-
   const renderMessageContent = () => {
     switch (message.type) {
       case 'regeneration_request':
-        return renderTextMessage();
+        return <MessageRegen message={message} />;
+      case 'generated_text':
+        return <MessageGenerated message={message} />;
       default:
-        renderTextMessage();
+        return (
+          <>
+            <span>Unknown message type: </span>
+            {JSON.stringify(message)}
+          </>
+        );
     }
   };
 
@@ -51,8 +34,19 @@ export const Message = ({ message }: MessageProps) => {
         isUser ? 'items-end' : 'items-start',
       )}
     >
-      {renderMessageContent()}
+      <div
+        className={cx(
+          'max-w-[75%] px-4 py-2 text-sm shadow-sm rounded-xl',
 
+          isUser
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-muted text-foreground',
+
+          isUser ? 'rounded-br-none' : 'rounded-bl-none',
+        )}
+      >
+        {renderMessageContent()}
+      </div>
       {/* <MessageActions message={message} /> */}
     </div>
   );
