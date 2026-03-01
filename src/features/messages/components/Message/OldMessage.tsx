@@ -1,14 +1,17 @@
-import type { ImageInfo } from '../../types/messages.types';
+import type {
+  ImageInfo,
+  Message as MessageType,
+} from '../../types/messages.types';
 import { cx } from 'class-variance-authority';
 import { MessageImage } from './MessageImage';
-import type { ChatMessage } from '@/features/chat/types/chat.types';
+import { MessageActions } from '../MessageActions/MessageActions';
 
 interface MessageProps {
-  message: ChatMessage;
+  message: MessageType;
 }
 
 export const Message = ({ message }: MessageProps) => {
-  const isUser = message.type === 'regeneration_request';
+  const isUser = message.messageType === 'USER';
 
   const renderTextMessage = () => {
     return (
@@ -35,9 +38,11 @@ export const Message = ({ message }: MessageProps) => {
   };
 
   const renderMessageContent = () => {
-    switch (message.type) {
-      case 'regeneration_request':
+    switch (message.content.type) {
+      case 'text':
         return renderTextMessage();
+      case 'image':
+        return renderImageMessage();
       default:
         renderTextMessage();
     }
@@ -53,7 +58,7 @@ export const Message = ({ message }: MessageProps) => {
     >
       {renderMessageContent()}
 
-      {/* <MessageActions message={message} /> */}
+      <MessageActions message={message} />
     </div>
   );
 };
