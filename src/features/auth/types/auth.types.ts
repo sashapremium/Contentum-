@@ -2,10 +2,10 @@ import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 import { z } from 'zod';
 
 export const LoginUserSchema = z.object({
-  id: z.uuid(),
+  id: z.number(),
   email: z.email(),
-  fullName: ZOD_FIELDS.fullName,
-  role: z.enum(['EMPLOYEE']),
+  // fullName: ZOD_FIELDS.fullName,
+  role: z.enum(['user']),
 });
 
 export const LoginRequestSchema = z.object({
@@ -16,8 +16,8 @@ export const LoginRequestSchema = z.object({
 export type LoginRequest = z.infer<typeof LoginRequestSchema>;
 
 export const LoginResponseSchema = z.object({
-  refresh: z.string().min(1),
-  access: z.string().min(1),
+  refreshToken: z.string().min(1),
+  accessToken: z.string().min(1),
   user: LoginUserSchema,
 });
 

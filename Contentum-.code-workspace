@@ -1,11 +1,14 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../contentumDjangoBackend"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": ".",
+    },
+    {
+      "path": "../ContentumBackend",
+    },
+    {
+      "path": "../contentumDjangoBackend",
+    },
+  ],
+  "settings": {},
 }

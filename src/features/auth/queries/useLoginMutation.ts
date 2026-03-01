@@ -9,8 +9,8 @@ export const useLoginMutation = () => {
     mutationFn: loginRequest,
     onSuccess: (data) => {
       setTokens({
-        access: data.access,
-        refresh: data.refresh,
+        access: data.accessToken,
+        refresh: data.refreshToken,
       });
     },
   });
