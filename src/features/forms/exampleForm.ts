@@ -4,7 +4,7 @@ export const exampleForm = {
   title: 'Example Test Form',
   description:
     'This form includes every field type to test the UI + validation logic.',
-  disabled: true,
+  disabled: false,
   modes: [
     {
       name: 'basic',
@@ -35,12 +35,11 @@ export const exampleForm = {
               type: 'search' as const,
               label: 'Searchable Option',
               required: false,
-              value: 'optA',
+              value: null,
               options: [
                 { value: 'optA', label: 'Option A' },
                 { value: 'optB', label: 'Option B' },
               ],
-              validation: { minLength: 2 },
             },
             {
               name: 'searchReq',
@@ -52,7 +51,6 @@ export const exampleForm = {
                 { value: 'opt1', label: 'Option 1' },
                 { value: 'opt2', label: 'Option 2' },
               ],
-              validation: { minLength: 1 },
             },
           ],
         },
@@ -88,14 +86,14 @@ export const exampleForm = {
               type: 'multiple' as const,
               label: 'Multiple Select (maxItems 3)',
               required: true,
-              value: ['m1', 'm3'],
+              value: null,
               options: [
                 { value: 'm1', label: 'M1' },
                 { value: 'm2', label: 'M2' },
                 { value: 'm3', label: 'M3' },
                 { value: 'm4', label: 'M4' },
               ],
-              validation: { maxItems: 3 },
+              validation: { maxItems: 3, minItems: 2 },
             },
             {
               name: 'multiOpt',

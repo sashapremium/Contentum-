@@ -28,6 +28,7 @@ export type DateTimeValidation = z.infer<typeof DateTimeValidationSchema>;
 export const MultipleValidationSchema = z
   .object({
     maxItems: z.number().int().nonnegative().optional(),
+    minItems: z.number().int().nonnegative().optional(),
   })
   .loose();
 

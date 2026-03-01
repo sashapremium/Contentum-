@@ -117,7 +117,22 @@ function buildFieldSchema(field: FormField): z.ZodTypeAny {
     case 'multiple': {
       let schema = z.array(z.string());
       if (required) schema = schema.min(1, ZOD_FIELDS.required());
-      if (validation?.maxItems) schema = schema.max(validation.maxItems);
+      if (validation?.maxItems)
+        schema = schema.max(
+          validation.maxItems,
+          ZOD_FIELDS.max(
+            validation.maxItems,
+            `Не более ${validation.maxItems} вариантов`,
+          ),
+        );
+      if (validation?.minItems)
+        schema = schema.min(
+          validation.minItems,
+          ZOD_FIELDS.min(
+            validation.minItems,
+            `Не менее ${validation.minItems} вариантов`,
+          ),
+        );
       return schema;
     }
 
@@ -125,7 +140,7 @@ function buildFieldSchema(field: FormField): z.ZodTypeAny {
       let schema = z.boolean();
       if (required)
         schema = schema.refine((v) => v === true, {
-          message: 'Required',
+          message: ZOD_FIELDS.required(),
         });
       return schema;
     }
@@ -137,10 +152,12 @@ function buildFieldSchema(field: FormField): z.ZodTypeAny {
       );
 
       if (required)
-        schema = schema.refine((v) => v !== null, { message: 'Required' });
+        schema = schema.refine((v) => v !== null, {
+          message: ZOD_FIELDS.required(),
+        });
       if (validation?.mustBeFuture)
         schema = schema.refine((d) => !d || d > new Date(), {
-          message: 'Date must be in the future',
+          message: ZOD_FIELDS.mustBeFuture(),
         });
 
       return schema;
