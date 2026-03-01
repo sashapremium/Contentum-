@@ -43,8 +43,8 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
 
   return (
     <div className="">
-      {messages.map((msg) => (
-        <Message key={msg.id} message={msg} />
+      {messages.map((msg, idx) => (
+        <Message key={msg.id ?? idx} message={msg} />
       ))}
 
       {(sendLoading || isFetching || isPending) && (

@@ -11,17 +11,14 @@ import type { FormSubmit } from '../types/formField.types';
 
 interface FormContainerProps {
   formStep: FormStep;
-  chatId: string;
+  chatId?: string;
   onSubmit: (data: FormSubmit) => void;
 }
 
 const MEDIAN_FIELD_HEIGHT = 58;
+const RELATIVE_FIELD_HEIGHT = 4;
 
-export const FormContainer = ({
-  formStep,
-  chatId,
-  onSubmit,
-}: FormContainerProps) => {
+export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
   const [selectedMode, setSelectedMode] = useState(formStep.modes[0]);
   const [disabled] = useState(formStep.disabled);
 
@@ -41,8 +38,6 @@ export const FormContainer = ({
       ),
     [selectedMode.fieldsGroups],
   );
-
-  console.log('flatFieldsCount', flatFieldsCount);
 
   useEffect(() => {
     form.reset(buildDefaultValues(formStep, selectedMode.name));
@@ -80,9 +75,7 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <ScrollArea
-          className={`h-${flatFieldsCount * MEDIAN_FIELD_HEIGHT > 512 ? 128 : flatFieldsCount * MEDIAN_FIELD_HEIGHT}`}
-        >
+        <ScrollArea className={`${flatFieldsCount > 6 ? 'h-96' : 'h-full'}`}>
           <div
             className={`space-y-8 pr-4 ${disabled ? 'pointer-events-none' : ''}`}
           >

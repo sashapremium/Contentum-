@@ -2,6 +2,7 @@ import { cx } from 'class-variance-authority';
 import type { ChatMessage } from '@/features/chat/types/chat.types';
 import { MessageRegen } from '../MessageRegen/MessageRegen';
 import { MessageGenerated } from '../MessageGenerated/MessageGenerated';
+import { MessageForm } from '../MessageForm/MessageForm';
 
 interface MessageProps {
   message: ChatMessage;
@@ -16,6 +17,8 @@ export const Message = ({ message }: MessageProps) => {
         return <MessageRegen message={message} />;
       case 'generated_text':
         return <MessageGenerated message={message} />;
+      case 'form':
+        return <MessageForm message={message} />;
       default:
         return (
           <>
