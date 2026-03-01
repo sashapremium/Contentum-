@@ -220,14 +220,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                               {value.label}
                             </ComboboxChip>
                           ))}
-                          <ComboboxChipsInput
-                            disabled={disabled}
-                            placeholder={
-                              value?.length > 0 && disabled
-                                ? undefined
-                                : SELECT_PLACEHOLDER
-                            }
-                          />
+                          <ComboboxChipsInput disabled={disabled} />
                         </React.Fragment>
                       )}
                     </ComboboxValue>
