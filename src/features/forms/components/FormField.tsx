@@ -42,6 +42,10 @@ const NOT_FOUND = 'Ничего не найдено';
 const SELECT_PLACEHOLDER = 'Выберите значение';
 const TEXT_PLACEHOLDER = 'Введите значение';
 
+const getValueForCombobox = (value: string[], options: FieldOption[]) => {
+  return value.map((v) => options.find((o) => o.value === v) as FieldOption);
+};
+
 export const FormField = ({ field }: FormFieldProps) => {
   const { control } = useFormContext();
   const anchor = useComboboxAnchor();
@@ -124,7 +128,11 @@ export const FormField = ({ field }: FormFieldProps) => {
               <FormControl>
                 <Combobox
                   disabled={disabled}
-                  value={disabled ? value : undefined}
+                  value={
+                    disabled
+                      ? options.find((o) => o.value === value)
+                      : undefined
+                  }
                   items={options}
                   onValueChange={(value) =>
                     onChange((value as FieldOption).value)

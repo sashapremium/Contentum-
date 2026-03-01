@@ -20,7 +20,7 @@ export const FormContainer = ({
   onSubmit,
 }: FormContainerProps) => {
   const [selectedMode, setSelectedMode] = useState(formStep.modes[0]);
-  const disabled = formStep.disabled;
+  const [disabled] = useState(formStep.disabled);
 
   const defaultValues = buildDefaultValues(formStep, selectedMode.name);
   const schema = buildZodSchema(formStep, selectedMode.name);
