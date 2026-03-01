@@ -125,7 +125,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                 <Combobox
                   disabled={disabled}
                   value={
-                    disabled
+                    (value as string) !== ''
                       ? options.find((o) => o.value === value)
                       : undefined
                   }

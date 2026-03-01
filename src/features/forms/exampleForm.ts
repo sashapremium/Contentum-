@@ -35,7 +35,7 @@ export const exampleForm = {
               type: 'search' as const,
               label: 'Searchable Option',
               required: false,
-              value: null,
+              value: 'optA',
               options: [
                 { value: 'optA', label: 'Option A' },
                 { value: 'optB', label: 'Option B' },
