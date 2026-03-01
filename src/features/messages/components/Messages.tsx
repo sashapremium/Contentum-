@@ -43,9 +43,9 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
 
   return (
     <div className="">
-      {/* {messages.map((msg) => (
+      {messages.map((msg) => (
         <Message key={msg.id} message={msg} />
-      ))} */}
+      ))}
 
       {(sendLoading || isFetching || isPending) && (
         <Loading className="inline-flex p-2" />

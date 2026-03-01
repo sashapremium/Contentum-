@@ -1,13 +1,11 @@
-import type {
-  ImageInfo,
-  Message as MessageType,
-} from '../../types/messages.types';
+import type { ImageInfo } from '../../types/messages.types';
 import { cx } from 'class-variance-authority';
 import { MessageImage } from './MessageImage';
 import { MessageActions } from '../MessageActions/MessageActions';
+import type { ChatMessage } from '@/features/chat/types/chat.types';
 
 interface MessageProps {
-  message: MessageType;
+  message: ChatMessage;
 }
 
 export const Message = ({ message }: MessageProps) => {
@@ -23,7 +21,7 @@ export const Message = ({ message }: MessageProps) => {
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
 
-          isUser ? 'rounded-br-none' : 'rounded-bl-none'
+          isUser ? 'rounded-br-none' : 'rounded-bl-none',
         )}
       >
         {message.content.info as string}
@@ -53,7 +51,7 @@ export const Message = ({ message }: MessageProps) => {
       className={cx(
         'group',
         'flex flex-col',
-        isUser ? 'items-end' : 'items-start'
+        isUser ? 'items-end' : 'items-start',
       )}
     >
       {renderMessageContent()}
