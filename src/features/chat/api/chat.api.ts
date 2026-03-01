@@ -14,7 +14,7 @@ import {
 export async function fetchChats(
   params?: ChatListQueryParams,
 ): Promise<ChatListResponse> {
-  const response = await api.get('/chats', {
+  const response = await api.get('/chats/', {
     params: {
       search: params?.search,
       ordering: params?.ordering,
@@ -27,14 +27,14 @@ export async function fetchChats(
 }
 
 export async function fetchChat(id: string) {
-  const response = await api.get(`/chats/${id}`);
+  const response = await api.get(`/chats/${id}/`);
   return ChatSchema.parse(response.data);
 }
 
 export async function createChat(
   payload: ChatCreateRequest,
 ): Promise<ChatCreateResponse> {
-  const response = await api.post('/chats', payload);
+  const response = await api.post('/chats/', payload);
   return ChatCreateResponseSchema.parse(response.data);
 }
 
@@ -42,10 +42,10 @@ export async function updateChat(
   id: string,
   payload: ChatUpdateRequest,
 ): Promise<Chat> {
-  const response = await api.patch(`/chats/${id}`, payload);
+  const response = await api.patch(`/chats/${id}/`, payload);
   return ChatSchema.parse(response.data);
 }
 
 export async function deleteChat(id: string): Promise<void> {
-  await api.delete(`/chats/${id}`);
+  await api.delete(`/chats/${id}/`);
 }

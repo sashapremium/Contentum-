@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import type { Chat } from '../types/chat.types';
+import {
+  ChatRenameSchema,
+  type Chat,
+  type ChatRenameForm,
+} from '../types/chat.types';
 
 import {
   DropdownMenu,
@@ -22,10 +26,6 @@ import { Input } from '@/components/ui/input';
 import { Ellipsis, SquarePen, Trash } from 'lucide-react';
 
 import { useForm } from 'react-hook-form';
-import {
-  ChatRenameSchema,
-  type ChatRenameForm,
-} from '../types/chatRename.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
@@ -77,7 +77,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
       },
       {
         onSuccess: () => setRenameOpen(false),
-      }
+      },
     );
   };
 

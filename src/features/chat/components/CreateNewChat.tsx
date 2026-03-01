@@ -11,21 +11,26 @@ import { FormContainer } from '@/features/forms/components/FormContainer';
 import { useCreateChatMutation } from '../queries/useCreateChatMutation';
 import type { FormSubmit } from '@/features/forms/types/formField.types';
 import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';
+import { useChatsQuery } from '../queries/useChatsQuery';
+import { Loading } from '@/components/shared/Loading';
 
 export const CreateNewChat = () => {
   const navigate = useNavigate();
+
   const createChat = useCreateChatMutation();
-  const { isMobile } = useSidebar();
   const { data: user } = useUserMeQuery();
+  const { data: chats, isLoading } = useChatsQuery();
+
+  const { isMobile } = useSidebar();
 
   const [open, setOpen] = useState(false);
 
-  const handleCreate = (data: FormSubmit) => {
-    console.log('data', data);
+  const handleCreate = (formData: FormSubmit) => {
+    console.log('data', formData);
     createChat.mutate(
       {
         user: user!.id,
-        fields: data.fields,
+        fields: formData.fields,
       },
       {
         onSuccess: (res) => {
@@ -40,23 +45,27 @@ export const CreateNewChat = () => {
     <>
       {isMobile && <MainHeader />}
 
-      <div className="flex items-center justify-center m-auto">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button disabled={createChat.isPending}>
-              {createChat.isPending ? 'Создание...' : 'Создать новый чат'}
-            </Button>
-          </DialogTrigger>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="flex items-center justify-center m-auto">
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button disabled={createChat.isPending}>
+                {createChat.isPending ? 'Создание...' : 'Создать новый чат'}
+              </Button>
+            </DialogTrigger>
 
-          <DialogContent className="max-w-2xl p-0">
-            <FormContainer
-              formStep={createChatFormStep}
-              chatId="new"
-              onSubmit={handleCreate}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+            <DialogContent className="max-w-2xl p-0">
+              <FormContainer
+                formStep={chats!.payload}
+                chatId="new"
+                onSubmit={handleCreate}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
     </>
   );
 };

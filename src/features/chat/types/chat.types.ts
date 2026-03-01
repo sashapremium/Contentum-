@@ -1,6 +1,7 @@
 import { FieldsSchema } from '@/features/forms/types/formField.types';
 import { FormStepSchema } from '@/features/forms/types/formStep.types';
-import { UserIdSchema } from '@/features/user/types/user.types';
+import { StepSchema } from '@/features/forms/types/step.types';
+import { UserIdSchema, UserSchema } from '@/features/user/types/user.types';
 import { z } from 'zod';
 
 export const ChatMessageTypeSchema = z.enum([
@@ -68,14 +69,6 @@ export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 export const ChatMessagesSchema = z.array(ChatMessageSchema);
 export type ChatMessages = z.infer<typeof ChatMessagesSchema>;
 
-export const ChatUserSchema = z.object({
-  id: z.uuid(),
-  email: z.email(),
-  role: z.string(), // keep flexible for now (user | admin | future roles)
-});
-
-export type ChatUser = z.infer<typeof ChatUserSchema>;
-
 /**
  * Chat type — extensible
  * Do NOT use z.enum(['announcement']) yet.
@@ -85,10 +78,13 @@ export const ChatTypeSchema = z.string().min(1);
 
 export type ChatType = z.infer<typeof ChatTypeSchema>;
 
-export const ChatSchema = z.object({
-  id: z.uuid(),
+export const ChatIdSchema = z.uuid();
+export type ChatId = z.infer<typeof ChatIdSchema>;
 
-  user: ChatUserSchema,
+export const ChatSchema = z.object({
+  id: ChatIdSchema,
+
+  user: UserSchema,
 
   type: ChatTypeSchema, // currently "announcement"
 
@@ -101,7 +97,6 @@ export const ChatSchema = z.object({
   messages: ChatMessagesSchema.optional(),
   messageCount: z.number().int().optional(),
 });
-
 export type Chat = z.infer<typeof ChatSchema>;
 
 export const ChatListResponseSchema = z.object({
@@ -130,7 +125,19 @@ export const ChatCreateResponseSchema = z.object({
 
 export type ChatCreateResponse = z.infer<typeof ChatCreateResponseSchema>;
 
-export const ChatUpdateSchema = ChatCreateSchema;
+export const ChatRenameSchema = z.object({
+  title: z
+    .string()
+    .min(1, 'Название не может быть пустым')
+    .max(255, 'Максимум 255 символов'),
+});
+export type ChatRenameForm = z.infer<typeof ChatRenameSchema>;
+
+export const ChatUpdateSchema = z.object({
+  step: StepSchema,
+  mode: z.string().min(1),
+  fields: FieldsSchema,
+});
 export type ChatUpdateRequest = z.infer<typeof ChatUpdateSchema>;
 
 export interface ChatListQueryParams {
