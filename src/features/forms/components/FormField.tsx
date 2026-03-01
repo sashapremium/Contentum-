@@ -223,7 +223,9 @@ export const FormField = ({ field }: FormFieldProps) => {
                           <ComboboxChipsInput
                             disabled={disabled}
                             placeholder={
-                              value?.length > 0 ? undefined : SELECT_PLACEHOLDER
+                              value?.length > 0 && disabled
+                                ? undefined
+                                : SELECT_PLACEHOLDER
                             }
                           />
                         </React.Fragment>

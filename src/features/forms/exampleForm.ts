@@ -4,7 +4,7 @@ export const exampleForm = {
   title: 'Example Test Form',
   description:
     'This form includes every field type to test the UI + validation logic.',
-  disabled: true,
+  disabled: false,
   modes: [
     {
       name: 'basic',
