@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { FormStep } from '../types/formStep.types';
@@ -15,6 +15,8 @@ interface FormContainerProps {
   onSubmit: (data: FormSubmit) => void;
 }
 
+const MEDIAN_FIELD_HEIGHT = 58;
+
 export const FormContainer = ({
   formStep,
   chatId,
@@ -30,6 +32,17 @@ export const FormContainer = ({
     defaultValues,
     disabled,
   });
+
+  const flatFieldsCount = useMemo(
+    () =>
+      selectedMode.fieldsGroups.reduce(
+        (acc, group) => acc + group.groupFields.length,
+        0,
+      ),
+    [selectedMode.fieldsGroups],
+  );
+
+  console.log('flatFieldsCount', flatFieldsCount);
 
   useEffect(() => {
     form.reset(buildDefaultValues(formStep, selectedMode.name));
@@ -67,9 +80,11 @@ export const FormContainer = ({
         )}
 
         {/* fields */}
-        <ScrollArea className={`max-h-128`}>
+        <ScrollArea
+          className={`h-${flatFieldsCount * MEDIAN_FIELD_HEIGHT > 512 ? 128 : flatFieldsCount * MEDIAN_FIELD_HEIGHT}`}
+        >
           <div
-            className={`space-y-8 px-4 ${disabled ? 'pointer-events-none' : ''}`}
+            className={`space-y-8 pr-4 ${disabled ? 'pointer-events-none' : ''}`}
           >
             {selectedMode.fieldsGroups.map((group) => (
               <FieldGroup key={group.groupName} group={group} />
