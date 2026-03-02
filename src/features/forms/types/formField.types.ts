@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { StepSchema } from './step.types';
 
 export const FieldOptionSchema = z.object({
-  value: z.string(),
+  value: z.union([z.string(), z.number().int()]),
   label: z.string(),
 });
 

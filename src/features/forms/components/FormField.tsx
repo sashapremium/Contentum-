@@ -125,8 +125,8 @@ export const FormField = ({ field }: FormFieldProps) => {
                 <Combobox
                   disabled={disabled}
                   value={
-                    (value as string) !== ''
-                      ? options.find((o) => o.value === value)
+                    (value as string | number) !== ''
+                      ? options.find((o) => o.value === String(value))
                       : undefined
                   }
                   items={options}
@@ -184,7 +184,7 @@ export const FormField = ({ field }: FormFieldProps) => {
 
                 <SelectContent>
                   {options.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
+                    <SelectItem key={opt.value} value={String(opt.value)}>
                       {opt.label}
                     </SelectItem>
                   ))}
