@@ -13,7 +13,7 @@ export function mapApiError(
 
   if (error.name === 'ZodError') {
     const zodError = error as ZodError;
-
+    console.log('ZOD ERROR', (zodError.message as string).split('\n'));
     return z.prettifyError(zodError);
   }
 

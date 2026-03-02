@@ -18,7 +18,7 @@ export type FormFieldPlaceholder = z.infer<typeof FormFieldPlaceholderSchema>;
 
 export const FormFieldsGroupSchema = z.object({
   groupName: z.string().min(1),
-  groupLabel: z.string().nullable(),
+  groupLabel: z.string().nullable().optional(),
   groupFields: z.array(FormFieldSchema),
 });
 
