@@ -43,7 +43,7 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-12">
       {messages.map((msg, idx) => (
         <Message chatId={chatId} key={msg.id ?? idx} message={msg} />
       ))}

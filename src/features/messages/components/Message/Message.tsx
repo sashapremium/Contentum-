@@ -3,6 +3,7 @@ import type { ChatId, ChatMessage } from '@/features/chat/types/chat.types';
 import { MessageRegen } from '../MessageRegen/MessageRegen';
 import { MessageGenerated } from '../MessageGenerated/MessageGenerated';
 import { MessageForm } from '../MessageForm/MessageForm';
+import { MessageActions } from '../MessageActions/MessageActions';
 
 interface MessageProps {
   message: ChatMessage;
@@ -50,7 +51,7 @@ export const Message = ({ message, chatId }: MessageProps) => {
       >
         {renderMessageContent()}
       </div>
-      {/* <MessageActions message={message} /> */}
+      <MessageActions chatId={chatId} message={message} />
     </div>
   );
 };
