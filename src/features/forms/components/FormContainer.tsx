@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { FormStep } from '../types/formStep.types';
 import { buildDefaultValues, buildZodSchema } from '../formAdapter';
@@ -9,6 +9,7 @@ import { FieldGroup } from './FieldGroup';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { FormSubmit } from '../types/formField.types';
 import { cx } from 'class-variance-authority';
+import { EventInfoById } from '@/features/events/components/EventInfoById';
 
 interface FormContainerProps {
   formStep: FormStep;
@@ -27,6 +28,12 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
     defaultValues,
     disabled,
   });
+
+  const eventId = useWatch({
+    control: form.control,
+    name: 'eventId', // must match the field name in your schema
+  }) as string | undefined;
+  const shouldShowEventInfo = Boolean(eventId);
 
   const flatFieldsCount = useMemo(
     () =>
@@ -91,6 +98,8 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
                 group={group}
               />
             ))}
+
+            {shouldShowEventInfo && <EventInfoById eventId={eventId!} />}
           </div>
         </ScrollArea>
 
