@@ -1,9 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
+import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import { tokenStorage } from '@/features/auth/utils/tokenStorage';
 
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
 export const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+});
+
+const refreshApi = axios.create({
   baseURL: 'http://localhost:8000/api',
 });
 
@@ -22,14 +29,20 @@ api.interceptors.request.use(
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value: any) => void;
-  reject: (error: any) => void;
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
 }> = [];
 
-function processQueue(error: any, token: string | null) {
+function processQueue(error: unknown, token: string | null) {
   failedQueue.forEach((promise) => {
-    if (error) promise.reject(error);
-    else promise.resolve(token);
+    if (error) {
+      promise.reject(error);
+      return;
+    }
+
+    if (token) {
+      promise.resolve(token);
+    }
   });
 
   failedQueue = [];
@@ -37,33 +50,42 @@ function processQueue(error: any, token: string | null) {
 
 api.interceptors.response.use(
   (response) => response,
-
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
     const { tokens, setTokens, logout } = useAuthStore.getState();
+
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
 
     if (!tokens?.refresh) {
       logout();
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isUnauthorized = error.response?.status === 401;
+    const isRefreshRequest = originalRequest.url?.includes('/auth/refresh');
+
+    if (isRefreshRequest) {
+      logout();
+      return Promise.reject(error);
+    }
+
+    if (isUnauthorized && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise((resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return api(originalRequest);
-          })
-          .catch((err) => Promise.reject(err));
+        }).then((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return api(originalRequest);
+        });
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const refreshResponse = await api.post('/auth/refresh', {
+        const refreshResponse = await refreshApi.post('/auth/refresh', {
           refresh: tokens.refresh,
         });
 
@@ -80,17 +102,16 @@ api.interceptors.response.use(
           refresh: newRefresh,
         });
 
-        isRefreshing = false;
-
         processQueue(null, newAccess);
 
         originalRequest.headers.Authorization = `Bearer ${newAccess}`;
         return api(originalRequest);
       } catch (refreshError) {
-        isRefreshing = false;
         processQueue(refreshError, null);
         logout();
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 
