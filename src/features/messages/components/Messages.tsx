@@ -5,6 +5,7 @@ import { Message } from './Message/Message';
 import { useEffect, useRef } from 'react';
 import { useChatQuery } from '@/features/chat/queries/useChatQuery';
 import type { ChatId } from '@/features/chat/types/chat.types';
+import { useUpdateChatMutation } from '@/features/chat/queries/useUpdateChatMutation';
 
 interface MessagesProps {
   chatId: ChatId;
@@ -20,10 +21,10 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
     isError,
     error,
   } = useChatQuery(chatId);
-
+  const nextStepMutation = useUpdateChatMutation();
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const messages = chat?.messages;
-
+  console.log('nextStepMutation', isPending, nextStepMutation.isPending);
   useEffect(() => {
     if (!messages) return;
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -41,16 +42,16 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 pb-12">
       {messages.map((msg, idx) => (
         <Message chatId={chatId} key={msg.id ?? idx} message={msg} />
       ))}
 
-      {(sendLoading || isFetching || isPending) && (
-        <Loading className="inline-flex p-2" />
-      )}
+      {(sendLoading ||
+        isFetching ||
+        isPending ||
+        nextStepMutation.isPending) && <Loading className="inline-flex p-2" />}
 
       <div ref={bottomRef} />
     </div>

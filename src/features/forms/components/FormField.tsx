@@ -42,6 +42,10 @@ const NOT_FOUND = 'Ничего не найдено';
 const SELECT_PLACEHOLDER = 'Выберите значение';
 const TEXT_PLACEHOLDER = 'Введите значение';
 
+const getFieldLabel = (field: FormFieldType) => {
+  return `${field.label}${field.required ? '*' : ''}`;
+};
+
 export const FormField = ({ field }: FormFieldProps) => {
   const { control } = useFormContext();
   const anchor = useComboboxAnchor();
@@ -63,7 +67,7 @@ export const FormField = ({ field }: FormFieldProps) => {
                   onCheckedChange={(checked) => onChange(checked)}
                 />
               </FormControl>
-              <span>{field.label}</span>
+              <span>{getFieldLabel(field)}</span>
             </FormLabel>
             {fieldState.error && (
               <FormMessage>{fieldState.error.message}</FormMessage>
@@ -82,8 +86,7 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
-              {field.label}
-              {`${field.required ? '*' : ''}`}
+              {getFieldLabel(field)}
             </FormLabel>
             <FormControl>
               <Textarea
@@ -117,7 +120,7 @@ export const FormField = ({ field }: FormFieldProps) => {
           return (
             <FormItem>
               <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
-                {field.label}
+                {getFieldLabel(field)}
               </FormLabel>
               <FormControl>
                 <Combobox
@@ -168,7 +171,7 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
-              {field.label}
+              {getFieldLabel(field)}
             </FormLabel>
             <FormControl>
               <Select
@@ -210,7 +213,7 @@ export const FormField = ({ field }: FormFieldProps) => {
           return (
             <FormItem>
               <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
-                {field.label}
+                {getFieldLabel(field)}
               </FormLabel>
               <FormControl>
                 <Combobox
@@ -283,7 +286,7 @@ export const FormField = ({ field }: FormFieldProps) => {
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
             <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
-              {field.label}
+              {getFieldLabel(field)}
             </FormLabel>
             <FormControl>
               <DateTimePicker

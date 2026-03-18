@@ -16,7 +16,7 @@ export type FormPayload = z.infer<typeof FormPayloadSchema>;
 
 export const GeneratedTextSchema = z.object({
   text: z.string(),
-  metrics: z.record(z.string(), z.unknown()), // flexible for now
+  metrics: z.record(z.string(), z.string()), // flexible for now
 });
 export type GeneratedText = z.infer<typeof GeneratedTextSchema>;
 

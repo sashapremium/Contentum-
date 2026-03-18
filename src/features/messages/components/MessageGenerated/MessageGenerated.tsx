@@ -5,25 +5,13 @@ interface MessageGeneratedProps {
   message: GeneratedTextMessage;
 }
 
-const METRIC_LABELS: Record<string, string> = {
-  // Fill when metric keys stabilize:
-  // relevance: 'Релевантность',
-  // uniqueness: 'Уникальность',
-};
+function stripMetricPrefix(value: string): string {
+  const index = value.indexOf('|');
 
-const formatMetricValue = (value: unknown): string => {
-  if (value == null) return '—';
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number')
-    return Number.isFinite(value) ? String(value) : '—';
-  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  if (index === -1) return value;
 
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
-};
+  return value.slice(index + 1);
+}
 
 export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
   const items = message.payload.content ?? [];
@@ -64,18 +52,18 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
                     Метрики отсутствуют
                   </div>
                 ) : (
-                  <dl className="grid gap-x-4 gap-y-2 sm:grid-cols-2">
+                  <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                     {metricsEntries.map(([key, value]) => (
                       <div
                         key={key}
-                        className="flex items-start justify-between gap-3"
+                        className="flex flex-col items-start gap-1"
                       >
-                        <dt className="text-sm font-medium text-foreground">
-                          {METRIC_LABELS[key] ?? key}
-                        </dt>
-                        <dd className="text-sm text-muted-foreground text-right break-all">
-                          {formatMetricValue(value)}
-                        </dd>
+                        <div className="text-sm font-medium text-foreground">
+                          {key}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {stripMetricPrefix(value)}
+                        </div>
                       </div>
                     ))}
                   </dl>
