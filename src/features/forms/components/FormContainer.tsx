@@ -60,7 +60,6 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
   return (
     <FormProvider {...form}>
       <div className="space-y-6  ">
-        {/* header */}
         <header className="space-y-2">
           <span
             className={cx(
@@ -77,7 +76,6 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
           )}
         </header>
 
-        {/* modes if >1 */}
         {!disabled && formStep.modes.length > 1 && (
           <FormModeButton
             modes={formStep.modes}
@@ -86,7 +84,6 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
           />
         )}
 
-        {/* fields */}
         <ScrollArea className={`${flatFieldsCount > 6 ? 'h-96' : ''}`}>
           <div
             className={`space-y-8 pr-4 pl-1 pb-1 ${disabled ? 'pointer-events-none' : ''}`}
@@ -103,7 +100,6 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
           </div>
         </ScrollArea>
 
-        {/* footer */}
         {!disabled && (
           <footer className="flex justify-end">
             <Button onClick={handleSubmit}>Далее</Button>

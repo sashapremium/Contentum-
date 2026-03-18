@@ -53,7 +53,6 @@ export const FormField = ({ field }: FormFieldProps) => {
         name={field.name}
         render={({ field: { disabled, value, onChange }, fieldState }) => (
           <FormItem>
-            {/* Label for checkbox */}
             <FormLabel
               className={`${disabled && 'text-muted-foreground'} flex items-center space-x-2`}
             >
@@ -66,7 +65,6 @@ export const FormField = ({ field }: FormFieldProps) => {
               </FormControl>
               <span>{field.label}</span>
             </FormLabel>
-            {/* Error message */}
             {fieldState.error && (
               <FormMessage>{fieldState.error.message}</FormMessage>
             )}
@@ -85,6 +83,7 @@ export const FormField = ({ field }: FormFieldProps) => {
           <FormItem>
             <FormLabel className={`${disabled && 'text-muted-foreground'}`}>
               {field.label}
+              {`${field.required ? '*' : ''}`}
             </FormLabel>
             <FormControl>
               <Textarea
@@ -93,7 +92,6 @@ export const FormField = ({ field }: FormFieldProps) => {
                 placeholder={TEXT_PLACEHOLDER}
                 value={value as string}
                 onChange={(e) => onChange(e.target.value)}
-                // Optionally connect validation attributes
                 {...(field.validation?.maxLength
                   ? { maxLength: field.validation.maxLength }
                   : {})}
