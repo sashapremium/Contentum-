@@ -52,7 +52,7 @@ export const CreateNewChat = () => {
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button disabled={createChat.isPending}>
-                {createChat.isPending ? 'Создание...' : 'Создать новый чат'}
+                {createChat.isPending ? 'Создание...' : 'Создать новый пост'}
               </Button>
             </DialogTrigger>
 

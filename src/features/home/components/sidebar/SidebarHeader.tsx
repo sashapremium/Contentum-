@@ -1,4 +1,4 @@
-import { CHAT_CREATE } from '@/app/router/routes';
+import { POST_CREATE, PHOTO_CREATE } from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
@@ -8,14 +8,19 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { SquarePen } from 'lucide-react';
+import { Image, SquarePen } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
 const HEADER_ITEMS = [
   {
-    title: 'Создать чат',
+    title: 'Создать пост',
     Icon: SquarePen,
-    path: CHAT_CREATE,
+    path: POST_CREATE,
+  },
+  {
+    title: 'Создать изображение',
+    Icon: Image,
+    path: PHOTO_CREATE,
   },
 ];
 

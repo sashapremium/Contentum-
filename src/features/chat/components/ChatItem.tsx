@@ -19,7 +19,7 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
         className="group place-content-between"
         asChild
       >
-        <Link to={`/chat/${chat.id}`}>
+        <Link to={`/post/${chat.id}`}>
           <span>{chat.title}</span>
         </Link>
       </SidebarMenuButton>
