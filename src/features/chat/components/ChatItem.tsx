@@ -1,5 +1,5 @@
 import { SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { useLocation, useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import type { Chat } from '../types/chat.types';
 
 import { ChatActionDropdown } from './ChatActionDropdown';
@@ -10,8 +10,6 @@ interface ChatItemProps {
 
 export const ChatItem = ({ chat }: ChatItemProps) => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-
   const isSelected = pathname === `/chat/${chat.id}`;
 
   return (
@@ -19,16 +17,13 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
       <SidebarMenuButton
         isActive={isSelected}
         className="group place-content-between"
-        onClick={() => {
-          navigate(`/chat/${chat.id}`);
-        }}
         asChild
       >
-        <div className="cursor-pointer">
-          <span className="truncate">{chat.title}</span>
-          {isSelected && <ChatActionDropdown chat={chat} />}
-        </div>
+        <Link to={`/chat/${chat.id}`}>
+          <span>{chat.title}</span>
+        </Link>
       </SidebarMenuButton>
+      <ChatActionDropdown chat={chat} />
     </SidebarMenuItem>
   );
 };

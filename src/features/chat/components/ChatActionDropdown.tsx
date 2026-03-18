@@ -23,7 +23,7 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import { Ellipsis, SquarePen, Trash } from 'lucide-react';
+import { MoreHorizontal, SquarePen, Trash } from 'lucide-react';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +38,7 @@ import { Error } from '@/components/shared/Error';
 import { useDeleteChatMutation } from '../queries/useDeleteChatMutation';
 import { useNavigate } from 'react-router';
 import { useRenameChatMutation } from '../queries/useRenameChatMutation';
+import { SidebarMenuAction, useSidebar } from '@/components/ui/sidebar';
 
 interface ChatActionDropdownProps {
   chat: Chat;
@@ -51,6 +52,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
   const renameMutation = useRenameChatMutation();
 
   const navigate = useNavigate();
+  const { isMobile } = useSidebar();
 
   const form = useForm<ChatRenameForm>({
     resolver: zodResolver(ChatRenameSchema),
@@ -83,21 +85,21 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger
-          onClick={(e) => e.stopPropagation()}
-          className="p-1 hover:bg-muted rounded"
-        >
-          <Ellipsis className="h-5 w-5" />
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuAction showOnHover>
+            <MoreHorizontal />
+          </SidebarMenuAction>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          align="start"
-          sideOffset={4}
+          className="w-48 rounded-lg"
+          side={isMobile ? 'bottom' : 'right'}
+          align={isMobile ? 'end' : 'start'}
           onClick={(e) => e.stopPropagation()}
         >
           <DropdownMenuItem onClick={() => setRenameOpen(true)}>
             <SquarePen className="mr-2" />
-            Переименовать
+            <span>Переименовать</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -105,7 +107,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
             onClick={() => setDeleteOpen(true)}
           >
             <Trash className="mr-2" />
-            Удалить
+            <span>Удалить</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -113,7 +115,7 @@ export const ChatActionDropdown = ({ chat }: ChatActionDropdownProps) => {
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title="Удалить чат?"
+        title={`Удалить чат "${chat.title.length > 20 ? chat.title.slice(0, 20) + '…' : chat.title}"?`}
         description="Вся история сообщений будет потеряна"
         confirmText={deleteMutation.isPending ? 'Удаление...' : 'Удалить'}
         onClickConfirm={handleDelete}
