@@ -1,3 +1,4 @@
+import { CHAT_CREATE } from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
@@ -8,19 +9,20 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { SquarePen } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 const HEADER_ITEMS = [
   {
     title: 'Создать чат',
-    icon: SquarePen,
-    url: '/',
+    Icon: SquarePen,
+    path: CHAT_CREATE,
   },
 ];
 
 export const SidebarHeader = () => {
-  const navigate = useNavigate();
   const { open } = useSidebar();
+
+  const { pathname } = useLocation();
 
   return (
     <UISidebarHeader>
@@ -31,14 +33,17 @@ export const SidebarHeader = () => {
       </div>
 
       <SidebarMenu>
-        {HEADER_ITEMS.map((item) => (
-          <SidebarMenuItem key={item.title}>
+        {HEADER_ITEMS.map(({ title, Icon, path }) => (
+          <SidebarMenuItem key={title}>
             <SidebarMenuButton
-              tooltip={item.title}
-              onClick={() => navigate('/')}
+              isActive={pathname === path}
+              tooltip={title}
+              asChild
             >
-              <item.icon />
-              <span>{item.title}</span>
+              <Link to={path}>
+                <Icon />
+                <span>{title}</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

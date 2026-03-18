@@ -8,6 +8,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
 import { CreateNewChat } from '@/features/chat/components/CreateNewChat';
 import TestFormsPage from '../pages/TestForms';
+import { CHAT_CREATE, CHAT_DETAIL } from './routes';
 
 const router = createBrowserRouter([
   {
@@ -26,12 +27,12 @@ const router = createBrowserRouter([
 
     children: [
       {
-        index: true,
+        path: CHAT_CREATE,
         element: <CreateNewChat />,
         errorElement: <ErrorPage />,
       },
       {
-        path: 'chat/:chatId',
+        path: CHAT_DETAIL,
         element: <ChatPage />,
         errorElement: <ErrorPage />,
       },
