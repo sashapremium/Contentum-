@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router';
 import type { Chat } from '../types/chat.types';
 
 import { ChatActionDropdown } from './ChatActionDropdown';
-import { POST_PREFIX } from '@/app/router/routes';
+import { POST } from '@/app/router/routes';
 
 interface ChatItemProps {
   chat: Chat;
@@ -11,7 +11,7 @@ interface ChatItemProps {
 
 export const ChatItem = ({ chat }: ChatItemProps) => {
   const { pathname } = useLocation();
-  const isSelected = pathname === `${POST_PREFIX}/${chat.id}`;
+  const isSelected = pathname === `${POST}/${chat.id}`;
 
   return (
     <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
@@ -20,7 +20,7 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
         className="group place-content-between"
         asChild
       >
-        <Link to={`${POST_PREFIX}/${chat.id}`}>
+        <Link to={`${POST}/${chat.id}`}>
           <span>{chat.title}</span>
         </Link>
       </SidebarMenuButton>

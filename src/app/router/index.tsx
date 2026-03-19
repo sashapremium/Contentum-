@@ -8,7 +8,16 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
 import { CreateNewChat } from '@/features/chat/components/CreateNewChat';
 import TestFormsPage from '../pages/TestForms';
-import { POST_CREATE, POST_DETAIL } from './routes';
+import {
+  GALLERY,
+  PHOTO_CREATE,
+  POST_CREATE,
+  POST_DETAIL,
+  THEATRE,
+} from './routes';
+import { GalleryPage } from '@/features/gallery/pages';
+import { PhotoCreatePage } from '@/features/photo/pages/create';
+import { TheatrePage } from '@/features/theatre/pages';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +43,21 @@ const router = createBrowserRouter([
       {
         path: POST_DETAIL,
         element: <ChatPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: PHOTO_CREATE,
+        element: <PhotoCreatePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: GALLERY,
+        element: <GalleryPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: THEATRE,
+        element: <TheatrePage />,
         errorElement: <ErrorPage />,
       },
       {

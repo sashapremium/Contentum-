@@ -10,7 +10,7 @@ import type { FormSubmit } from '@/features/forms/types/formField.types';
 import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';
 import { useChatsQuery } from '../queries/useChatsQuery';
 import { Loading } from '@/components/shared/Loading';
-import { POST_PREFIX } from '@/app/router/routes';
+import { POST } from '@/app/router/routes';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const CreateNewChat = () => {
@@ -31,7 +31,7 @@ export const CreateNewChat = () => {
       },
       {
         onSuccess: (res) => {
-          navigate(`${POST_PREFIX}/${res.chatId}`);
+          navigate(`${POST}/${res.chatId}`);
         },
       },
     );

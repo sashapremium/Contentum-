@@ -1,4 +1,9 @@
-import { POST_CREATE, PHOTO_CREATE, GALLERY } from '@/app/router/routes';
+import {
+  POST_CREATE,
+  PHOTO_CREATE,
+  GALLERY,
+  THEATRE,
+} from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
@@ -30,7 +35,7 @@ const HEADER_ITEMS = [
   {
     title: 'Управление учреждением',
     Icon: Landmark,
-    path: GALLERY,
+    path: THEATRE,
   },
 ];
 
