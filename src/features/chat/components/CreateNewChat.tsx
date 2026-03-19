@@ -1,10 +1,7 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-import { Button } from '@/components/ui/button';
 import { MainHeader } from '@/components/shared/MainHeader';
 import { useSidebar } from '@/components/ui/sidebar';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 import { FormContainer } from '@/features/forms/components/FormContainer';
 
@@ -14,6 +11,7 @@ import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';
 import { useChatsQuery } from '../queries/useChatsQuery';
 import { Loading } from '@/components/shared/Loading';
 import { POST_PREFIX } from '@/app/router/routes';
+import { Card, CardContent } from '@/components/ui/card';
 
 export const CreateNewChat = () => {
   const navigate = useNavigate();
@@ -24,8 +22,6 @@ export const CreateNewChat = () => {
 
   const { isMobile } = useSidebar();
 
-  const [open, setOpen] = useState(false);
-
   const handleCreate = (formData: FormSubmit) => {
     console.log('data', formData);
     createChat.mutate(
@@ -35,7 +31,6 @@ export const CreateNewChat = () => {
       },
       {
         onSuccess: (res) => {
-          setOpen(false);
           navigate(`${POST_PREFIX}${res.chatId}`);
         },
       },
@@ -49,22 +44,16 @@ export const CreateNewChat = () => {
       {isLoading ? (
         <Loading />
       ) : (
-        <div className="flex items-center justify-center m-auto">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button disabled={createChat.isPending}>
-                {createChat.isPending ? 'Создание...' : 'Создать новый пост'}
-              </Button>
-            </DialogTrigger>
-
-            <DialogContent className="max-w-2xl">
+        <div className="my-auto px-[5%] sm:px-[10%] md:px-[20%] lg:px-[30%]">
+          <Card>
+            <CardContent>
               <FormContainer
                 formStep={chats!.payload}
                 chatId="new"
                 onSubmit={handleCreate}
               />
-            </DialogContent>
-          </Dialog>
+            </CardContent>
+          </Card>
         </div>
       )}
     </>

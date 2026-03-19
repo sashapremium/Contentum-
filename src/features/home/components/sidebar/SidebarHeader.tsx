@@ -1,4 +1,4 @@
-import { POST_CREATE, PHOTO_CREATE } from '@/app/router/routes';
+import { POST_CREATE, PHOTO_CREATE, GALLERY } from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
@@ -8,7 +8,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Image, SquarePen } from 'lucide-react';
+import { Image, Images, SquarePen } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
 const HEADER_ITEMS = [
@@ -21,6 +21,11 @@ const HEADER_ITEMS = [
     title: 'Создать изображение',
     Icon: Image,
     path: PHOTO_CREATE,
+  },
+  {
+    title: 'Галерея',
+    Icon: Images,
+    path: GALLERY,
   },
 ];
 
