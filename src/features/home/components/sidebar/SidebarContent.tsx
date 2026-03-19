@@ -10,7 +10,7 @@ export const SidebarContent = () => {
   return (
     <UISidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>История диалогов</SidebarGroupLabel>
+        <SidebarGroupLabel>История чатов</SidebarGroupLabel>
         <SidebarGroupContent>
           <ChatList />
         </SidebarGroupContent>
