@@ -8,7 +8,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Image, Images, SquarePen } from 'lucide-react';
+import { Image, Images, Landmark, SquarePen } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
 const HEADER_ITEMS = [
@@ -25,6 +25,11 @@ const HEADER_ITEMS = [
   {
     title: 'Галерея',
     Icon: Images,
+    path: GALLERY,
+  },
+  {
+    title: 'Управление учреждением',
+    Icon: Landmark,
     path: GALLERY,
   },
 ];

@@ -11,7 +11,7 @@ interface ChatItemProps {
 
 export const ChatItem = ({ chat }: ChatItemProps) => {
   const { pathname } = useLocation();
-  const isSelected = pathname === `${POST_PREFIX}${chat.id}`;
+  const isSelected = pathname === `${POST_PREFIX}/${chat.id}`;
 
   return (
     <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
@@ -20,7 +20,7 @@ export const ChatItem = ({ chat }: ChatItemProps) => {
         className="group place-content-between"
         asChild
       >
-        <Link to={`${POST_PREFIX}${chat.id}`}>
+        <Link to={`${POST_PREFIX}/${chat.id}`}>
           <span>{chat.title}</span>
         </Link>
       </SidebarMenuButton>

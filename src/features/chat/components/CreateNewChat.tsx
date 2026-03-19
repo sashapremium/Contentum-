@@ -31,7 +31,7 @@ export const CreateNewChat = () => {
       },
       {
         onSuccess: (res) => {
-          navigate(`${POST_PREFIX}${res.chatId}`);
+          navigate(`${POST_PREFIX}/${res.chatId}`);
         },
       },
     );
