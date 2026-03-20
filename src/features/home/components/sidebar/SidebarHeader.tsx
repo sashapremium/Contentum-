@@ -1,13 +1,3 @@
-import {
-  POST_CREATE,
-  PHOTO_CREATE,
-  GALLERY,
-  THEATRE,
-  POST_TITLE,
-  PHOTO_TITLE,
-  GALLERY_TITLE,
-  THEATRE_TITLE,
-} from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,
@@ -17,31 +7,8 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Image, Images, Landmark, SquarePen } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
-
-const HEADER_ITEMS = [
-  {
-    title: POST_TITLE,
-    Icon: SquarePen,
-    url: POST_CREATE,
-  },
-  {
-    title: PHOTO_TITLE,
-    Icon: Image,
-    url: PHOTO_CREATE,
-  },
-  {
-    title: GALLERY_TITLE,
-    Icon: Images,
-    url: GALLERY,
-  },
-  {
-    title: THEATRE_TITLE,
-    Icon: Landmark,
-    url: THEATRE,
-  },
-];
+import { HEADER_ITEMS } from '@/features/home/constants';
 
 export const SidebarHeader = () => {
   const { open } = useSidebar();

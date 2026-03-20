@@ -18,6 +18,7 @@ import { GalleryPage } from '@/features/gallery/pages';
 import { PhotoCreatePage } from '@/features/photo/pages/create';
 import { TheatrePage } from '@/features/theatre/pages';
 import { ChatCreatePage } from '@/features/chat/pages/create';
+import { EntryPage } from '../pages';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
 
     children: [
+      {
+        index: true,
+        element: <EntryPage />,
+        errorElement: <ErrorPage />,
+      },
       {
         path: POST_CREATE,
         element: <ChatCreatePage />,
