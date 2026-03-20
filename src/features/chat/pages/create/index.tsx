@@ -18,7 +18,6 @@ export const ChatCreatePage = () => {
   const { data: chats, isLoading } = useChatsQuery();
 
   const handleCreate = (formData: FormSubmit) => {
-    console.log('data', formData);
     createChat.mutate(
       {
         user: user!.id,
