@@ -3,6 +3,10 @@ import {
   PHOTO_CREATE,
   GALLERY,
   THEATRE,
+  POST_TITLE,
+  PHOTO_TITLE,
+  GALLERY_TITLE,
+  THEATRE_TITLE,
 } from '@/app/router/routes';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,22 +22,22 @@ import { Link, useLocation } from 'react-router';
 
 const HEADER_ITEMS = [
   {
-    title: 'Создать пост',
+    title: POST_TITLE,
     Icon: SquarePen,
     path: POST_CREATE,
   },
   {
-    title: 'Создать изображение',
+    title: PHOTO_TITLE,
     Icon: Image,
     path: PHOTO_CREATE,
   },
   {
-    title: 'Галерея',
+    title: GALLERY_TITLE,
     Icon: Images,
     path: GALLERY,
   },
   {
-    title: 'Управление учреждением',
+    title: THEATRE_TITLE,
     Icon: Landmark,
     path: THEATRE,
   },

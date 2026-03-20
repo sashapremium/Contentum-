@@ -1,4 +1,4 @@
-import { POST } from '@/app/router/routes';
+import { POST, POST_TITLE } from '@/app/router/routes';
 import type { FormSubmit } from '@/features/forms/types/formField.types';
 import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';
 import { useNavigate } from 'react-router';
@@ -8,6 +8,7 @@ import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Card, CardContent } from '@/components/ui/card';
 import { FormContainer } from '@/features/forms/components/FormContainer';
+import { PageHeading } from '@/components/shared/PageHeading';
 
 export const ChatCreatePage = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export const ChatCreatePage = () => {
   }
 
   return (
-    <PageWrapper header={<h1 className="truncate">Создать пост</h1>}>
+    <PageWrapper header={<PageHeading>{POST_TITLE}</PageHeading>}>
       <Card>
         <CardContent>
           <FormContainer

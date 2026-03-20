@@ -5,6 +5,7 @@ import { mapApiError } from '@/lib/apiErrorMapper';
 import { Messages } from '@/features/messages/components/Messages';
 import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
+import { PageHeading } from '@/components/shared/PageHeading';
 
 export default function ChatPage() {
   const { chatId } = useParams();
@@ -38,7 +39,7 @@ export default function ChatPage() {
   }
 
   return (
-    <PageWrapper header={<h1 className="truncate">{chat.title}</h1>}>
+    <PageWrapper header={<PageHeading>{chat.title}</PageHeading>}>
       <Messages chatId={chat.id} sendLoading={isPending} />
     </PageWrapper>
   );

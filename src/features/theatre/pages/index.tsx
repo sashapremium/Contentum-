@@ -1,3 +1,11 @@
+import { THEATRE_TITLE } from '@/app/router/routes';
+import { PageHeading } from '@/components/shared/PageHeading';
+import { PageWrapper } from '@/components/shared/PageWrapper';
+
 export const TheatrePage = () => {
-  return <div>Информация о театре и настройка брендбука</div>;
+  return (
+    <PageWrapper
+      header={<PageHeading>{THEATRE_TITLE}</PageHeading>}
+    ></PageWrapper>
+  );
 };
