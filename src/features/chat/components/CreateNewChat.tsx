@@ -1,8 +1,5 @@
 import { useNavigate } from 'react-router';
 
-import { MainHeader } from '@/components/shared/MainHeader';
-import { useSidebar } from '@/components/ui/sidebar';
-
 import { FormContainer } from '@/features/forms/components/FormContainer';
 
 import { useCreateChatMutation } from '../queries/useCreateChatMutation';
@@ -19,8 +16,6 @@ export const CreateNewChat = () => {
   const createChat = useCreateChatMutation();
   const { data: user } = useUserMeQuery();
   const { data: chats, isLoading } = useChatsQuery();
-
-  const { isMobile } = useSidebar();
 
   const handleCreate = (formData: FormSubmit) => {
     console.log('data', formData);
@@ -39,8 +34,6 @@ export const CreateNewChat = () => {
 
   return (
     <>
-      {isMobile && <MainHeader />}
-
       {isLoading ? (
         <Loading />
       ) : (

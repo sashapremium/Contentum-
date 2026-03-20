@@ -2,7 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useChatQuery } from '../queries/useChatQuery';
 import { Error } from '@/components/shared/Error';
 import { mapApiError } from '@/lib/apiErrorMapper';
-import { ChatPageHeader } from '../components/ChatPageHeader';
 import { Messages } from '@/features/messages/components/Messages';
 import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
@@ -39,11 +38,8 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <ChatPageHeader chat={chat} />
-      <PageWrapper>
-        <Messages chatId={chat.id} sendLoading={isPending} />
-      </PageWrapper>
-    </div>
+    <PageWrapper header={<h1 className="truncate">{chat.title}</h1>}>
+      <Messages chatId={chat.id} sendLoading={isPending} />
+    </PageWrapper>
   );
 }
