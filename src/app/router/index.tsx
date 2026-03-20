@@ -6,7 +6,6 @@ import ChatPage from '@/features/chat/pages/ChatPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
-import { CreateNewChat } from '@/features/chat/components/CreateNewChat';
 import TestFormsPage from '../pages/TestForms';
 import {
   GALLERY,
@@ -18,6 +17,7 @@ import {
 import { GalleryPage } from '@/features/gallery/pages';
 import { PhotoCreatePage } from '@/features/photo/pages/create';
 import { TheatrePage } from '@/features/theatre/pages';
+import { ChatCreatePage } from '@/features/chat/pages/create';
 
 const router = createBrowserRouter([
   {
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: POST_CREATE,
-        element: <CreateNewChat />,
+        element: <ChatCreatePage />,
         errorElement: <ErrorPage />,
       },
       {
