@@ -24,22 +24,22 @@ const HEADER_ITEMS = [
   {
     title: POST_TITLE,
     Icon: SquarePen,
-    path: POST_CREATE,
+    url: POST_CREATE,
   },
   {
     title: PHOTO_TITLE,
     Icon: Image,
-    path: PHOTO_CREATE,
+    url: PHOTO_CREATE,
   },
   {
     title: GALLERY_TITLE,
     Icon: Images,
-    path: GALLERY,
+    url: GALLERY,
   },
   {
     title: THEATRE_TITLE,
     Icon: Landmark,
-    path: THEATRE,
+    url: THEATRE,
   },
 ];
 
@@ -57,14 +57,14 @@ export const SidebarHeader = () => {
       </div>
 
       <SidebarMenu>
-        {HEADER_ITEMS.map(({ title, Icon, path }) => (
+        {HEADER_ITEMS.map(({ title, Icon, url }) => (
           <SidebarMenuItem key={title}>
             <SidebarMenuButton
-              isActive={pathname === path}
+              isActive={pathname === url}
               tooltip={title}
               asChild
             >
-              <Link to={path}>
+              <Link to={url}>
                 <Icon />
                 <span>{title}</span>
               </Link>

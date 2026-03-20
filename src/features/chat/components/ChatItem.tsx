@@ -1,4 +1,8 @@
-import { SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
+import {
+  SidebarMenuItem,
+  SidebarMenuButton,
+  useSidebar,
+} from '@/components/ui/sidebar';
 import { Link, useLocation } from 'react-router';
 import type { Chat } from '../types/chat.types';
 
@@ -12,10 +16,12 @@ interface ChatItemProps {
 export const ChatItem = ({ chat }: ChatItemProps) => {
   const { pathname } = useLocation();
   const isSelected = pathname === `${POST}/${chat.id}`;
+  const { toggleSidebar, isMobile } = useSidebar();
 
   return (
     <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
       <SidebarMenuButton
+        onClick={isMobile ? toggleSidebar : undefined}
         isActive={isSelected}
         className="group place-content-between"
         asChild
