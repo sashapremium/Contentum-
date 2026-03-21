@@ -11,12 +11,13 @@ import {
   SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import { ChatList } from '@/features/chat/components/ChatList';
+import { SessionList } from '@/features/photo/components/SessionList';
 import { ChevronRight } from 'lucide-react';
 import { useLocation } from 'react-router';
 
 const SIDEBAR_ITEMS = [
   { title: 'Посты', url: POST, content: <ChatList /> },
-  { title: 'Изображения', url: PHOTO },
+  { title: 'Изображения', url: PHOTO, content: <SessionList /> },
 ];
 
 export const SidebarContent = () => {
