@@ -8,12 +8,14 @@ interface PageWrapperProps extends DetailedHTMLProps<
   HTMLDivElement
 > {
   header?: ReactNode;
+  wide?: boolean;
 }
 
 export const PageWrapper = ({
   className,
   children,
   header,
+  wide,
   ...props
 }: PageWrapperProps) => {
   const { isMobile } = useSidebar();
@@ -30,8 +32,9 @@ export const PageWrapper = ({
         {...props}
         className={cx(
           'max-w-none mx-0 px-4',
-          'sm:max-w-[min(65vw,768px)] sm:mx-auto sm:px-0',
           'w-full',
+          !wide && 'sm:max-w-[min(65vw,768px)] sm:mx-auto sm:px-0',
+          wide && 'px-16',
           className,
         )}
       >
