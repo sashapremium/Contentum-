@@ -139,7 +139,9 @@ export type PhotoSessionUpdateResponse = z.infer<
 >;
 
 export const PhotoSessionUploadResponseSchema = z.object({
-  sourceImageUrl: z.string().min(1),
+  fileId: z.string().min(1),
+  relativePath: z.string().min(1),
+  url: z.string().min(1),
 });
 export type PhotoSessionUploadResponse = z.infer<
   typeof PhotoSessionUploadResponseSchema

@@ -13,3 +13,5 @@ export const GALLERY_TITLE = 'Галерея';
 
 export const THEATRE = '/theatre';
 export const THEATRE_TITLE = 'Управление учреждением';
+
+export const BACKEND_URL = 'http://127.0.0.1:8000';

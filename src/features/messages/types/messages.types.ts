@@ -1,12 +1,13 @@
 import { z } from 'zod';
 
 export const ImageInfoSchema = z.object({
-  task_id: z.uuid(),
-  prompt: z.string(),
-  image_url: z.url(),
-  download_url: z.url(),
-  regeneration_attempts: z.number().int().nonnegative(),
-  total_attempts: z.number().int().nonnegative(),
+  createdAt: z.string(),
+  mainText: z.string(),
+  resultPng: z.string(),
+  resultWebp: z.string(),
+  sourceImageUrl: z.string(),
+  templateId: z.string(),
+  variantNumber: z.number().int(),
 });
 
 export type ImageInfo = z.infer<typeof ImageInfoSchema>;

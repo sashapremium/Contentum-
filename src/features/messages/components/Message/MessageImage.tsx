@@ -9,9 +9,10 @@ import type { ImageInfo } from '../../types/messages.types';
 
 interface MessageImageProps {
   info: ImageInfo;
+  prefix?: string;
 }
 
-export const MessageImage = ({ info }: MessageImageProps) => {
+export const MessageImage = ({ info, prefix }: MessageImageProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,12 +21,12 @@ export const MessageImage = ({ info }: MessageImageProps) => {
         <DialogTrigger asChild>
           <div
             className={cx(
-              'bg-muted w-full max-w-[75%] overflow-hidden rounded-xl shadow-sm cursor-pointer'
+              'bg-muted w-full max-w-[75%] overflow-hidden rounded-xl shadow-sm cursor-pointer',
             )}
           >
             <AspectRatio ratio={4 / 5} className="bg-black/10 rounded-xl">
               <img
-                src={info.image_url}
+                src={`${prefix ?? ''}${info.resultWebp}`}
                 alt="Сгенерированное изображение"
                 className="h-full w-full object-contain rounded-xl transition hover:opacity-90"
               />
@@ -45,12 +46,12 @@ export const MessageImage = ({ info }: MessageImageProps) => {
               size={'icon-lg'}
               className="rounded-full absolute opacity-0 transition group-hover:opacity-100"
             >
-              <a download href={info.download_url} className="p-8">
+              <a download href={info.resultPng} className="p-8">
                 <Download />
               </a>
             </Button>
             <img
-              src={info.image_url}
+              src={`${prefix ?? ''}${info.resultWebp}`}
               alt="Сгенерированное изображение (полный размер)"
               className="max-h-[90vh] w-auto rounded-xl object-contain"
             />

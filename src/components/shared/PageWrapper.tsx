@@ -31,10 +31,9 @@ export const PageWrapper = ({
       <div
         {...props}
         className={cx(
-          'max-w-none mx-0 px-4',
-          'w-full',
+          'max-w-none mx-0 px-4 w-full',
           !wide && 'sm:max-w-[min(65vw,768px)] sm:mx-auto sm:px-0',
-          wide && 'px-16',
+          wide && 'px-4 sm:px-16',
           className,
         )}
       >

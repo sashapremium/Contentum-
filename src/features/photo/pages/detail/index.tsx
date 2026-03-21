@@ -12,11 +12,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { usePhotoSessionQuery } from '../../queries/usePhotoSessionQuery';
 import { useUploadPhotoSessionSourceImageMutation } from '../../queries/useUploadPhotoSessionSourceImageMutation';
 import { useUpdatePhotoSessionMutation } from '../../queries/useUpdatePhotoSessionMutation';
+import { Input } from '@/components/ui/input';
+import { MessageImage } from '@/features/messages/components/Message/MessageImage';
+import { BACKEND_URL } from '@/app/router/routes';
 
 export const PhotoDetailPage = () => {
   const { photoId } = useParams<{ photoId: string }>();
 
-  const sessionQuery = usePhotoSessionQuery(photoId);
+  const { data: session, isLoading, isError } = usePhotoSessionQuery(photoId);
   const uploadImageMutation = useUploadPhotoSessionSourceImageMutation();
   const updateSessionMutation = useUpdatePhotoSessionMutation();
 
@@ -26,18 +29,19 @@ export const PhotoDetailPage = () => {
     string | null
   >(null);
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const latestVariant = useMemo(() => {
-    if (!sessionQuery.data?.history.length) {
+    if (!session?.history.length) {
       return null;
     }
 
-    return [...sessionQuery.data.history].sort(
+    return [...session.history].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )[0];
-  }, [sessionQuery.data?.history]);
+  }, [session?.history]);
 
-  const hasHistory = Boolean(sessionQuery.data?.history.length);
+  const hasHistory = Boolean(session?.history.length);
   const hasSourceImage = Boolean(
     uploadedSourceImageUrl || latestVariant?.sourceImageUrl,
   );
@@ -60,7 +64,7 @@ export const PhotoDetailPage = () => {
       },
       {
         onSuccess: (response) => {
-          setUploadedSourceImageUrl(response.sourceImageUrl);
+          setUploadedSourceImageUrl(response.url);
         },
       },
     );
@@ -101,11 +105,11 @@ export const PhotoDetailPage = () => {
     );
   }
 
-  if (sessionQuery.isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (sessionQuery.isError || !sessionQuery.data) {
+  if (isError || !session) {
     return (
       <PageWrapper header={<PageHeading>Фото</PageHeading>}>
         <Error description="Failed to load session" />
@@ -113,138 +117,84 @@ export const PhotoDetailPage = () => {
     );
   }
 
-  const session = sessionQuery.data;
-
   return (
     <PageWrapper wide header={<PageHeading>{session.title}</PageHeading>}>
-      <div className="space-y-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <div className="text-sm font-medium">Исходная фотография</div>
+      <div className="space-y-8">
+        <div className="flex gap-3">
+          <div className="space-y-3 min-w-[100%] lg:min-w-[50%]">
+            <div className="text-lg font-semibold">Исходная фотография</div>
 
-                {(uploadedSourceImageUrl || latestVariant?.sourceImageUrl) && (
-                  <img
-                    src={
-                      uploadedSourceImageUrl ?? latestVariant?.sourceImageUrl
-                    }
-                    alt="Исходная фотография"
-                    className="max-h-56 rounded-md border object-contain"
-                  />
-                )}
+            {/* {(uploadedSourceImageUrl !== null ||
+            latestVariant?.sourceImageUrl !== undefined) && (
+            <MessageImage info={{}} />
+          )} */}
 
-                <div className="flex items-center gap-3">
-                  <input
-                    id="source-image-upload"
-                    type="file"
-                    accept="image/*"
-                    className="block text-sm"
-                    onChange={handleFileChange}
-                    disabled={uploadImageMutation.isPending}
-                  />
+            <Input
+              id="source-image-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={uploadImageMutation.isPending}
+            />
 
-                  {selectedFileName && (
-                    <span className="text-sm text-muted-foreground">
-                      {selectedFileName}
-                    </span>
-                  )}
-                </div>
+            {uploadImageMutation.isError && (
+              <Error description="Не удалось загрузить изображение" />
+            )}
 
-                {uploadImageMutation.isError && (
-                  <Error description="Не удалось загрузить изображение" />
-                )}
-              </div>
+            <Textarea
+              id="main-text"
+              value={mainText}
+              onChange={(e) => setMainText(e.target.value)}
+              placeholder="Введите текст для генерации"
+              rows={4}
+            />
 
-              <div className="space-y-3">
-                <label htmlFor="main-text" className="text-sm font-medium">
-                  Текст для макета
-                </label>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                onClick={handleGenerate}
+                disabled={
+                  updateSessionMutation.isPending ||
+                  !mainText.trim() ||
+                  !hasSourceImage
+                }
+              >
+                {updateSessionMutation.isPending
+                  ? 'Генерация...'
+                  : 'Сгенерировать'}
+              </Button>
 
-                <Textarea
-                  id="main-text"
-                  value={mainText}
-                  onChange={(e) => setMainText(e.target.value)}
-                  placeholder="Введите текст для генерации"
-                  rows={4}
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  onClick={handleGenerate}
-                  disabled={
-                    updateSessionMutation.isPending ||
-                    !mainText.trim() ||
-                    !hasSourceImage
-                  }
-                >
-                  {updateSessionMutation.isPending
-                    ? 'Генерация...'
-                    : 'Сгенерировать'}
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  onClick={handleRegenerate}
-                  disabled={
-                    updateSessionMutation.isPending ||
-                    !mainText.trim() ||
-                    !hasHistory
-                  }
-                >
-                  Перегенерировать
-                </Button>
-              </div>
-
-              {updateSessionMutation.isError && (
-                <Error description="Не удалось выполнить генерацию" />
-              )}
+              <Button
+                variant="secondary"
+                onClick={handleRegenerate}
+                disabled={
+                  updateSessionMutation.isPending ||
+                  !mainText.trim() ||
+                  !hasHistory
+                }
+              >
+                Перегенерировать
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+
+            {updateSessionMutation.isError && (
+              <Error description="Не удалось выполнить генерацию" />
+            )}
+          </div>
+        </div>
 
         <div className="space-y-3">
           <div className="text-lg font-semibold">Результат</div>
 
           {!latestVariant && (
-            <Card>
-              <CardContent className="py-10 text-sm text-muted-foreground">
-                Пока нет сгенерированных вариантов
-              </CardContent>
-            </Card>
+            <div className="text-sm text-muted-foreground">
+              Пока нет сгенерированных вариантов
+            </div>
           )}
 
           {latestVariant && (
             <Card>
-              <CardContent className="space-y-4 pt-6">
-                <img
-                  src={latestVariant.resultWebp}
-                  alt={latestVariant.mainText}
-                  className="max-h-[640px] rounded-md border object-contain"
-                />
-
-                <div className="flex flex-wrap gap-3">
-                  <Button asChild variant="outline">
-                    <a
-                      href={latestVariant.resultPng}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Скачать PNG
-                    </a>
-                  </Button>
-
-                  <Button asChild variant="outline">
-                    <a
-                      href={latestVariant.resultWebp}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Открыть WEBP
-                    </a>
-                  </Button>
-                </div>
+              <CardContent className="space-y-4">
+                <MessageImage info={latestVariant} prefix={BACKEND_URL} />
               </CardContent>
             </Card>
           )}
@@ -270,11 +220,7 @@ export const PhotoDetailPage = () => {
               .map((item) => (
                 <Card key={`${item.variantNumber}-${item.createdAt}`}>
                   <CardContent className="space-y-3 pt-6">
-                    <img
-                      src={item.resultWebp}
-                      alt={item.mainText}
-                      className="h-64 w-full rounded-md border object-cover"
-                    />
+                    <MessageImage info={item} prefix={BACKEND_URL} />
 
                     <div className="space-y-1">
                       <div className="text-sm font-medium">
