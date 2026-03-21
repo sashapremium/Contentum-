@@ -16,7 +16,7 @@ import {
   THEATRE,
 } from './routes';
 import { GalleryPage } from '@/features/gallery/pages';
-import { PhotoCreatePage } from '@/features/photo/pages/create';
+import { SessionCreatePage } from '@/features/photo/pages/create';
 import { TheatrePage } from '@/features/theatre/pages';
 import { ChatCreatePage } from '@/features/chat/pages/create';
 import { EntryPage } from '../pages';
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
       },
       {
         path: PHOTO_CREATE,
-        element: <PhotoCreatePage />,
+        element: <SessionCreatePage />,
         errorElement: <ErrorPage />,
       },
       {

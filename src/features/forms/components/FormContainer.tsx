@@ -59,7 +59,7 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
 
   return (
     <FormProvider {...form}>
-      <div className="space-y-6  ">
+      <div className="space-y-6">
         <header className="space-y-2">
           <span
             className={cx(

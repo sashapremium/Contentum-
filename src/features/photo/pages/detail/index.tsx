@@ -10,7 +10,12 @@ import { mapApiError } from '@/lib/apiErrorMapper';
 export const PhotoDetailPage = () => {
   const { photoId } = useParams<{ photoId: string }>();
 
-  const sessionQuery = usePhotoSessionQuery(photoId);
+  const {
+    data: session,
+    isLoading,
+    isError,
+    error,
+  } = usePhotoSessionQuery(photoId);
 
   if (!photoId) {
     return (
@@ -20,19 +25,17 @@ export const PhotoDetailPage = () => {
     );
   }
 
-  if (sessionQuery.isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (sessionQuery.isError || !sessionQuery.data) {
+  if (isError || !session) {
     return (
       <div className="m-auto">
-        <Error description={mapApiError(sessionQuery.error)} />
+        <Error description={mapApiError(error)} />
       </div>
     );
   }
-
-  const session = sessionQuery.data;
 
   return (
     <PageWrapper header={<PageHeading>{session.title}</PageHeading>}>
