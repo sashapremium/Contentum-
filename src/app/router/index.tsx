@@ -10,6 +10,7 @@ import TestFormsPage from '../pages/TestForms';
 import {
   GALLERY,
   PHOTO_CREATE,
+  PHOTO_DETAIL,
   POST_CREATE,
   POST_DETAIL,
   THEATRE,
@@ -19,6 +20,7 @@ import { PhotoCreatePage } from '@/features/photo/pages/create';
 import { TheatrePage } from '@/features/theatre/pages';
 import { ChatCreatePage } from '@/features/chat/pages/create';
 import { EntryPage } from '../pages';
+import { PhotoDetailPage } from '@/features/photo/pages/detail';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,11 @@ const router = createBrowserRouter([
       {
         path: PHOTO_CREATE,
         element: <PhotoCreatePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: PHOTO_DETAIL,
+        element: <PhotoDetailPage />,
         errorElement: <ErrorPage />,
       },
       {
