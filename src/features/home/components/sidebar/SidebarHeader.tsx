@@ -11,7 +11,7 @@ import { Link, useLocation } from 'react-router';
 import { HEADER_ITEMS } from '@/features/home/constants';
 
 export const SidebarHeader = () => {
-  const { open } = useSidebar();
+  const { open, toggleSidebar, isMobile } = useSidebar();
 
   const { pathname } = useLocation();
 
@@ -30,6 +30,7 @@ export const SidebarHeader = () => {
               isActive={pathname === url}
               tooltip={title}
               asChild
+              onClick={isMobile ? toggleSidebar : undefined}
             >
               <Link to={url}>
                 <Icon />

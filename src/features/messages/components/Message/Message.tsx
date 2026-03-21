@@ -46,7 +46,7 @@ export const Message = ({ message, chatId }: MessageProps) => {
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
           isUser ? 'rounded-br-none' : 'rounded-bl-none',
-          message.type === 'form' && 'min-w-[75%]',
+          message.type === 'form' && 'min-w-[100%] lg:min-w-[75%]',
         )}
       >
         {renderMessageContent()}
