@@ -24,7 +24,8 @@ export const PhotoDetailPage = () => {
   const updateSessionMutation = useUpdatePhotoSessionMutation();
 
   const [mainText, setMainText] = useState('');
-  const [selectedFileName, setSelectedFileName] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, setSelectedFileName] = useState('');
   const [uploadedSourceImageUrl, setUploadedSourceImageUrl] = useState<
     string | null
   >(null);
@@ -120,14 +121,9 @@ export const PhotoDetailPage = () => {
   return (
     <PageWrapper wide header={<PageHeading>{session.title}</PageHeading>}>
       <div className="space-y-8">
-        <div className="flex gap-3">
+        <div className="flex gap-4 lg:gap-8 flex-col lg:flex-row">
           <div className="space-y-3 min-w-[100%] lg:min-w-[50%]">
             <div className="text-lg font-semibold">Исходная фотография</div>
-
-            {/* {(uploadedSourceImageUrl !== null ||
-            latestVariant?.sourceImageUrl !== undefined) && (
-            <MessageImage info={{}} />
-          )} */}
 
             <Input
               id="source-image-upload"
@@ -180,6 +176,20 @@ export const PhotoDetailPage = () => {
               <Error description="Не удалось выполнить генерацию" />
             )}
           </div>
+
+          {uploadedSourceImageUrl !== null && (
+            <Card className="w-[200px]">
+              <CardContent>
+                <MessageImage
+                  prefix={BACKEND_URL}
+                  info={{
+                    resultPng: uploadedSourceImageUrl,
+                    resultWebp: uploadedSourceImageUrl,
+                  }}
+                />
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="space-y-3">
@@ -192,11 +202,36 @@ export const PhotoDetailPage = () => {
           )}
 
           {latestVariant && (
-            <Card>
-              <CardContent className="space-y-4">
+            <Card className="max-w-[500px]">
+              <CardContent>
                 <MessageImage info={latestVariant} prefix={BACKEND_URL} />
               </CardContent>
             </Card>
+          )}
+
+          {latestVariant && (
+            <div className="flex flex-wrap gap-3">
+              <Button asChild variant="outline">
+                <a
+                  href={`${BACKEND_URL}${latestVariant.resultPng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  download="photo_v.png"
+                >
+                  Скачать PNG
+                </a>
+              </Button>
+
+              <Button asChild variant="outline">
+                <a
+                  href={`${BACKEND_URL}${latestVariant.resultWebp}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Скачать WEBP
+                </a>
+              </Button>
+            </div>
           )}
         </div>
 
@@ -209,7 +244,7 @@ export const PhotoDetailPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-3">
             {session.history
               .slice()
               .sort(
@@ -218,17 +253,17 @@ export const PhotoDetailPage = () => {
                   new Date(a.createdAt).getTime(),
               )
               .map((item) => (
-                <Card key={`${item.variantNumber}-${item.createdAt}`}>
-                  <CardContent className="space-y-3 pt-6">
+                <Card
+                  className="w-[300px]"
+                  key={`${item.variantNumber}-${item.createdAt}`}
+                >
+                  <CardContent className="space-y-3">
                     <MessageImage info={item} prefix={BACKEND_URL} />
 
                     <div className="space-y-1">
-                      <div className="text-sm font-medium">
+                      <span className="text-sm font-medium">
                         #{item.variantNumber} {item.mainText}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {item.createdAt}
-                      </div>
+                      </span>
                     </div>
                   </CardContent>
                 </Card>

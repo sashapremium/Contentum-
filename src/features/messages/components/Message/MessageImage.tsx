@@ -8,7 +8,7 @@ import { Download } from 'lucide-react';
 import type { ImageInfo } from '../../types/messages.types';
 
 interface MessageImageProps {
-  info: ImageInfo;
+  info: Pick<ImageInfo, 'resultPng' | 'resultWebp'>;
   prefix?: string;
 }
 
@@ -21,12 +21,12 @@ export const MessageImage = ({ info, prefix }: MessageImageProps) => {
         <DialogTrigger asChild>
           <div
             className={cx(
-              'bg-muted w-full max-w-[75%] overflow-hidden rounded-xl shadow-sm cursor-pointer',
+              'bg-muted overflow-hidden rounded-xl shadow-sm cursor-pointer',
             )}
           >
-            <AspectRatio ratio={4 / 5} className="bg-black/10 rounded-xl">
+            <AspectRatio ratio={1 / 1} className="bg-black/10 rounded-xl">
               <img
-                src={`${prefix ?? ''}${info.resultWebp}`}
+                src={`${prefix ?? ''}${info.resultPng}`}
                 alt="Сгенерированное изображение"
                 className="h-full w-full object-contain rounded-xl transition hover:opacity-90"
               />
@@ -37,6 +37,7 @@ export const MessageImage = ({ info, prefix }: MessageImageProps) => {
         <DialogContent
           className="group max-w-4xl p-0 bg-background border-none shadow-none"
           aria-describedby={undefined}
+          showCloseButton={false}
         >
           <DialogTitle hidden>Сгенерированное изображение</DialogTitle>
           <div className="relative flex justify-center items-center">
@@ -46,12 +47,18 @@ export const MessageImage = ({ info, prefix }: MessageImageProps) => {
               size={'icon-lg'}
               className="rounded-full absolute opacity-0 transition group-hover:opacity-100"
             >
-              <a download href={info.resultPng} className="p-8">
+              <a
+                href={`${prefix ?? ''}${info.resultPng}`}
+                className="p-8"
+                download="photo_v.png"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <Download />
               </a>
             </Button>
             <img
-              src={`${prefix ?? ''}${info.resultWebp}`}
+              src={`${prefix ?? ''}${info.resultPng}`}
               alt="Сгенерированное изображение (полный размер)"
               className="max-h-[90vh] w-auto rounded-xl object-contain"
             />

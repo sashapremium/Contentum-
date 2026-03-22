@@ -137,7 +137,7 @@ export const SessionCreatePage = () => {
                         onValueChange={handleTheatreChange}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-[100%]">
                             <SelectValue placeholder="Выберите театр" />
                           </SelectTrigger>
                         </FormControl>
@@ -169,7 +169,7 @@ export const SessionCreatePage = () => {
                         disabled={!selectedTheatreId}
                       >
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="w-[100%]">
                             <SelectValue placeholder="Выберите шаблон" />
                           </SelectTrigger>
                         </FormControl>
