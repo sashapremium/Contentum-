@@ -27,7 +27,7 @@ export const SidebarHeader = () => {
         {HEADER_ITEMS.map(({ title, Icon, url }) => (
           <SidebarMenuItem key={title}>
             <SidebarMenuButton
-              isActive={pathname === url}
+              isActive={pathname.startsWith(url)}
               tooltip={title}
               asChild
               onClick={isMobile ? toggleSidebar : undefined}

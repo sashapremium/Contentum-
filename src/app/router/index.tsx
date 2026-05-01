@@ -14,6 +14,7 @@ import {
   POST_CREATE,
   POST_DETAIL,
   THEATRE,
+  THEATRE_TEMPLATE_CREATE,
 } from './routes';
 import { GalleryPage } from '@/features/gallery/pages';
 import { SessionCreatePage } from '@/features/photo/pages/create';
@@ -21,6 +22,7 @@ import { TheatrePage } from '@/features/theatre/pages';
 import { ChatCreatePage } from '@/features/chat/pages/create';
 import { EntryPage } from '../pages';
 import { PhotoDetailPage } from '@/features/photo/pages/detail';
+import { TemplateCreatePage } from '@/features/template/pages/create';
 
 const router = createBrowserRouter([
   {
@@ -70,8 +72,18 @@ const router = createBrowserRouter([
       },
       {
         path: THEATRE,
-        element: <TheatrePage />,
-        errorElement: <ErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <TheatrePage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: THEATRE_TEMPLATE_CREATE,
+            element: <TemplateCreatePage />,
+            errorElement: <ErrorPage />,
+          },
+        ],
       },
       {
         path: 'testForms',

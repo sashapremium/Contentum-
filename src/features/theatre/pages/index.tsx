@@ -5,6 +5,7 @@ import { PageWrapper } from '@/components/shared/PageWrapper';
 export const TheatrePage = () => {
   return (
     <PageWrapper
+      wide
       header={<PageHeading>{THEATRE_TITLE}</PageHeading>}
     ></PageWrapper>
   );
