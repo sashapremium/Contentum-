@@ -12,10 +12,16 @@ export const GALLERY = '/gallery';
 export const GALLERY_TITLE = 'Галерея';
 
 export const THEATRE = '/theatre';
+export const THEATRE_DETAIL = `${THEATRE}/:theatreId`;
+export const THEATRE_CREATE = `${THEATRE}/create`;
 export const THEATRE_TITLE = 'Управление учреждением';
-export const THEATRE_TEMPLATE = `${THEATRE}/template/:templateId`;
-export const THEATRE_TEMPLATE_CREATE = `${THEATRE}/template/create`;
 
+export const THEATRE_TEMPLATE_DETAIL = `${THEATRE}/template/:templateId`;
+export const THEATRE_TEMPLATE_CREATE = `${THEATRE}/template/create`;
 export const TEMPLATE_TITLE = 'Создать шаблон';
+
+export const THEATRE_BRANDBOOK_DETAIL = `${THEATRE}/brandbook/:brandbookId`;
+export const THEATRE_BRANDBOOK_IMPORT = `${THEATRE}/brandbook/import`;
+export const BRANDBOOK_TITLE = 'Импорт брендбука';
 
 export const BACKEND_URL = 'http://127.0.0.1:8000';
