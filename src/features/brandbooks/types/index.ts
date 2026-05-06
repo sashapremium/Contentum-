@@ -17,5 +17,8 @@ export const BrandbookSchema = z.object({
 });
 export type Brandbook = z.infer<typeof BrandbookSchema>;
 
-export const BrandbookListResponseSchema = z.array(BrandbookSchema);
-export type BrandbookListResponse = z.infer<typeof BrandbookListResponseSchema>;
+export const BrandbookDeleteResponseSchema = z.object({
+  deleted: z.literal(true),
+  theatreId: z.number().int(),
+});
+export type BrandbookDeleteResponse = z.infer<typeof BrandbookDeleteResponseSchema>;
