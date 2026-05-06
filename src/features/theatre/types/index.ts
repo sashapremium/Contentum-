@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const TheatreSchema = z.object({
   id: z.number().int(),
   name: z.string().min(1),
-  address: z.string().min(1),
+  address: z.string(),
   createdAt: z.string(),
   hasBrandbook: z.boolean(),
 });
