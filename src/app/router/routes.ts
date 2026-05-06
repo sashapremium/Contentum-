@@ -12,9 +12,10 @@ export const GALLERY = '/gallery';
 export const GALLERY_TITLE = 'Галерея';
 
 export const THEATRE = '/theatre';
+export const THEATRE_TITLE = 'Управление учреждением';
+export const THEATRE_CREATE_TITLE = 'Создать учреждение';
 export const THEATRE_DETAIL = `${THEATRE}/:theatreId`;
 export const THEATRE_CREATE = `${THEATRE}/create`;
-export const THEATRE_TITLE = 'Управление учреждением';
 
 export const THEATRE_TEMPLATE_DETAIL = `${THEATRE}/template/:templateId`;
 export const THEATRE_TEMPLATE_CREATE = `${THEATRE}/template/create`;
