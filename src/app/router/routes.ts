@@ -17,8 +17,8 @@ export const THEATRE_CREATE_TITLE = 'Создать учреждение';
 export const THEATRE_DETAIL = `${THEATRE}/:theatreId`;
 export const THEATRE_CREATE = `${THEATRE}/create`;
 
-export const THEATRE_TEMPLATE_DETAIL = `${THEATRE}/template/:templateId`;
-export const THEATRE_TEMPLATE_CREATE = `${THEATRE}/template/create`;
+export const THEATRE_TEMPLATE_DETAIL = `${THEATRE}/:theatreId/template/:templateId`;
+export const THEATRE_TEMPLATE_CREATE = `${THEATRE}/:theatreId/template/create`;
 export const TEMPLATE_TITLE = 'Создать шаблон';
 
 export const THEATRE_BRANDBOOK_DETAIL = `${THEATRE}/brandbook/:brandbookId`;

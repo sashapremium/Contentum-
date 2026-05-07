@@ -16,6 +16,7 @@ import {
   THEATRE,
   THEATRE_CREATE,
   THEATRE_TEMPLATE_CREATE,
+  THEATRE_TEMPLATE_DETAIL,
 } from './routes';
 import { GalleryPage } from '@/features/gallery/pages';
 import { SessionCreatePage } from '@/features/photo/pages/create';
@@ -24,6 +25,7 @@ import { ChatCreatePage } from '@/features/chat/pages/create';
 import { EntryPage } from '../pages';
 import { PhotoDetailPage } from '@/features/photo/pages/detail';
 import { TemplateCreatePage } from '@/features/template/pages/create';
+import { TemplateDetailPage } from '@/features/template/pages/detail';
 import { TheatreCreatePage } from '@/features/theatre/pages/create';
 
 const router = createBrowserRouter([
@@ -88,6 +90,11 @@ const router = createBrowserRouter([
           {
             path: THEATRE_TEMPLATE_CREATE,
             element: <TemplateCreatePage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: THEATRE_TEMPLATE_DETAIL,
+            element: <TemplateDetailPage />,
             errorElement: <ErrorPage />,
           },
         ],
