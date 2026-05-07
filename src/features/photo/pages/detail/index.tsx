@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 import { BACKEND_URL } from '@/app/router/routes';
 import { Error } from '@/components/shared/Error';
@@ -8,45 +11,24 @@ import { PageHeading } from '@/components/shared/PageHeading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { MessageImage } from '@/features/messages/components/Message/MessageImage';
 
-import type {
-  PhotoInputImage,
-  PhotoInputText,
-  PhotoSession,
-} from '../../types/photos.types';
+import type { PhotoInputImage, PhotoSession } from '../../types/photos.types';
 import { usePhotoSessionQuery } from '../../queries/usePhotoSessionQuery';
 import { useUpdatePhotoSessionMutation } from '../../queries/useUpdatePhotoSessionMutation';
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-interface PhotoTextInputProps {
-  field: PhotoInputText;
-  value: string;
-  onChange: (value: string) => void;
-}
-
-const PhotoTextInput = ({ field, value, onChange }: PhotoTextInputProps) => (
-  <div className="space-y-2 rounded-lg border p-4">
-    <div className="flex items-center justify-between">
-      <span className="text-sm font-medium">{field.label}</span>
-      {field.required && (
-        <span className="text-xs font-semibold uppercase text-yellow-500">
-          Required
-        </span>
-      )}
-    </div>
-    <Textarea
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={field.label}
-      maxLength={field.maxLength}
-      className="min-h-[100px] resize-none"
-    />
-  </div>
-);
+// ─── Image input (not RHF-managed — file inputs are uncontrolled) ─────────────
 
 interface PhotoImageInputProps {
   field: PhotoInputImage;
@@ -68,15 +50,8 @@ const PhotoImageInput = ({
       : null;
 
   return (
-    <div className="space-y-2 rounded-lg border p-4">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium">{field.label}</span>
-        {field.required && (
-          <span className="text-xs font-semibold uppercase text-yellow-500">
-            Required
-          </span>
-        )}
-      </div>
+    <div className="grid gap-2">
+      <Label>{field.label}</Label>
       <Input
         type="file"
         accept="image/*"
@@ -109,35 +84,47 @@ const PhotoImageInput = ({
 
 const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
   const updateSessionMutation = useUpdatePhotoSessionMutation();
+  const [selectedFiles, setSelectedFiles] = useState<
+    Record<string, File | null>
+  >({});
 
-  const [texts, setTexts] = useState<Record<string, string>>(session.texts);
-  const [selectedFiles, setSelectedFiles] = useState<Record<string, File | null>>({});
+  const schema = useMemo(() => {
+    const shape: Record<string, z.ZodString> = {};
+    for (const f of session.inputSchema.texts) {
+      shape[f.key] = f.required
+        ? z.string().min(1, 'Обязательное поле')
+        : z.string();
+    }
+    return z.object(shape);
+  }, [session.inputSchema.texts]);
+
+  const form = useForm<Record<string, string>>({
+    resolver: zodResolver(schema),
+    defaultValues: session.texts,
+  });
 
   const latestVariant = useMemo(() => {
     if (!session.history.length) return null;
     return [...session.history].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )[0];
   }, [session.history]);
 
   const hasHistory = Boolean(session.history.length);
 
-  const canGenerate =
-    session.inputSchema.texts.filter((f) => f.required).every((f) => texts[f.key]?.trim()) &&
-    session.inputSchema.images.filter((f) => f.required).every((f) => selectedFiles[f.key] ?? session.images[f.key]);
+  const allRequiredImagesProvided = session.inputSchema.images
+    .filter((f) => f.required)
+    .every((f) => selectedFiles[f.key] ?? session.images[f.key]);
 
-  const buildPayload = () => {
+  const onSubmit = (texts: Record<string, string>) => {
     const assets = Object.fromEntries(
       Object.entries(selectedFiles).filter(([, f]) => f !== null),
     ) as Record<string, File>;
-    return Object.keys(assets).length > 0 ? { texts, assets } : { texts };
+    const payload =
+      Object.keys(assets).length > 0 ? { texts, assets } : { texts };
+    updateSessionMutation.mutate({ id: session.sessionId, payload });
   };
-
-  const handleGenerate = () =>
-    updateSessionMutation.mutate({ id: session.sessionId, payload: buildPayload() });
-
-  const handleRegenerate = () =>
-    updateSessionMutation.mutate({ id: session.sessionId, payload: buildPayload() });
 
   return (
     <PageWrapper wide header={<PageHeading>{session.title}</PageHeading>}>
@@ -146,62 +133,78 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
           Шаблон: {session.templateName} · theatreId: {session.theatreId}
         </p>
 
-        {/* Form */}
-        <div className="flex flex-col gap-4 lg:flex-row">
-          <Card className="flex-1">
-            <CardContent className="space-y-3">
-              <span className="text-base font-semibold text-yellow-500">Тексты</span>
-              {session.inputSchema.texts.map((field) => (
-                <PhotoTextInput
-                  key={field.key}
-                  field={field}
-                  value={texts[field.key] ?? ''}
-                  onChange={(value) =>
-                    setTexts((prev) => ({ ...prev, [field.key]: value }))
-                  }
-                />
-              ))}
-            </CardContent>
-          </Card>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="flex flex-col gap-4 lg:flex-row">
+              <Card className="flex-1">
+                <CardContent className="space-y-4">
+                  <div className="text-base font-semibold">Тексты</div>
+                  {session.inputSchema.texts.map((field) => (
+                    <FormField
+                      key={field.key}
+                      control={form.control}
+                      name={field.key}
+                      render={({ field: rhfField }) => (
+                        <FormItem>
+                          <FormLabel>{field.label}</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...rhfField}
+                              placeholder={field.label}
+                              maxLength={field.maxLength}
+                              rows={1}
+                              className="resize-none"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                </CardContent>
+              </Card>
 
-          <Card className="flex-1">
-            <CardContent className="space-y-3">
-              <span className="text-base font-semibold text-yellow-500">Фото</span>
-              {session.inputSchema.images.map((field) => (
-                <PhotoImageInput
-                  key={field.key}
-                  field={field}
-                  currentUrl={session.images[field.key]}
-                  selectedFile={selectedFiles[field.key] ?? null}
-                  onFileSelect={(file) =>
-                    setSelectedFiles((prev) => ({ ...prev, [field.key]: file }))
-                  }
-                />
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+              <Card className="flex-1">
+                <CardContent className="space-y-4">
+                  <div className="text-base font-semibold">Фото</div>
+                  {session.inputSchema.images.map((field) => (
+                    <PhotoImageInput
+                      key={field.key}
+                      field={field}
+                      currentUrl={session.images[field.key]}
+                      selectedFile={selectedFiles[field.key] ?? null}
+                      onFileSelect={(file) =>
+                        setSelectedFiles((prev) => ({
+                          ...prev,
+                          [field.key]: file,
+                        }))
+                      }
+                    />
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Actions */}
-        <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={handleGenerate}
-            disabled={!canGenerate || updateSessionMutation.isPending}
-          >
-            {updateSessionMutation.isPending ? 'Генерация...' : 'Сгенерировать'}
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={handleRegenerate}
-            disabled={!canGenerate || !hasHistory || updateSessionMutation.isPending}
-          >
-            Перегенерировать
-          </Button>
-        </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="submit"
+                disabled={
+                  !allRequiredImagesProvided || updateSessionMutation.isPending
+                }
+              >
+                {updateSessionMutation.isPending
+                  ? 'Генерация...'
+                  : hasHistory
+                    ? 'Перегенерировать'
+                    : 'Сгенерировать'}
+              </Button>
+            </div>
 
-        {updateSessionMutation.isError && (
-          <Error description="Не удалось выполнить генерацию" />
-        )}
+            {updateSessionMutation.isError && (
+              <Error description="Не удалось выполнить генерацию" />
+            )}
+          </form>
+        </Form>
 
         {/* Result */}
         <div className="space-y-3">
@@ -246,14 +249,17 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
         <div className="space-y-3">
           <div className="text-lg font-semibold">История вариантов</div>
           {!session.history.length && (
-            <div className="text-sm text-muted-foreground">История пока пуста</div>
+            <div className="text-sm text-muted-foreground">
+              История пока пуста
+            </div>
           )}
           <div className="flex flex-wrap gap-3">
             {session.history
               .slice()
               .sort(
                 (a, b) =>
-                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
               )
               .map((item) => (
                 <Card
