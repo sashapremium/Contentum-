@@ -61,13 +61,38 @@ export type PhotoSessionCreateResponse = z.infer<
   typeof PhotoSessionCreateResponseSchema
 >;
 
+export const PhotoInputTextSchema = z.object({
+  key: z.string().min(1),
+  label: z.string(),
+  required: z.boolean(),
+  maxLength: z.number().int().positive(),
+});
+export type PhotoInputText = z.infer<typeof PhotoInputTextSchema>;
+
+export const PhotoInputImageSchema = z.object({
+  key: z.string().min(1),
+  label: z.string(),
+  required: z.boolean(),
+  crop: z.string(),
+  gravity: z.string(),
+});
+export type PhotoInputImage = z.infer<typeof PhotoInputImageSchema>;
+
+export const PhotoInputSchemaSchema = z.object({
+  texts: z.array(PhotoInputTextSchema),
+  images: z.array(PhotoInputImageSchema),
+});
+export type PhotoInputSchema = z.infer<typeof PhotoInputSchemaSchema>;
+
 export const PhotoSessionHistoryItemSchema = z.object({
   variantNumber: z.number().int().positive(),
   mainText: z.string(),
+  texts: z.record(z.string(), z.string()),
   templateId: z.string().min(1),
   resultWebp: z.string().min(1),
   resultPng: z.string().min(1),
   sourceImageUrl: z.string().min(1),
+  images: z.record(z.string(), z.string()),
   createdAt: z.string(),
 });
 
@@ -80,6 +105,11 @@ export const PhotoSessionSchema = z.object({
   title: z.string().min(1),
   theatreId: z.number().int(),
   templateId: z.string().min(1),
+  templateName: z.string().min(1),
+  templateFamily: z.string().min(1),
+  texts: z.record(z.string(), z.string()),
+  images: z.record(z.string(), z.string()),
+  inputSchema: PhotoInputSchemaSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
   history: z.array(PhotoSessionHistoryItemSchema),
@@ -95,8 +125,8 @@ export type PhotoSessionRenameRequest = z.infer<
 >;
 
 export const PhotoSessionGenerateSchema = z.object({
-  mainText: z.string().min(1),
-  sourceImageUrl: z.string().min(1).optional(),
+  texts: z.record(z.string(), z.string()),
+  images: z.record(z.string(), z.string()).optional(),
   templateId: z.string().min(1).optional(),
 });
 export type PhotoSessionGenerateRequest = z.infer<

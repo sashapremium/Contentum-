@@ -16,6 +16,28 @@ import {
   PhotoSessionsListResponseSchema,
 } from '../types/photos.types';
 
+export interface PhotoSessionGenerateWithAssetsPayload {
+  texts: Record<string, string>;
+  assets: Record<string, File>;
+  templateId?: string;
+}
+
+function buildGenerateFormData({
+  texts,
+  assets,
+  templateId,
+}: PhotoSessionGenerateWithAssetsPayload): FormData {
+  const formData = new FormData();
+  formData.append('texts', JSON.stringify(texts));
+  if (templateId) {
+    formData.append('templateId', templateId);
+  }
+  for (const [key, file] of Object.entries(assets)) {
+    formData.append(key, file);
+  }
+  return formData;
+}
+
 export async function fetchPhotoSessions(): Promise<PhotoSessionsListResponse> {
   const response = await api.get('/photos/sessions/');
   return PhotoSessionsListResponseSchema.parse(response.data);
@@ -35,9 +57,10 @@ export async function fetchPhotoSession(id: string): Promise<PhotoSession> {
 
 export async function updatePhotoSession(
   id: string,
-  payload: PhotoSessionUpdateRequest,
+  payload: PhotoSessionUpdateRequest | PhotoSessionGenerateWithAssetsPayload,
 ): Promise<PhotoSessionRenameResponse | PhotoSessionGenerateResponse> {
-  const response = await api.patch(`/photos/sessions/${id}/`, payload);
+  const body = 'assets' in payload ? buildGenerateFormData(payload) : payload;
+  const response = await api.patch(`/photos/sessions/${id}/`, body);
 
   if ('versionNumber' in response.data) {
     return PhotoSessionGenerateResponseSchema.parse(response.data);

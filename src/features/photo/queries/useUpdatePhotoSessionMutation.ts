@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updatePhotoSession } from '../api/photos.api';
+import { updatePhotoSession, type PhotoSessionGenerateWithAssetsPayload } from '../api/photos.api';
 import type {
   PhotoSessionGenerateResponse,
   PhotoSessionRenameResponse,
@@ -9,7 +9,7 @@ import { PHOTOS_QUERY_KEYS } from './photos.queryKeys';
 
 interface UpdatePhotoSessionMutationVariables {
   id: string;
-  payload: PhotoSessionUpdateRequest;
+  payload: PhotoSessionUpdateRequest | PhotoSessionGenerateWithAssetsPayload;
 }
 
 export const useUpdatePhotoSessionMutation = () => {
