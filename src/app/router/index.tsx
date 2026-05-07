@@ -14,7 +14,6 @@ import {
   POST_CREATE,
   POST_DETAIL,
   THEATRE,
-  THEATRE_BRANDBOOK_IMPORT,
   THEATRE_CREATE,
   THEATRE_TEMPLATE_CREATE,
 } from './routes';
@@ -26,7 +25,6 @@ import { EntryPage } from '../pages';
 import { PhotoDetailPage } from '@/features/photo/pages/detail';
 import { TemplateCreatePage } from '@/features/template/pages/create';
 import { TheatreCreatePage } from '@/features/theatre/pages/create';
-import { BrandbookImportPage } from '@/features/brandbooks/pages/import';
 
 const router = createBrowserRouter([
   {
@@ -85,11 +83,6 @@ const router = createBrowserRouter([
           {
             path: THEATRE_CREATE,
             element: <TheatreCreatePage />,
-            errorElement: <ErrorPage />,
-          },
-          {
-            path: THEATRE_BRANDBOOK_IMPORT,
-            element: <BrandbookImportPage />,
             errorElement: <ErrorPage />,
           },
           {
