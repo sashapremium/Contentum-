@@ -12,12 +12,20 @@ import {
 } from '@/components/ui/select';
 import { usePhotoSessionsQuery } from '@/features/photo/queries/usePhotoSessionsQuery';
 
+import { MessageImage } from '@/features/messages/components/Message/MessageImage';
 import { useBrandbookQuery } from '@/features/brandbooks/queries/useBrandbookQuery';
 import { useDeleteBrandbookMutation } from '@/features/brandbooks/queries/useDeleteBrandbookMutation';
 
-export const BrandbooksTab = () => {
+interface BrandbooksTabProps {
+  selectedTheatreId: number | undefined;
+  onTheatreChange: (id: number | undefined) => void;
+}
+
+export const BrandbooksTab = ({
+  selectedTheatreId,
+  onTheatreChange,
+}: BrandbooksTabProps) => {
   const photoSessionsQuery = usePhotoSessionsQuery();
-  const [selectedTheatreId, setSelectedTheatreId] = useState<number | undefined>();
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const brandbookQuery = useBrandbookQuery(selectedTheatreId);
@@ -29,7 +37,7 @@ export const BrandbooksTab = () => {
     <div className="space-y-6">
       <Select
         value={selectedTheatreId !== undefined ? String(selectedTheatreId) : ''}
-        onValueChange={(v) => setSelectedTheatreId(Number(v))}
+        onValueChange={(v) => onTheatreChange(Number(v))}
       >
         <SelectTrigger className="w-64">
           <SelectValue placeholder="Выберите учреждение" />
@@ -56,28 +64,36 @@ export const BrandbooksTab = () => {
           {brandbookQuery.data && (
             <div className="space-y-4">
               <div>
-                <div className="text-lg font-semibold">{brandbookQuery.data.theatreName}</div>
+                <div className="text-lg font-semibold">
+                  {brandbookQuery.data.theatreName}
+                </div>
                 <div className="text-sm text-muted-foreground">
                   Шаблонов: {brandbookQuery.data.templates.length}
                 </div>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {brandbookQuery.data.templates.map((t) => (
                   <div
                     key={t.id}
-                    className="flex items-center gap-2 rounded-md border px-3 py-2"
+                    className="flex items-center gap-3 rounded-md border px-4 py-3"
                   >
                     {t.preview && (
-                      <img
-                        src={t.preview}
-                        alt={t.name}
-                        className="h-8 w-8 rounded object-cover"
-                      />
+                      <div className="w-12 shrink-0">
+                        <MessageImage
+                          info={{
+                            resultPng: `/media/brandbooks/${selectedTheatreId}/${t.preview}`,
+                            resultWebp: `/media/brandbooks/${selectedTheatreId}/${t.preview}`,
+                          }}
+                          showDownload={false}
+                        />
+                      </div>
                     )}
                     <div>
-                      <div className="text-sm font-medium">{t.name}</div>
-                      <div className="text-xs text-muted-foreground">{t.family}</div>
+                      <div className="font-medium">{t.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {t.family}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -102,7 +118,7 @@ export const BrandbooksTab = () => {
           deleteMutation.mutate(selectedTheatreId, {
             onSuccess: () => {
               setDeleteOpen(false);
-              setSelectedTheatreId(undefined);
+              onTheatreChange(undefined);
             },
           });
         }}

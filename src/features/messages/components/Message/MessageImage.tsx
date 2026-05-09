@@ -10,9 +10,10 @@ import type { ImageInfo } from '../../types/messages.types';
 interface MessageImageProps {
   info: Pick<ImageInfo, 'resultPng' | 'resultWebp'>;
   prefix?: string;
+  showDownload?: boolean;
 }
 
-export const MessageImage = ({ info, prefix }: MessageImageProps) => {
+export const MessageImage = ({ info, prefix, showDownload = true }: MessageImageProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,22 +42,24 @@ export const MessageImage = ({ info, prefix }: MessageImageProps) => {
         >
           <DialogTitle hidden>Сгенерированное изображение</DialogTitle>
           <div className="relative flex justify-center items-center">
-            <Button
-              asChild
-              variant={'ghost'}
-              size={'icon-lg'}
-              className="rounded-full absolute opacity-0 transition group-hover:opacity-100"
-            >
-              <a
-                href={`${prefix ?? ''}${info.resultPng}`}
-                className="p-8"
-                download="photo_v.png"
-                target="_blank"
-                rel="noreferrer"
+            {showDownload && (
+              <Button
+                asChild
+                variant={'ghost'}
+                size={'icon-lg'}
+                className="rounded-full absolute opacity-0 transition group-hover:opacity-100"
               >
-                <Download />
-              </a>
-            </Button>
+                <a
+                  href={`${prefix ?? ''}${info.resultPng}`}
+                  className="p-8"
+                  download="photo_v.png"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Download />
+                </a>
+              </Button>
+            )}
             <img
               src={`${prefix ?? ''}${info.resultPng}`}
               alt="Сгенерированное изображение (полный размер)"

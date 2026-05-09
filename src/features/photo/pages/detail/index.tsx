@@ -46,7 +46,7 @@ const PhotoImageInput = ({
   const previewUrl = selectedFile
     ? URL.createObjectURL(selectedFile)
     : currentUrl
-      ? `${BACKEND_URL}${currentUrl}`
+      ? `${currentUrl}`
       : null;
 
   return (
@@ -217,13 +217,13 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
             <>
               <Card className="max-w-[500px]">
                 <CardContent>
-                  <MessageImage info={latestVariant} prefix={BACKEND_URL} />
+                  <MessageImage info={latestVariant} />
                 </CardContent>
               </Card>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline">
                   <a
-                    href={`${BACKEND_URL}${latestVariant.resultPng}`}
+                    href={`${latestVariant.resultPng}`}
                     target="_blank"
                     rel="noreferrer"
                     download="photo_v.png"
@@ -233,7 +233,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                 </Button>
                 <Button asChild variant="outline">
                   <a
-                    href={`${BACKEND_URL}${latestVariant.resultWebp}`}
+                    href={`${latestVariant.resultWebp}`}
                     target="_blank"
                     rel="noreferrer"
                   >

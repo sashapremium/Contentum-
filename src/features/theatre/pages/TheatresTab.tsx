@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FilePlus } from 'lucide-react';
+import { FilePlus, Settings2, Trash2 } from 'lucide-react';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import { THEATRE_CREATE } from '@/app/router/routes';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
@@ -148,17 +154,28 @@ export const TheatresTab = () => {
                 <div className="text-sm text-muted-foreground">{theatre.address}</div>
               )}
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setEditTarget(theatre)}>
-                Изменить
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setDeleteTarget(theatre)}
-              >
-                Удалить
-              </Button>
+            <div className="flex gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={() => setEditTarget(theatre)}>
+                    <Settings2 />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Изменить</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => setDeleteTarget(theatre)}
+                  >
+                    <Trash2 />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Удалить</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         ))}

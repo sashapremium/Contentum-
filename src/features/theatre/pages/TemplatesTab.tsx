@@ -25,10 +25,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { MessageImage } from '@/features/messages/components/Message/MessageImage';
 import { useDeleteTemplateMutation } from '@/features/template/queries/useDeleteTemplateMutation';
 import { useTemplateQuery } from '@/features/template/queries/useTemplateQuery';
 import { useUpdateTemplateMutation } from '@/features/template/queries/useUpdateTemplateMutation';
-import { FilePlus } from 'lucide-react';
+import { FilePlus, Pencil, Settings2, Trash2 } from 'lucide-react';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 // ─── Rename dialog ────────────────────────────────────────────────────────────
 
@@ -118,14 +125,19 @@ interface DeleteTarget {
   name: string;
 }
 
-export const TemplatesTab = () => {
+interface TemplatesTabProps {
+  selectedTheatreId: number | undefined;
+  onTheatreChange: (id: number | undefined) => void;
+}
+
+export const TemplatesTab = ({
+  selectedTheatreId,
+  onTheatreChange,
+}: TemplatesTabProps) => {
   const navigate = useNavigate();
   const photoSessionsQuery = usePhotoSessionsQuery();
   const deleteMutation = useDeleteTemplateMutation();
 
-  const [selectedTheatreId, setSelectedTheatreId] = useState<
-    number | undefined
-  >();
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
   const [renameTarget, setRenameTarget] = useState<RenameTarget | null>(null);
 
@@ -142,7 +154,7 @@ export const TemplatesTab = () => {
     <div className="space-y-6">
       <Select
         value={selectedTheatreId !== undefined ? String(selectedTheatreId) : ''}
-        onValueChange={(v) => setSelectedTheatreId(Number(v))}
+        onValueChange={(v) => onTheatreChange(Number(v))}
       >
         <SelectTrigger className="w-64">
           <SelectValue placeholder="Выберите учреждение" />
@@ -183,11 +195,15 @@ export const TemplatesTab = () => {
               >
                 <div className="flex items-center gap-3">
                   {t.preview && (
-                    <img
-                      src={t.preview}
-                      alt={t.name}
-                      className="h-10 w-10 rounded object-cover"
-                    />
+                    <div className="w-12 shrink-0">
+                      <MessageImage
+                        info={{
+                          resultPng: `/media/brandbooks/${selectedTheatreId}/${t.preview}`,
+                          resultWebp: `/media/brandbooks/${selectedTheatreId}/${t.preview}`,
+                        }}
+                        showDownload={false}
+                      />
+                    </div>
                   )}
                   <div>
                     <div className="font-medium">{t.name}</div>
@@ -196,46 +212,62 @@ export const TemplatesTab = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setRenameTarget({
-                        theatreId: selectedTheatreId,
-                        templateId: t.id,
-                      })
-                    }
-                  >
-                    Переименовать
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      navigate(
-                        generatePath(THEATRE_TEMPLATE_DETAIL, {
-                          theatreId: String(selectedTheatreId),
-                          templateId: t.id,
-                        }),
-                      )
-                    }
-                  >
-                    Изменить
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() =>
-                      setDeleteTarget({
-                        theatreId: selectedTheatreId,
-                        templateId: t.id,
-                        name: t.name,
-                      })
-                    }
-                  >
-                    Удалить
-                  </Button>
+                <div className="flex gap-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          setRenameTarget({
+                            theatreId: selectedTheatreId,
+                            templateId: t.id,
+                          })
+                        }
+                      >
+                        <Pencil />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Переименовать</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() =>
+                          navigate(
+                            generatePath(THEATRE_TEMPLATE_DETAIL, {
+                              theatreId: String(selectedTheatreId),
+                              templateId: t.id,
+                            }),
+                          )
+                        }
+                      >
+                        <Settings2 />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Изменить</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() =>
+                          setDeleteTarget({
+                            theatreId: selectedTheatreId,
+                            templateId: t.id,
+                            name: t.name,
+                          })
+                        }
+                      >
+                        <Trash2 />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Удалить</TooltipContent>
+                  </Tooltip>
                 </div>
               </div>
             ))}
