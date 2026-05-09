@@ -44,6 +44,7 @@ export const TemplateGradientLayerSchema = z.object({
   colorFrom: z.string().min(1),
   colorTo: z.string().min(1),
   direction: z.string().min(1),
+  opacity: z.number().min(0).max(1).optional(),
 });
 export type TemplateGradientLayer = z.infer<typeof TemplateGradientLayerSchema>;
 
@@ -52,6 +53,8 @@ export const TemplateImageLayerSchema = z.object({
   file: z.string().min(1),
   box: TemplateBoxSchema,
   align: z.string().optional(),
+  opacity: z.number().min(0).max(1).optional(),
+  tintColor: z.string().optional(),
 });
 export type TemplateImageLayer = z.infer<typeof TemplateImageLayerSchema>;
 
@@ -70,15 +73,40 @@ export const TemplateTextLayerSchema = z.object({
   align: z.string().optional(),
   verticalAlign: z.string().optional(),
   overflow: z.string().optional(),
+  defaultText: z.string().optional(),
   required: z.boolean().optional(),
 });
 export type TemplateTextLayer = z.infer<typeof TemplateTextLayerSchema>;
+
+export const TemplateBackgroundLayerSchema = z.object({
+  type: z.literal('background'),
+  color: z.string().min(1),
+});
+export type TemplateBackgroundLayer = z.infer<typeof TemplateBackgroundLayerSchema>;
+
+export const TemplateRectLayerSchema = z.object({
+  type: z.literal('rect'),
+  box: TemplateBoxSchema,
+  color: z.string().min(1),
+  opacity: z.number().min(0).max(1).optional(),
+});
+export type TemplateRectLayer = z.infer<typeof TemplateRectLayerSchema>;
+
+export const TemplateColorTintLayerSchema = z.object({
+  type: z.literal('color_tint'),
+  color: z.string().min(1),
+  box: TemplateBoxSchema.optional(),
+});
+export type TemplateColorTintLayer = z.infer<typeof TemplateColorTintLayerSchema>;
 
 export const TemplateLayerSchema = z.discriminatedUnion('type', [
   TemplatePhotoLayerSchema,
   TemplateGradientLayerSchema,
   TemplateImageLayerSchema,
   TemplateTextLayerSchema,
+  TemplateBackgroundLayerSchema,
+  TemplateRectLayerSchema,
+  TemplateColorTintLayerSchema,
 ]);
 export type TemplateLayer = z.infer<typeof TemplateLayerSchema>;
 
