@@ -104,6 +104,7 @@ export const PhotoSessionSchema = z.object({
   sessionId: z.uuid(),
   title: z.string().min(1),
   theatreId: z.number().int(),
+  theatreName: z.string(),
   templateId: z.string().min(1),
   templateName: z.string().min(1),
   templateFamily: z.string().min(1),
