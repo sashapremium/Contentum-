@@ -171,7 +171,10 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                     <PhotoImageInput
                       key={field.key}
                       field={field}
-                      currentUrl={session.images[field.key]}
+                      currentUrl={session.images[field.key]?.replace(
+                        /^\/media\//,
+                        '',
+                      )}
                       selectedFile={selectedFiles[field.key] ?? null}
                       onFileSelect={(file) =>
                         setSelectedFiles((prev) => ({
