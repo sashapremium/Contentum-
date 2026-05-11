@@ -9,7 +9,8 @@ import {
   getEntryId,
 } from './layerFabricSync';
 
-const MAX_DISPLAY_PX = 560;
+const MAX_DISPLAY_PX = 700;
+const PLACEHOLDER_STROKE = '#51a2ff'; // gray-400 — tweak here to change all placeholder borders
 
 interface FabricCanvasProps {
   canvasSize: { width: number; height: number };
@@ -39,10 +40,16 @@ export const FabricCanvas = ({
   const fromFabricRef = useRef(false);
   // Always-current ref so the canvas event handler never holds a stale closure
   const onMoveResizeRef = useRef(onMoveResize);
-  useEffect(() => { onMoveResizeRef.current = onMoveResize; });
+  useEffect(() => {
+    onMoveResizeRef.current = onMoveResize;
+  });
   // Boxes dragged but not yet dispatched (debounce window) — reconcile skips their position
-  const pendingBoxesRef = useRef<Map<string, [number, number, number, number]>>(new Map());
-  const debounceTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const pendingBoxesRef = useRef<Map<string, [number, number, number, number]>>(
+    new Map(),
+  );
+  const debounceTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
 
   const { width: canvasW, height: canvasH } = canvasSize;
   const scale = Math.min(MAX_DISPLAY_PX / canvasW, MAX_DISPLAY_PX / canvasH, 1);
@@ -116,7 +123,14 @@ export const FabricCanvas = ({
       return;
     }
 
-    reconcileCanvas(fc, objectMapRef.current, entries, fonts, pendingBoxesRef.current);
+    reconcileCanvas(
+      fc,
+      objectMapRef.current,
+      entries,
+      fonts,
+      pendingBoxesRef.current,
+      PLACEHOLDER_STROKE,
+    );
 
     // Load real images asynchronously for image-type layers
     for (const entry of entries) {
@@ -148,7 +162,7 @@ export const FabricCanvas = ({
 
   return (
     <div
-      className="overflow-hidden rounded border border-border bg-[#e8e8e8] shadow-inner"
+      className="overflow-hidden border border-border bg-[#e8e8e8] shadow-inner"
       style={{ width: displayW, height: displayH }}
     >
       <canvas ref={canvasElRef} />

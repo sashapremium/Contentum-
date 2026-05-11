@@ -1,5 +1,17 @@
-import { Canvas, Gradient, Rect, Textbox, FabricImage, type FabricObject } from 'fabric';
-import type { AnyLayer, EditorEntry, FontEntry, ImageAsset } from './useEditorState';
+import {
+  Canvas,
+  Gradient,
+  Rect,
+  Textbox,
+  FabricImage,
+  type FabricObject,
+} from 'fabric';
+import type {
+  AnyLayer,
+  EditorEntry,
+  FontEntry,
+  ImageAsset,
+} from './useEditorState';
 
 // ─── Custom data tag on Fabric objects ───────────────────────────────────────
 
@@ -9,7 +21,10 @@ interface FabricData {
 }
 
 function setData(obj: FabricObject, id: string, loadedFile?: string) {
-  (obj as unknown as { data: FabricData }).data = { _id: id, ...(loadedFile ? { loadedFile } : {}) };
+  (obj as unknown as { data: FabricData }).data = {
+    _id: id,
+    ...(loadedFile ? { loadedFile } : {}),
+  };
 }
 
 export function getEntryId(obj: FabricObject): string | null {
@@ -27,7 +42,9 @@ function boxToProps(box: [number, number, number, number]) {
   return { left: box[0], top: box[1], width: box[2], height: box[3] };
 }
 
-export function fabricToBox(obj: FabricObject): [number, number, number, number] {
+export function fabricToBox(
+  obj: FabricObject,
+): [number, number, number, number] {
   return [
     Math.round(obj.left),
     Math.round(obj.top),
@@ -38,7 +55,11 @@ export function fabricToBox(obj: FabricObject): [number, number, number, number]
 
 // ─── Gradient helper ──────────────────────────────────────────────────────────
 
-function makeLinearGradient(colorFrom: string, colorTo: string, height: number): Gradient<'linear'> {
+function makeLinearGradient(
+  colorFrom: string,
+  colorTo: string,
+  height: number,
+): Gradient<'linear'> {
   return new Gradient({
     type: 'linear',
     gradientUnits: 'pixels',
@@ -63,6 +84,7 @@ const HANDLE_OPTS = {
 export function layerToFabricObject(
   entry: EditorEntry,
   fonts: FontEntry[],
+  placeholderStroke: string,
 ): FabricObject | null {
   const { _id, layer } = entry;
 
@@ -77,8 +99,10 @@ export function layerToFabricObject(
         new Rect({
           ...HANDLE_OPTS,
           ...boxToProps(layer.box),
-          fill: 'rgba(100,120,200,0.12)',
-          stroke: '#6080c8',
+          fill: 'rgba(156,163,175,0.1)',
+          stroke: placeholderStroke,
+          borderColor: placeholderStroke,
+          cornerColor: placeholderStroke,
           strokeWidth: 2,
           strokeDashArray: [8, 4],
         }),
@@ -95,6 +119,9 @@ export function layerToFabricObject(
           height: h,
           fill: makeLinearGradient(layer.colorFrom, layer.colorTo, h),
           opacity: layer.opacity ?? 1,
+          stroke: placeholderStroke,
+          cornerColor: placeholderStroke,
+          borderColor: placeholderStroke,
         }),
       );
     }
@@ -104,15 +131,19 @@ export function layerToFabricObject(
         new Rect({
           ...HANDLE_OPTS,
           ...boxToProps(layer.box),
-          fill: 'rgba(200,150,50,0.12)',
-          stroke: '#c89632',
+          fill: 'rgba(156,163,175,0.1)',
           strokeWidth: 2,
           strokeDashArray: [8, 4],
+          stroke: placeholderStroke,
+          cornerColor: placeholderStroke,
+          borderColor: placeholderStroke,
         }),
       );
 
     case 'text': {
-      const fontEntry = layer.font ? fonts.find((f) => f.key === layer.font) : null;
+      const fontEntry = layer.font
+        ? fonts.find((f) => f.key === layer.font)
+        : null;
       const fontFamily = fontEntry?.family ?? 'Times New Roman';
       const fontSize = layer.fontSize ? layer.fontSize[1] : 32;
       const displayText = layer.defaultText || layer.name;
@@ -127,11 +158,14 @@ export function layerToFabricObject(
           height: layer.box[3],
           fontFamily,
           fontSize,
-          fill: isEditable ? '#1d4ed8' : (layer.color ?? '#000000'),
-          textAlign: (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
+          fill: isEditable ? '#51a2ff' : (layer.color ?? '#000000'),
+          textAlign:
+            (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
           // Editable slots get a dashed blue border so designer sees it's a user-input field
-          stroke: isEditable ? '#1d4ed8' : undefined,
+          stroke: placeholderStroke,
           strokeWidth: isEditable ? 1 : 0,
+          borderColor: placeholderStroke,
+          cornerColor: placeholderStroke,
           strokeDashArray: isEditable ? [4, 4] : [],
           editable: false, // canvas editing off; value comes from PropertiesPanel
           splitByGrapheme: false,
@@ -154,7 +188,10 @@ export async function loadImageAsset(
   imageAssets: ImageAsset[],
 ): Promise<void> {
   if (entry.layer.type !== 'image') return;
-  const { file, box, opacity } = entry.layer as Extract<AnyLayer, { type: 'image' }>;
+  const { file, box, opacity } = entry.layer as Extract<
+    AnyLayer,
+    { type: 'image' }
+  >;
 
   if (!file) return;
 
@@ -164,11 +201,15 @@ export async function loadImageAsset(
   const current = objectMap.get(entry._id);
   if (current instanceof FabricImage && getLoadedFile(current) === file) return;
 
-  const placeholder = canvas.getObjects().find((o) => getEntryId(o) === entry._id);
+  const placeholder = canvas
+    .getObjects()
+    .find((o) => getEntryId(o) === entry._id);
   if (!placeholder) return;
 
   try {
-    const imgObj = await FabricImage.fromURL(asset.previewUrl, { crossOrigin: 'anonymous' });
+    const imgObj = await FabricImage.fromURL(asset.previewUrl, {
+      crossOrigin: 'anonymous',
+    });
     const naturalW = imgObj.width;
     const naturalH = imgObj.height;
 
@@ -211,6 +252,7 @@ export function reconcileCanvas(
   entries: EditorEntry[],
   fonts: FontEntry[],
   pendingBoxes?: ReadonlyMap<string, [number, number, number, number]>,
+  placeholderStroke = '#9ca3af',
 ): void {
   const activeId = (() => {
     const active = canvas.getActiveObject();
@@ -236,7 +278,8 @@ export function reconcileCanvas(
     // Image file was cleared or changed: drop the FabricImage so a fresh
     // placeholder rect is created below, then loadImageAsset reloads it.
     if (obj instanceof FabricImage && entry.layer.type === 'image') {
-      const currentFile = (entry.layer as Extract<AnyLayer, { type: 'image' }>).file;
+      const currentFile = (entry.layer as Extract<AnyLayer, { type: 'image' }>)
+        .file;
       if (getLoadedFile(obj) !== currentFile) {
         canvas.remove(obj);
         objectMap.delete(entry._id);
@@ -245,9 +288,15 @@ export function reconcileCanvas(
     }
 
     if (obj) {
-      updateFabricObject(obj, entry.layer, fonts, pendingBoxes?.has(entry._id) ?? false);
+      updateFabricObject(
+        obj,
+        entry.layer,
+        fonts,
+        pendingBoxes?.has(entry._id) ?? false,
+        placeholderStroke,
+      );
     } else {
-      const created = layerToFabricObject(entry, fonts);
+      const created = layerToFabricObject(entry, fonts, placeholderStroke);
       if (created) {
         canvas.add(created);
         objectMap.set(entry._id, created);
@@ -259,7 +308,11 @@ export function reconcileCanvas(
 
   // Re-order canvas objects to match entries z-order.
   // Splice-based sort with a stale snapshot is buggy, so replace the array in-place.
-  (canvas._objects as FabricObject[]).splice(0, canvas._objects.length, ...newOrder);
+  (canvas._objects as FabricObject[]).splice(
+    0,
+    canvas._objects.length,
+    ...newOrder,
+  );
 
   if (activeId) {
     const obj = objectMap.get(activeId);
@@ -271,16 +324,25 @@ export function reconcileCanvas(
 
 // ─── Update a Fabric object in-place ─────────────────────────────────────────
 
-function updateFabricObject(obj: FabricObject, layer: AnyLayer, fonts: FontEntry[], skipBox = false): void {
+function updateFabricObject(
+  obj: FabricObject,
+  layer: AnyLayer,
+  fonts: FontEntry[],
+  skipBox = false,
+  placeholderStroke: string,
+): void {
   const pos = skipBox ? {} : boxToProps(layer.box);
 
   switch (layer.type) {
     case 'photo':
-      if (!skipBox) { obj.set(pos); obj.setCoords(); }
+      if (!skipBox) {
+        obj.set(pos);
+        obj.setCoords();
+      }
       break;
 
     case 'gradient': {
-      const [,, , h] = layer.box;
+      const [, , , h] = layer.box;
       obj.set({
         ...pos,
         fill: makeLinearGradient(layer.colorFrom, layer.colorTo, h),
@@ -301,6 +363,9 @@ function updateFabricObject(obj: FabricObject, layer: AnyLayer, fonts: FontEntry
             scaleX: layer.box[2] / obj.width,
             scaleY: layer.box[3] / obj.height,
             opacity: layer.opacity ?? 1,
+            stroke: placeholderStroke,
+            cornerColor: placeholderStroke,
+            borderColor: placeholderStroke,
           });
           obj.setCoords();
         } else {
@@ -314,7 +379,9 @@ function updateFabricObject(obj: FabricObject, layer: AnyLayer, fonts: FontEntry
       break;
 
     case 'text': {
-      const fontEntry = layer.font ? fonts.find((f) => f.key === layer.font) : null;
+      const fontEntry = layer.font
+        ? fonts.find((f) => f.key === layer.font)
+        : null;
       const fontFamily = fontEntry?.family ?? 'Times New Roman';
       const fontSize = layer.fontSize ? layer.fontSize[1] : 32;
       const displayText = layer.defaultText || layer.name;
@@ -326,9 +393,12 @@ function updateFabricObject(obj: FabricObject, layer: AnyLayer, fonts: FontEntry
           text: displayText,
           fontFamily,
           fontSize,
-          fill: isEditable ? '#1d4ed8' : (layer.color ?? '#000000'),
-          textAlign: (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
-          stroke: isEditable ? '#1d4ed8' : undefined,
+          fill: isEditable ? '#51a2ff' : (layer.color ?? '#000000'),
+          textAlign:
+            (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
+          stroke: placeholderStroke,
+          cornerColor: placeholderStroke,
+          borderColor: placeholderStroke,
           strokeWidth: isEditable ? 1 : 0,
           strokeDashArray: isEditable ? [4, 4] : [],
         });

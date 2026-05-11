@@ -4,7 +4,7 @@ import {
   Image,
   ImagePlus,
   Layers,
-  Pencil,
+  SquarePen,
   Trash2,
   Type,
 } from 'lucide-react';
@@ -18,7 +18,7 @@ import type { AnyLayer, EditorState } from './useEditorState';
 function layerIcon(layer: AnyLayer): React.ReactNode {
   if (layer.type === 'text') {
     return layer.editable ? (
-      <Pencil className="h-3.5 w-3.5 text-blue-400" />
+      <SquarePen className="h-3.5 w-3.5 text-blue-400" />
     ) : (
       <Type className="h-3.5 w-3.5" />
     );
