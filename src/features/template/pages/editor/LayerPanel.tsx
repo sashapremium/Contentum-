@@ -1,5 +1,13 @@
 import { useRef } from 'react';
-import { AlignLeft, Image, ImagePlus, Layers, Minus, Pencil, Type } from 'lucide-react';
+import {
+  AlignLeft,
+  Image,
+  ImagePlus,
+  Layers,
+  Pencil,
+  Trash2,
+  Type,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
@@ -9,12 +17,14 @@ import type { AnyLayer, EditorState } from './useEditorState';
 
 function layerIcon(layer: AnyLayer): React.ReactNode {
   if (layer.type === 'text') {
-    return layer.editable
-      ? <Pencil className="h-3.5 w-3.5 text-blue-500" />
-      : <Type className="h-3.5 w-3.5" />;
+    return layer.editable ? (
+      <Pencil className="h-3.5 w-3.5 text-blue-400" />
+    ) : (
+      <Type className="h-3.5 w-3.5" />
+    );
   }
   const icons: Record<string, React.ReactNode> = {
-    photo: <ImagePlus className="h-3.5 w-3.5" />,
+    photo: <ImagePlus className="h-3.5 w-3.5 text-blue-400" />,
     image: <Image className="h-3.5 w-3.5" />,
     gradient: <Layers className="h-3.5 w-3.5" />,
   };
@@ -30,7 +40,7 @@ function layerLabel(layer: AnyLayer): string {
     case 'photo':
       return `Фото: ${layer.name}`;
     case 'image':
-      return `Лого: ${layer.file.split('/').pop() ?? layer.file}`;
+      return `Изображение: ${layer.file.split('/').pop() ?? layer.file}`;
     case 'gradient':
       return 'Градиент';
     default:
@@ -64,7 +74,7 @@ export const LayerPanel = ({
 
   return (
     <div className="flex h-full flex-col gap-2">
-      <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <div className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         Слои
       </div>
 
@@ -81,7 +91,10 @@ export const LayerPanel = ({
               onDragStart={() => (dragIdxRef.current = realIdx)}
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => {
-                if (dragIdxRef.current !== null && dragIdxRef.current !== realIdx) {
+                if (
+                  dragIdxRef.current !== null &&
+                  dragIdxRef.current !== realIdx
+                ) {
                   onReorderLayer(dragIdxRef.current, realIdx);
                 }
                 dragIdxRef.current = null;
@@ -90,75 +103,113 @@ export const LayerPanel = ({
               className={[
                 'flex cursor-pointer select-none items-center gap-2 rounded px-2 py-1.5 text-sm',
                 isSelected
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'bg-secondary text-secondary-foreground'
                   : 'hover:bg-accent hover:text-accent-foreground',
               ].join(' ')}
             >
               <span className="shrink-0">{layerIcon(entry.layer)}</span>
               <span className="flex-1 truncate">{layerLabel(entry.layer)}</span>
               <button
-                className="shrink-0 opacity-50 hover:opacity-100"
-                onClick={(e) => { e.stopPropagation(); onRemoveLayer(entry._id); }}
+                className="shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveLayer(entry._id);
+                }}
               >
-                <Minus className="h-3.5 w-3.5" />
+                <Trash2 className="h-3.5 w-3.5 text-destructive hover:text-destructive" />
               </button>
             </div>
           );
         })}
         {entries.length === 0 && (
-          <p className="text-xs text-muted-foreground">Нет слоёв. Добавьте слой ниже.</p>
+          <p className="text-xs text-muted-foreground">
+            Нет слоёв. Добавьте слой ниже.
+          </p>
         )}
       </div>
 
       {/* Add layer buttons */}
       <div className="border-t pt-2">
-        <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <div className="mb-1 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Добавить слой
         </div>
-        <div className="flex flex-wrap gap-1">
-          <Button variant="outline" size="sm" className="h-7 px-2 text-xs"
-            onClick={() => addLayer(() => ({
-              type: 'photo' as const,
-              name: `photo${entries.filter((e) => e.layer.type === 'photo').length + 1}`,
-              box: [0, 0, canvas.width, canvas.height],
-              crop: 'cover',
-              gravity: 'center',
-            }))}>
+        <div className="flex flex-col gap-1 overflow-x-auto">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-7 shrink-0 px-2 text-xs"
+            onClick={() =>
+              addLayer(() => ({
+                type: 'photo' as const,
+                name: `photo${entries.filter((e) => e.layer.type === 'photo').length + 1}`,
+                box: [0, 0, canvas.width, canvas.height],
+                crop: 'cover',
+                gravity: 'center',
+              }))
+            }
+          >
+            <ImagePlus className="mr-1 h-3.5 w-3.5" />
             Фото
           </Button>
 
-          <Button variant="outline" size="sm" className="h-7 px-2 text-xs"
-            onClick={() => addLayer(() => ({
-              type: 'text' as const,
-              name: `text${textCount + 1}`,
-              defaultText: `Текст ${textCount + 1}`,
-              editable: false,
-              box: [50, 50, Math.round(canvas.width * 0.8), 100],
-              color: '#000000',
-              fontSize: [16, 48] as [number, number],
-              align: 'left',
-            }))}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-7 shrink-0 px-2 text-xs"
+            onClick={() =>
+              addLayer(() => ({
+                type: 'text' as const,
+                name: `text${textCount + 1}`,
+                defaultText: `Текст ${textCount + 1}`,
+                editable: false,
+                box: [50, 50, Math.round(canvas.width * 0.8), 100],
+                color: '#000000',
+                fontSize: [16, 48] as [number, number],
+                align: 'left',
+              }))
+            }
+          >
+            <Type className="mr-1 h-3.5 w-3.5" />
             Текст
           </Button>
 
-          <Button variant="outline" size="sm" className="h-7 px-2 text-xs"
-            onClick={() => addLayer(() => ({
-              type: 'image' as const,
-              file: '',
-              box: [0, 0, 200, 200],
-              align: 'center',
-            }))}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-7 shrink-0 px-2 text-xs"
+            onClick={() =>
+              addLayer(() => ({
+                type: 'image' as const,
+                file: '',
+                box: [0, 0, 200, 200],
+                align: 'center',
+              }))
+            }
+          >
+            <Image className="mr-1 h-3.5 w-3.5" />
             Изображение
           </Button>
 
-          <Button variant="outline" size="sm" className="h-7 px-2 text-xs"
-            onClick={() => addLayer(() => ({
-              type: 'gradient' as const,
-              box: [0, Math.round(canvas.height * 0.5), canvas.width, Math.round(canvas.height * 0.5)],
-              colorFrom: 'rgba(0,0,0,0)',
-              colorTo: 'rgba(0,0,0,200)',
-              direction: 'top_to_bottom',
-            }))}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-7 shrink-0 px-2 text-xs"
+            onClick={() =>
+              addLayer(() => ({
+                type: 'gradient' as const,
+                box: [
+                  0,
+                  Math.round(canvas.height * 0.5),
+                  canvas.width,
+                  Math.round(canvas.height * 0.5),
+                ],
+                colorFrom: 'rgba(0,0,0,0)',
+                colorTo: 'rgba(0,0,0,200)',
+                direction: 'top_to_bottom',
+              }))
+            }
+          >
+            <Layers className="mr-1 h-3.5 w-3.5" />
             Градиент
           </Button>
         </div>

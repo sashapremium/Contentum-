@@ -265,8 +265,8 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
 
       {/* ── Main editor layout ───────────────────────────────────────────── */}
       <div className="flex gap-4" style={{ minHeight: 580 }}>
-        {/* Layer panel */}
-        <div className="w-52 shrink-0">
+        {/* Layer panel — fixed height so it never grows with PropertiesPanel */}
+        <div className="w-52 shrink-0 self-start" style={{ height: 580 }}>
           <LayerPanel
             state={state}
             onAddLayer={handleAddLayer}
