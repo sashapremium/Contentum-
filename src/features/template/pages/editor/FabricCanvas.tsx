@@ -17,6 +17,7 @@ interface FabricCanvasProps {
   fonts: FontEntry[];
   imageAssets: ImageAsset[];
   selectedId: string | null;
+  fontsLoadedAt?: number;
   onSelect: (id: string | null) => void;
   onMoveResize: (id: string, box: [number, number, number, number]) => void;
 }
@@ -27,6 +28,7 @@ export const FabricCanvas = ({
   fonts,
   imageAssets,
   selectedId,
+  fontsLoadedAt,
   onSelect,
   onMoveResize,
 }: FabricCanvasProps) => {
@@ -126,7 +128,7 @@ export const FabricCanvas = ({
         });
       }
     }
-  }, [entries, fonts, imageAssets, canvasW, canvasH]);
+  }, [entries, fonts, imageAssets, canvasW, canvasH, fontsLoadedAt]);
 
   // ── Sync external selectedId → canvas selection ──────────────────────────────
   useEffect(() => {

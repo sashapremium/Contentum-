@@ -1,10 +1,20 @@
 import { useRef, useState } from 'react';
-import { Trash2, Upload } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Layers, Trash2, Upload } from 'lucide-react';
 
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetContent,
@@ -30,6 +40,17 @@ function countImageUsages(entries: EditorEntry[], path: string) {
   ).length;
 }
 
+// ─── Font upload form ─────────────────────────────────────────────────────────
+
+const fontSchema = z.object({
+  key: z
+    .string()
+    .min(1, 'Введите ключ')
+    .regex(/^[\w-]+$/, 'Только буквы, цифры, _ и -'),
+});
+
+type FontFormValues = z.infer<typeof fontSchema>;
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 interface AssetManagerProps {
@@ -53,50 +74,57 @@ export const AssetManager = ({
 }: AssetManagerProps) => {
   const fontFileRef = useRef<HTMLInputElement>(null);
   const imgFileRef = useRef<HTMLInputElement>(null);
-  const [fontKey, setFontKey] = useState('');
-  const [fontFamily, setFontFamily] = useState('');
   const [deleteFont, setDeleteFont] = useState<FontEntry | null>(null);
   const [deleteImage, setDeleteImage] = useState<ImageAsset | null>(null);
 
+  const fontForm = useForm<FontFormValues>({
+    resolver: zodResolver(fontSchema),
+    defaultValues: { key: '' },
+  });
+
   const handleFontUpload = (file: File) => {
-    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'otf';
-    const key = fontKey.trim() || file.name.replace(/\.[^.]+$/, '').replace(/\s+/g, '_');
-    const family = fontFamily.trim() || key;
-    const path = `fonts/${key}.${ext}`;
+    fontForm.handleSubmit((values) => {
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? 'otf';
+      const key =
+        values.key.trim() ||
+        file.name.replace(/\.[^.]+$/, '').replace(/\s+/g, '_');
+      const family = key;
+      const path = `fonts/${key}.${ext}`;
 
-    // Register font with FontFace API for canvas preview
-    file.arrayBuffer().then((buf) => {
-      const ff = new FontFace(family, buf);
-      ff.load().then((loaded) => {
-        document.fonts.add(loaded);
+      file.arrayBuffer().then((buf) => {
+        const ff = new FontFace(family, buf);
+        ff.load().then((loaded) => document.fonts.add(loaded));
       });
-    });
 
-    onAddFont({
-      key,
-      file: path,
-      family,
-      pendingFile: file,
-      objectUrl: URL.createObjectURL(file),
-    });
+      onAddFont({
+        key,
+        file: path,
+        family,
+        pendingFile: file,
+        objectUrl: URL.createObjectURL(file),
+      });
 
-    setFontKey('');
-    setFontFamily('');
-    if (fontFileRef.current) fontFileRef.current.value = '';
+      fontForm.reset();
+      if (fontFileRef.current) fontFileRef.current.value = '';
+    })();
+  };
+
+  const triggerFontFileDialog = () => {
+    fontForm.trigger('key').then((valid) => {
+      if (valid) fontFileRef.current?.click();
+    });
   };
 
   const handleImageUpload = (file: File) => {
     const safeName = file.name.replace(/\s+/g, '_').replace(/[^\w.-]/g, '');
     const path = `images/${safeName}`;
     const previewUrl = URL.createObjectURL(file);
-
     onAddImage({ path, pendingFile: file, previewUrl });
     if (imgFileRef.current) imgFileRef.current.value = '';
   };
 
   const handleFontDelete = (font: FontEntry) => {
-    const usages = countFontUsages(entries, font.key);
-    if (usages > 0) {
+    if (countFontUsages(entries, font.key) > 0) {
       setDeleteFont(font);
     } else {
       onRemoveFont(font.key);
@@ -104,8 +132,7 @@ export const AssetManager = ({
   };
 
   const handleImageDelete = (asset: ImageAsset) => {
-    const usages = countImageUsages(entries, asset.path);
-    if (usages > 0) {
+    if (countImageUsages(entries, asset.path) > 0) {
       setDeleteImage(asset);
     } else {
       onRemoveImage(asset.path);
@@ -117,10 +144,11 @@ export const AssetManager = ({
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="sm">
+            <Layers className="mr-2 h-4 w-4" />
             Ресурсы
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-[380px]">
+        <SheetContent className="w-[500px] px-6">
           <SheetHeader>
             <SheetTitle>Менеджер ресурсов</SheetTitle>
           </SheetHeader>
@@ -136,49 +164,48 @@ export const AssetManager = ({
 
             {/* ── Fonts tab ──────────────────────────────────────────── */}
             <TabsContent value="fonts" className="space-y-4">
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <Label>Ключ шрифта</Label>
-                    <Input
-                      placeholder="heading"
-                      value={fontKey}
-                      onChange={(e) => setFontKey(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label>Семейство (CSS)</Label>
-                    <Input
-                      placeholder="My Font"
-                      value={fontFamily}
-                      onChange={(e) => setFontFamily(e.target.value)}
-                    />
-                  </div>
+              <Form {...fontForm}>
+                <div className="space-y-2">
+                  <FormField
+                    control={fontForm.control}
+                    name="key"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Название шрифта</FormLabel>
+                        <FormControl>
+                          <Input placeholder="heading" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={triggerFontFileDialog}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Загрузить .otf / .ttf
+                  </Button>
+                  <input
+                    ref={fontFileRef}
+                    type="file"
+                    accept=".otf,.ttf,.woff,.woff2"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleFontUpload(f);
+                    }}
+                  />
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => fontFileRef.current?.click()}
-                >
-                  <Upload className="mr-2 h-4 w-4" />
-                  Загрузить .otf / .ttf
-                </Button>
-                <input
-                  ref={fontFileRef}
-                  type="file"
-                  accept=".otf,.ttf,.woff,.woff2"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) handleFontUpload(f);
-                  }}
-                />
-              </div>
+              </Form>
 
               <div className="space-y-2">
                 {fonts.length === 0 && (
-                  <p className="text-sm text-muted-foreground">Шрифты не загружены</p>
+                  <p className="text-sm text-muted-foreground">
+                    Шрифты не загружены
+                  </p>
                 )}
                 {fonts.map((font) => (
                   <div
@@ -187,7 +214,9 @@ export const AssetManager = ({
                   >
                     <div>
                       <p className="text-sm font-medium">{font.key}</p>
-                      <p className="text-xs text-muted-foreground">{font.family}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {font.family}
+                      </p>
                     </div>
                     <Button
                       variant="ghost"
@@ -225,7 +254,9 @@ export const AssetManager = ({
 
               <div className="space-y-2">
                 {imageAssets.length === 0 && (
-                  <p className="text-sm text-muted-foreground">Изображения не загружены</p>
+                  <p className="text-sm text-muted-foreground">
+                    Изображения не загружены
+                  </p>
                 )}
                 {imageAssets.map((asset) => (
                   <div

@@ -1,4 +1,5 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
+import { BACKEND_URL } from '@/app/router/routes';
 import type { Template, TemplateLayer } from '../../types';
 
 // ─── Extended layer union (editor adds background/rect/color_tint) ────────────
@@ -149,12 +150,13 @@ function makeId(): string {
   return crypto.randomUUID();
 }
 
-function templateToState(template: Template): EditorState {
+function templateToState(template: Template, assetBaseUrl?: string): EditorState {
   const fonts: FontEntry[] = Object.entries(template.fonts ?? {}).map(
     ([key, f]) => ({
       key,
       file: f.file,
       family: f.family,
+      objectUrl: assetBaseUrl ? `${assetBaseUrl}/${f.file}` : undefined,
     }),
   );
 
@@ -163,6 +165,16 @@ function templateToState(template: Template): EditorState {
     layer,
   }));
 
+  // Pre-populate image assets from image layers so the canvas can show them
+  const imageAssets: ImageAsset[] = assetBaseUrl
+    ? template.layers
+        .filter((l): l is Extract<typeof l, { type: 'image' }> => l.type === 'image' && !!l.file)
+        .map((l) => ({
+          path: l.file,
+          previewUrl: `${assetBaseUrl}/${l.file}`,
+        }))
+    : [];
+
   return {
     templateId: template.id,
     name: template.name,
@@ -170,7 +182,7 @@ function templateToState(template: Template): EditorState {
     canvas: template.canvas,
     palette: template.palette ?? {},
     fonts,
-    imageAssets: [],
+    imageAssets,
     entries,
     selectedId: null,
   };
@@ -292,16 +304,47 @@ function historyReducer(state: HistoryState, action: HistoryAction): HistoryStat
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useEditorState(initialTemplate?: Template) {
-  const init = initialTemplate ? templateToState(initialTemplate) : emptyState();
+export function useEditorState(initialTemplate?: Template, theatreId?: number) {
+  const assetBaseUrl =
+    initialTemplate && theatreId
+      ? `${BACKEND_URL}/media/brandbooks/${theatreId}/${initialTemplate.id}`
+      : undefined;
+
+  const init = initialTemplate
+    ? templateToState(initialTemplate, assetBaseUrl)
+    : emptyState();
+
   const [history, dispatch] = useReducer(historyReducer, {
     past: [],
     present: init,
     future: [],
   });
+
+  // Track when remote fonts finish loading so FabricCanvas re-renders text layers
+  const [fontsLoadedAt, setFontsLoadedAt] = useState(0);
+
+  useEffect(() => {
+    if (!assetBaseUrl || !initialTemplate?.fonts) return;
+    const loadFont = async (family: string, url: string) => {
+      try {
+        const buf = await fetch(url).then((r) => r.arrayBuffer());
+        const loaded = await new FontFace(family, buf).load();
+        document.fonts.add(loaded);
+      } catch (err) {
+        console.warn('[Editor] Font load failed:', url, err);
+      }
+    };
+    const promises = Object.values(initialTemplate.fonts).map((f) =>
+      loadFont(f.family, `${assetBaseUrl}/${f.file}`),
+    );
+    Promise.all(promises).then(() => setFontsLoadedAt(Date.now()));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return [
     history.present,
     dispatch,
     { canUndo: history.past.length > 0, canRedo: history.future.length > 0 },
+    fontsLoadedAt,
   ] as const;
 }

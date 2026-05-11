@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useNavigate, useParams } from 'react-router';
 import { Redo2, Undo2 } from 'lucide-react';
 
@@ -8,8 +11,15 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Error } from '@/components/shared/Error';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 import { useCreateTemplateMutation } from '../../queries/useCreateTemplateMutation';
 import { useDeleteTemplateMutation } from '../../queries/useDeleteTemplateMutation';
@@ -28,6 +38,13 @@ import {
   type AnyLayer,
 } from './useEditorState';
 
+// ─── Name form schema ─────────────────────────────────────────────────────────
+
+const nameSchema = z.object({
+  name: z.string().min(1, 'Название не может быть пустым'),
+});
+type NameForm = z.infer<typeof nameSchema>;
+
 // ─── Shared editor UI ─────────────────────────────────────────────────────────
 
 interface EditorPageProps {
@@ -43,9 +60,21 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   }>();
   const parsedTheatreId = Number(theatreId);
 
-  const [state, dispatch, { canUndo, canRedo }] =
-    useEditorState(initialTemplate);
+  const [state, dispatch, { canUndo, canRedo }, fontsLoadedAt] = useEditorState(
+    initialTemplate,
+    parsedTheatreId,
+  );
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const nameForm = useForm<NameForm>({
+    resolver: zodResolver(nameSchema),
+    defaultValues: { name: state.name },
+  });
+
+  // Keep form in sync when undo/redo changes the name
+  useEffect(() => {
+    nameForm.setValue('name', state.name, { shouldValidate: true });
+  }, [state.name, nameForm]);
 
   const createMutation = useCreateTemplateMutation();
   const updateMutation = useUpdateTemplateMutation();
@@ -140,79 +169,93 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   return (
     <PageWrapper wide header={<Breadcrumbs links={breadcrumbs} />}>
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 border-b pb-4">
-        <div className="flex items-center gap-2">
-          <Label className="text-sm">Название</Label>
-          <Input
-            value={state.name}
-            onChange={(e) =>
-              dispatch({ type: 'SET_NAME', name: e.target.value })
-            }
-            className="h-8 w-48 text-sm"
+      <div className="space-y-4">
+        <Form {...nameForm}>
+          <FormField
+            control={nameForm.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm">Название шаблона</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      dispatch({ type: 'SET_NAME', name: e.target.value });
+                    }}
+                    className="h-8 w-96 text-sm"
+                    placeholder="Название шаблона"
+                  />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
           />
-        </div>
+        </Form>
+        <div className="mb-4 flex flex-wrap items-center gap-3 border-b pb-4">
+          <CanvasSizeDialog
+            current={state.canvas}
+            onApply={(w, h) =>
+              dispatch({ type: 'SET_CANVAS_SIZE', width: w, height: h })
+            }
+          />
 
-        <CanvasSizeDialog
-          current={state.canvas}
-          onApply={(w, h) =>
-            dispatch({ type: 'SET_CANVAS_SIZE', width: w, height: h })
-          }
-        />
+          <AssetManager
+            fonts={state.fonts}
+            imageAssets={state.imageAssets}
+            entries={state.entries}
+            onAddFont={(font) => dispatch({ type: 'ADD_FONT', font })}
+            onRemoveFont={(key) => dispatch({ type: 'REMOVE_FONT', key })}
+            onAddImage={(asset) => dispatch({ type: 'ADD_IMAGE_ASSET', asset })}
+            onRemoveImage={(path) =>
+              dispatch({ type: 'REMOVE_IMAGE_ASSET', path })
+            }
+          />
 
-        <AssetManager
-          fonts={state.fonts}
-          imageAssets={state.imageAssets}
-          entries={state.entries}
-          onAddFont={(font) => dispatch({ type: 'ADD_FONT', font })}
-          onRemoveFont={(key) => dispatch({ type: 'REMOVE_FONT', key })}
-          onAddImage={(asset) => dispatch({ type: 'ADD_IMAGE_ASSET', asset })}
-          onRemoveImage={(path) =>
-            dispatch({ type: 'REMOVE_IMAGE_ASSET', path })
-          }
-        />
-
-        {/* Undo / Redo */}
-        <div className="flex gap-1">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={!canUndo}
-            onClick={() => dispatch({ type: 'UNDO' })}
-            title="Отменить (Ctrl+Z)"
-          >
-            <Undo2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            disabled={!canRedo}
-            onClick={() => dispatch({ type: 'REDO' })}
-            title="Повторить (Ctrl+X)"
-          >
-            <Redo2 className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="ml-auto flex gap-2">
-          {mode === 'update' && (
+          {/* Undo / Redo */}
+          <div className="flex gap-1">
             <Button
-              variant="destructive"
-              size="sm"
-              disabled={isPending}
-              onClick={() => setDeleteOpen(true)}
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              disabled={!canUndo}
+              onClick={() => dispatch({ type: 'UNDO' })}
+              title="Отменить (Ctrl+Z)"
             >
-              Удалить
+              <Undo2 className="h-4 w-4" />
             </Button>
-          )}
-          <Button size="sm" disabled={isPending} onClick={handleSave}>
-            {isPending
-              ? 'Сохранение...'
-              : mode === 'create'
-                ? 'Создать'
-                : 'Сохранить'}
-          </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8"
+              disabled={!canRedo}
+              onClick={() => dispatch({ type: 'REDO' })}
+              title="Повторить (Ctrl+X)"
+            >
+              <Redo2 className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="ml-auto flex gap-2">
+            {mode === 'update' && (
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={isPending}
+                onClick={() => setDeleteOpen(true)}
+              >
+                Удалить
+              </Button>
+            )}
+            <Button size="sm" disabled={isPending} onClick={handleSave}>
+              {isPending
+                ? 'Сохранение...'
+                : mode === 'create'
+                  ? 'Создать'
+                  : 'Сохранить'}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -239,6 +282,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
             fonts={state.fonts}
             imageAssets={state.imageAssets}
             selectedId={state.selectedId}
+            fontsLoadedAt={fontsLoadedAt}
             onSelect={handleSelectLayer}
             onMoveResize={handleMoveResize}
           />
