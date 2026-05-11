@@ -235,24 +235,73 @@ export function makeEntry(layer: AnyLayer): EditorEntry {
   return { _id: makeId(), layer };
 }
 
-// ─── Logging reducer wrapper ──────────────────────────────────────────────────
+// ─── History ──────────────────────────────────────────────────────────────────
 
-function loggingReducer(state: EditorState, action: EditorAction): EditorState {
-  const next = reducer(state, action);
+const MAX_HISTORY = 50;
+
+// SELECT only changes which layer is highlighted — not worth polluting history
+const NON_UNDOABLE = new Set<EditorAction['type']>(['SELECT']);
+
+export type HistoryAction = EditorAction | { type: 'UNDO' } | { type: 'REDO' };
+
+interface HistoryState {
+  past: EditorState[];
+  present: EditorState;
+  future: EditorState[];
+}
+
+function historyReducer(state: HistoryState, action: HistoryAction): HistoryState {
+  if (action.type === 'UNDO') {
+    if (state.past.length === 0) return state;
+    const previous = state.past[state.past.length - 1];
+    return {
+      past: state.past.slice(0, -1),
+      present: { ...previous, selectedId: state.present.selectedId },
+      future: [state.present, ...state.future],
+    };
+  }
+
+  if (action.type === 'REDO') {
+    if (state.future.length === 0) return state;
+    const [next, ...rest] = state.future;
+    return {
+      past: [...state.past, state.present].slice(-MAX_HISTORY),
+      present: { ...next, selectedId: state.present.selectedId },
+      future: rest,
+    };
+  }
+
+  const next = reducer(state.present, action as EditorAction);
+
   console.group(`[Editor] ${action.type}`);
   console.log('action', action);
-  console.log('prev entries', state.entries);
-  console.log('next entries', next.entries);
-  console.log('full next state', next);
+  console.log('prev', state.present.entries);
+  console.log('next', next.entries);
   console.groupEnd();
-  return next;
+
+  if (NON_UNDOABLE.has((action as EditorAction).type)) {
+    return { ...state, present: next };
+  }
+
+  return {
+    past: [...state.past, state.present].slice(-MAX_HISTORY),
+    present: next,
+    future: [],
+  };
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useEditorState(initialTemplate?: Template) {
-  const init = initialTemplate
-    ? templateToState(initialTemplate)
-    : emptyState();
-  return useReducer(loggingReducer, init);
+  const init = initialTemplate ? templateToState(initialTemplate) : emptyState();
+  const [history, dispatch] = useReducer(historyReducer, {
+    past: [],
+    present: init,
+    future: [],
+  });
+  return [
+    history.present,
+    dispatch,
+    { canUndo: history.past.length > 0, canRedo: history.future.length > 0 },
+  ] as const;
 }
