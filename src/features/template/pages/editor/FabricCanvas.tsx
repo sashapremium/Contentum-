@@ -35,6 +35,12 @@ export const FabricCanvas = ({
   const objectMapRef = useRef<Map<string, FabricObject>>(new Map());
   // Prevent reconciliation loop when Fabric fires and we update React state
   const fromFabricRef = useRef(false);
+  // Always-current ref so the canvas event handler never holds a stale closure
+  const onMoveResizeRef = useRef(onMoveResize);
+  useEffect(() => { onMoveResizeRef.current = onMoveResize; });
+  // Boxes dragged but not yet dispatched (debounce window) — reconcile skips their position
+  const pendingBoxesRef = useRef<Map<string, [number, number, number, number]>>(new Map());
+  const debounceTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
   const { width: canvasW, height: canvasH } = canvasSize;
   const scale = Math.min(MAX_DISPLAY_PX / canvasW, MAX_DISPLAY_PX / canvasH, 1);
@@ -73,8 +79,22 @@ export const FabricCanvas = ({
       if (!obj) return;
       const id = getEntryId(obj);
       if (!id) return;
-      fromFabricRef.current = true;
-      onMoveResize(id, fabricToBox(obj));
+      const box = fabricToBox(obj);
+
+      // Cancel any existing debounce timer for this object
+      const existing = debounceTimersRef.current.get(id);
+      if (existing) clearTimeout(existing);
+
+      // Hold the box so reconcile won't snap it back during the debounce window
+      pendingBoxesRef.current.set(id, box);
+
+      const timer = setTimeout(() => {
+        pendingBoxesRef.current.delete(id);
+        debounceTimersRef.current.delete(id);
+        fromFabricRef.current = true;
+        onMoveResizeRef.current(id, box);
+      }, 1000);
+      debounceTimersRef.current.set(id, timer);
     });
 
     return () => {
@@ -94,12 +114,16 @@ export const FabricCanvas = ({
       return;
     }
 
-    reconcileCanvas(fc, objectMapRef.current, entries, canvasW, canvasH, fonts);
+    reconcileCanvas(fc, objectMapRef.current, entries, fonts, pendingBoxesRef.current);
 
     // Load real images asynchronously for image-type layers
     for (const entry of entries) {
       if (entry.layer.type === 'image') {
-        loadImageAsset(fc, entry, imageAssets);
+        loadImageAsset(fc, objectMapRef.current, entry, imageAssets, (id, naturalBox) => {
+          // Sync state box to the image's natural pixel dimensions so
+          // updateFabricObject can compute scaleX/Y correctly on every reconcile.
+          onMoveResizeRef.current(id, naturalBox);
+        });
       }
     }
   }, [entries, fonts, imageAssets, canvasW, canvasH]);

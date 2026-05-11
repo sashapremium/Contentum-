@@ -8,14 +8,6 @@ import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
 import { useCreateTemplateMutation } from '../../queries/useCreateTemplateMutation';
 import { useDeleteTemplateMutation } from '../../queries/useDeleteTemplateMutation';
 import { useUpdateTemplateMutation } from '../../queries/useUpdateTemplateMutation';
@@ -94,12 +86,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   const handleReorderLayer = (fromIndex: number, toIndex: number) =>
     dispatch({ type: 'MOVE_ENTRY', fromIndex, toIndex });
   const handleMoveResize = (id: string, box: [number, number, number, number]) => {
-    const entry = state.entries.find((e) => e._id === id);
-    if (!entry) return;
-    const layer = entry.layer;
-    if ('box' in layer) {
-      dispatch({ type: 'UPDATE_ENTRY', id, layer: { ...layer, box } as AnyLayer });
-    }
+    dispatch({ type: 'UPDATE_BOX', id, box });
   };
 
   // ── Breadcrumbs ───────────────────────────────────────────────────────────
@@ -123,23 +110,6 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
             onChange={(e) => dispatch({ type: 'SET_NAME', name: e.target.value })}
             className="h-8 w-48 text-sm"
           />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Label className="text-sm">Семейство</Label>
-          <Select
-            value={state.family}
-            onValueChange={(v) => dispatch({ type: 'SET_FAMILY', family: v })}
-          >
-            <SelectTrigger className="h-8 w-36 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="layout">layout</SelectItem>
-              <SelectItem value="photo_base">photo_base</SelectItem>
-              <SelectItem value="photo_overlay">photo_overlay</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         <CanvasSizeDialog

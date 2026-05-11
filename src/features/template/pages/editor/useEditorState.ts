@@ -51,6 +51,7 @@ export type EditorAction =
   | { type: 'ADD_ENTRY'; entry: EditorEntry }
   | { type: 'REMOVE_ENTRY'; id: string }
   | { type: 'UPDATE_ENTRY'; id: string; layer: AnyLayer }
+  | { type: 'UPDATE_BOX'; id: string; box: [number, number, number, number] }
   | { type: 'MOVE_ENTRY'; fromIndex: number; toIndex: number }
   | { type: 'SELECT'; id: string | null }
   | { type: 'ADD_FONT'; font: FontEntry }
@@ -68,9 +69,16 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
     case 'SET_FAMILY':
       return { ...state, family: action.family };
     case 'SET_CANVAS_SIZE':
-      return { ...state, canvas: { width: action.width, height: action.height } };
+      return {
+        ...state,
+        canvas: { width: action.width, height: action.height },
+      };
     case 'ADD_ENTRY':
-      return { ...state, entries: [...state.entries, action.entry], selectedId: action.entry._id };
+      return {
+        ...state,
+        entries: [...state.entries, action.entry],
+        selectedId: action.entry._id,
+      };
     case 'REMOVE_ENTRY': {
       const next = state.entries.filter((e) => e._id !== action.id);
       return {
@@ -86,6 +94,14 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
           e._id === action.id ? { ...e, layer: action.layer } : e,
         ),
       };
+    case 'UPDATE_BOX':
+      return {
+        ...state,
+        entries: state.entries.map((e) => {
+          if (e._id !== action.id || !('box' in e.layer)) return e;
+          return { ...e, layer: { ...e.layer, box: action.box } as AnyLayer };
+        }),
+      };
     case 'MOVE_ENTRY': {
       const arr = [...state.entries];
       const [item] = arr.splice(action.fromIndex, 1);
@@ -97,11 +113,29 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
     case 'ADD_FONT':
       return { ...state, fonts: [...state.fonts, action.font] };
     case 'REMOVE_FONT':
-      return { ...state, fonts: state.fonts.filter((f) => f.key !== action.key) };
+      return {
+        ...state,
+        fonts: state.fonts.filter((f) => f.key !== action.key),
+        entries: state.entries.map((e) => {
+          if (e.layer.type === 'text' && e.layer.font === action.key) {
+            return { ...e, layer: { ...e.layer, font: undefined } as AnyLayer };
+          }
+          return e;
+        }),
+      };
     case 'ADD_IMAGE_ASSET':
       return { ...state, imageAssets: [...state.imageAssets, action.asset] };
     case 'REMOVE_IMAGE_ASSET':
-      return { ...state, imageAssets: state.imageAssets.filter((a) => a.path !== action.path) };
+      return {
+        ...state,
+        imageAssets: state.imageAssets.filter((a) => a.path !== action.path),
+        entries: state.entries.map((e) => {
+          if (e.layer.type === 'image' && e.layer.file === action.path) {
+            return { ...e, layer: { ...e.layer, file: '' } as AnyLayer };
+          }
+          return e;
+        }),
+      };
     case 'SET_PALETTE':
       return { ...state, palette: action.palette };
     default:
@@ -116,11 +150,13 @@ function makeId(): string {
 }
 
 function templateToState(template: Template): EditorState {
-  const fonts: FontEntry[] = Object.entries(template.fonts ?? {}).map(([key, f]) => ({
-    key,
-    file: f.file,
-    family: f.family,
-  }));
+  const fonts: FontEntry[] = Object.entries(template.fonts ?? {}).map(
+    ([key, f]) => ({
+      key,
+      file: f.file,
+      family: f.family,
+    }),
+  );
 
   const entries: EditorEntry[] = template.layers.map((layer) => ({
     _id: makeId(),
@@ -144,7 +180,7 @@ function emptyState(): EditorState {
   return {
     templateId: '',
     name: 'Новый шаблон',
-    family: 'layout',
+    family: 'photo_overlay',
     canvas: { width: 1080, height: 1080 },
     palette: {},
     fonts: [],
@@ -169,7 +205,16 @@ export function stateToTemplate(state: EditorState): Template {
     canvas: state.canvas,
     palette: Object.keys(state.palette).length > 0 ? state.palette : undefined,
     fonts: Object.keys(fonts).length > 0 ? fonts : undefined,
-    layers: state.entries.map((e) => e.layer),
+    layers: state.entries.map((e) => {
+      const layer = e.layer;
+      // Backend heuristic: editable = name is set AND defaultText is empty.
+      // Strip defaultText from editable text layers so the backend correctly
+      // marks them as user-input fields regardless of the preview placeholder.
+      if (layer.type === 'text' && layer.editable) {
+        return { ...layer, defaultText: '' };
+      }
+      return layer;
+    }),
   };
 }
 
@@ -190,9 +235,24 @@ export function makeEntry(layer: AnyLayer): EditorEntry {
   return { _id: makeId(), layer };
 }
 
+// ─── Logging reducer wrapper ──────────────────────────────────────────────────
+
+function loggingReducer(state: EditorState, action: EditorAction): EditorState {
+  const next = reducer(state, action);
+  console.group(`[Editor] ${action.type}`);
+  console.log('action', action);
+  console.log('prev entries', state.entries);
+  console.log('next entries', next.entries);
+  console.log('full next state', next);
+  console.groupEnd();
+  return next;
+}
+
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useEditorState(initialTemplate?: Template) {
-  const init = initialTemplate ? templateToState(initialTemplate) : emptyState();
-  return useReducer(reducer, init);
+  const init = initialTemplate
+    ? templateToState(initialTemplate)
+    : emptyState();
+  return useReducer(loggingReducer, init);
 }

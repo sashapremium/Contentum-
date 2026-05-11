@@ -5,16 +5,20 @@ import type { AnyLayer, EditorEntry, FontEntry, ImageAsset } from './useEditorSt
 
 interface FabricData {
   _id: string;
+  loadedFile?: string; // tracks which file a FabricImage was loaded from
 }
 
-// Fabric v6 exposes `data` as `any`; cast through `unknown` to keep TS happy
-function setData(obj: FabricObject, id: string) {
-  (obj as unknown as { data: FabricData }).data = { _id: id };
+function setData(obj: FabricObject, id: string, loadedFile?: string) {
+  (obj as unknown as { data: FabricData }).data = { _id: id, ...(loadedFile ? { loadedFile } : {}) };
 }
 
 export function getEntryId(obj: FabricObject): string | null {
   const d = (obj as unknown as { data?: FabricData }).data;
   return d?._id ?? null;
+}
+
+function getLoadedFile(obj: FabricObject): string | undefined {
+  return (obj as unknown as { data?: FabricData }).data?.loadedFile;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -32,7 +36,7 @@ export function fabricToBox(obj: FabricObject): [number, number, number, number]
   ];
 }
 
-// ─── Gradient helpers ─────────────────────────────────────────────────────────
+// ─── Gradient helper ──────────────────────────────────────────────────────────
 
 function makeLinearGradient(colorFrom: string, colorTo: string, height: number): Gradient<'linear'> {
   return new Gradient({
@@ -46,7 +50,7 @@ function makeLinearGradient(colorFrom: string, colorTo: string, height: number):
   });
 }
 
-// ─── Common Fabric object options ─────────────────────────────────────────────
+// ─── Common Fabric control style ──────────────────────────────────────────────
 
 const HANDLE_OPTS = {
   cornerSize: 8,
@@ -54,12 +58,10 @@ const HANDLE_OPTS = {
   transparentCorners: false,
 };
 
-// ─── Layer → Fabric object ─────────────────────────────────────────────────────
+// ─── Layer → Fabric object ────────────────────────────────────────────────────
 
 export function layerToFabricObject(
   entry: EditorEntry,
-  canvasW: number,
-  canvasH: number,
   fonts: FontEntry[],
 ): FabricObject | null {
   const { _id, layer } = entry;
@@ -70,53 +72,6 @@ export function layerToFabricObject(
   };
 
   switch (layer.type) {
-    case 'background':
-      return make(
-        new Rect({
-          ...HANDLE_OPTS,
-          left: 0,
-          top: 0,
-          width: canvasW,
-          height: canvasH,
-          fill: layer.color,
-          selectable: false,
-          evented: false,
-          hasControls: false,
-          lockMovementX: true,
-          lockMovementY: true,
-        }),
-      );
-
-    case 'rect':
-      return make(
-        new Rect({
-          ...HANDLE_OPTS,
-          ...boxToProps(layer.box),
-          fill: layer.color,
-          opacity: layer.opacity ?? 1,
-        }),
-      );
-
-    case 'color_tint': {
-      const box = layer.box ?? ([0, 0, canvasW, canvasH] as [number, number, number, number]);
-      const locked = !layer.box;
-      return make(
-        new Rect({
-          ...HANDLE_OPTS,
-          left: box[0],
-          top: box[1],
-          width: box[2],
-          height: box[3],
-          fill: layer.color,
-          selectable: !locked,
-          evented: !locked,
-          hasControls: !locked,
-          lockMovementX: locked,
-          lockMovementY: locked,
-        }),
-      );
-    }
-
     case 'photo':
       return make(
         new Rect({
@@ -161,6 +116,8 @@ export function layerToFabricObject(
       const fontFamily = fontEntry?.family ?? 'Times New Roman';
       const fontSize = layer.fontSize ? layer.fontSize[1] : 32;
       const displayText = layer.defaultText || layer.name;
+      const isEditable = layer.editable === true;
+
       return make(
         new Textbox(displayText, {
           ...HANDLE_OPTS,
@@ -170,9 +127,13 @@ export function layerToFabricObject(
           height: layer.box[3],
           fontFamily,
           fontSize,
-          fill: layer.color ?? '#000000',
+          fill: isEditable ? '#1d4ed8' : (layer.color ?? '#000000'),
           textAlign: (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
-          editable: false,
+          // Editable slots get a dashed blue border so designer sees it's a user-input field
+          stroke: isEditable ? '#1d4ed8' : undefined,
+          strokeWidth: isEditable ? 1 : 0,
+          strokeDashArray: isEditable ? [4, 4] : [],
+          editable: false, // canvas editing off; value comes from PropertiesPanel
           splitByGrapheme: false,
         }),
       );
@@ -187,49 +148,64 @@ export function layerToFabricObject(
 
 export async function loadImageAsset(
   canvas: Canvas,
+  objectMap: Map<string, FabricObject>,
   entry: EditorEntry,
   imageAssets: ImageAsset[],
+  onNaturalSize?: (id: string, box: [number, number, number, number]) => void,
 ): Promise<void> {
   if (entry.layer.type !== 'image') return;
   const { file, box, opacity } = entry.layer as Extract<AnyLayer, { type: 'image' }>;
+
+  if (!file) return; // no selection — reconcile already shows the placeholder rect
+
   const asset = imageAssets.find((a) => a.path === file);
   if (!asset?.previewUrl) return;
+
+  // Skip if the same file is already loaded into this slot
+  const current = objectMap.get(entry._id);
+  if (current instanceof FabricImage && getLoadedFile(current) === file) return;
 
   const placeholder = canvas.getObjects().find((o) => getEntryId(o) === entry._id);
   if (!placeholder) return;
 
   try {
     const imgObj = await FabricImage.fromURL(asset.previewUrl, { crossOrigin: 'anonymous' });
+    const naturalW = imgObj.width;
+    const naturalH = imgObj.height;
+
+    // Place at natural size (scaleX/Y = 1) at the box origin.
+    // onNaturalSize will update state so the box matches the real image dimensions,
+    // after which updateFabricObject will keep scale in sync on every reconcile.
     imgObj.set({
       ...HANDLE_OPTS,
       left: box[0],
       top: box[1],
-      scaleX: box[2] / imgObj.width,
-      scaleY: box[3] / imgObj.height,
+      scaleX: 1,
+      scaleY: 1,
       opacity: opacity ?? 1,
     });
-    setData(imgObj, entry._id);
+    setData(imgObj, entry._id, file);
+
     canvas.remove(placeholder);
     canvas.add(imgObj);
+    objectMap.set(entry._id, imgObj);
     canvas.renderAll();
+
+    onNaturalSize?.(entry._id, [box[0], box[1], naturalW, naturalH]);
   } catch {
     // keep placeholder on error
   }
 }
 
 // ─── Reconcile canvas with entries ────────────────────────────────────────────
-// Simple strategy: clear canvas, re-add all objects in layer order.
-// Called only when state changes from React (not from Fabric events).
 
 export function reconcileCanvas(
   canvas: Canvas,
   objectMap: Map<string, FabricObject>,
   entries: EditorEntry[],
-  canvasW: number,
-  canvasH: number,
   fonts: FontEntry[],
+  pendingBoxes?: ReadonlyMap<string, [number, number, number, number]>,
 ): void {
-  // Save which object was active
   const activeId = (() => {
     const active = canvas.getActiveObject();
     return active ? getEntryId(active) : null;
@@ -246,15 +222,26 @@ export function reconcileCanvas(
     }
   }
 
-  // For each entry: add new or update existing; objects may change position in canvas._objects
   const newOrder: FabricObject[] = [];
 
   for (const entry of entries) {
     let obj = objectMap.get(entry._id);
+
+    // Image file was cleared or changed: drop the FabricImage so a fresh
+    // placeholder rect is created below, then loadImageAsset reloads it.
+    if (obj instanceof FabricImage && entry.layer.type === 'image') {
+      const currentFile = (entry.layer as Extract<AnyLayer, { type: 'image' }>).file;
+      if (getLoadedFile(obj) !== currentFile) {
+        canvas.remove(obj);
+        objectMap.delete(entry._id);
+        obj = undefined;
+      }
+    }
+
     if (obj) {
-      updateFabricObject(obj, entry.layer, canvasW, canvasH, fonts);
+      updateFabricObject(obj, entry.layer, fonts, pendingBoxes?.has(entry._id) ?? false);
     } else {
-      const created = layerToFabricObject(entry, canvasW, canvasH, fonts);
+      const created = layerToFabricObject(entry, fonts);
       if (created) {
         canvas.add(created);
         objectMap.set(entry._id, created);
@@ -269,19 +256,15 @@ export function reconcileCanvas(
   newOrder.forEach((obj, targetIdx) => {
     const currentIdx = canvasObjects.indexOf(obj);
     if (currentIdx !== targetIdx && currentIdx !== -1) {
-      // Move by removing and re-inserting at the correct index
       const arr = canvas._objects as FabricObject[];
       arr.splice(currentIdx, 1);
       arr.splice(targetIdx, 0, obj);
     }
   });
 
-  // Restore active selection
   if (activeId) {
     const obj = objectMap.get(activeId);
-    if (obj && obj.selectable) {
-      canvas.setActiveObject(obj);
-    }
+    if (obj && obj.selectable) canvas.setActiveObject(obj);
   }
 
   canvas.renderAll();
@@ -289,52 +272,46 @@ export function reconcileCanvas(
 
 // ─── Update a Fabric object in-place ─────────────────────────────────────────
 
-function updateFabricObject(
-  obj: FabricObject,
-  layer: AnyLayer,
-  canvasW: number,
-  canvasH: number,
-  fonts: FontEntry[],
-): void {
+function updateFabricObject(obj: FabricObject, layer: AnyLayer, fonts: FontEntry[], skipBox = false): void {
+  const pos = skipBox ? {} : boxToProps(layer.box);
+
   switch (layer.type) {
-    case 'background':
-      obj.set({ fill: layer.color });
-      break;
-
-    case 'rect':
-      obj.set({ ...boxToProps(layer.box), fill: layer.color, opacity: layer.opacity ?? 1 });
-      obj.setCoords();
-      break;
-
-    case 'color_tint': {
-      const box = layer.box ?? ([0, 0, canvasW, canvasH] as [number, number, number, number]);
-      obj.set({ left: box[0], top: box[1], width: box[2], height: box[3], fill: layer.color });
-      obj.setCoords();
-      break;
-    }
-
     case 'photo':
-      obj.set(boxToProps(layer.box));
-      obj.setCoords();
+      if (!skipBox) { obj.set(pos); obj.setCoords(); }
       break;
 
     case 'gradient': {
-      const [x, y, w, h] = layer.box;
+      const [,, , h] = layer.box;
       obj.set({
-        left: x,
-        top: y,
-        width: w,
-        height: h,
+        ...pos,
         fill: makeLinearGradient(layer.colorFrom, layer.colorTo, h),
         opacity: layer.opacity ?? 1,
       });
-      obj.setCoords();
+      if (!skipBox) obj.setCoords();
       break;
     }
 
     case 'image':
-      obj.set({ ...boxToProps(layer.box), opacity: layer.opacity ?? 1 });
-      obj.setCoords();
+      if (obj instanceof FabricImage) {
+        // FabricImage.width/height are the natural pixel dimensions.
+        // Displayed size = naturalW * scaleX, so we derive scale from the box.
+        if (!skipBox) {
+          obj.set({
+            left: layer.box[0],
+            top: layer.box[1],
+            scaleX: layer.box[2] / obj.width,
+            scaleY: layer.box[3] / obj.height,
+            opacity: layer.opacity ?? 1,
+          });
+          obj.setCoords();
+        } else {
+          obj.set({ opacity: layer.opacity ?? 1 });
+        }
+      } else {
+        // Placeholder rect — simple box update
+        obj.set({ ...pos, opacity: layer.opacity ?? 1 });
+        if (!skipBox) obj.setCoords();
+      }
       break;
 
     case 'text': {
@@ -342,17 +319,22 @@ function updateFabricObject(
       const fontFamily = fontEntry?.family ?? 'Times New Roman';
       const fontSize = layer.fontSize ? layer.fontSize[1] : 32;
       const displayText = layer.defaultText || layer.name;
+      const isEditable = layer.editable === true;
+
       if (obj instanceof Textbox) {
         obj.set({
-          ...boxToProps(layer.box),
+          ...pos,
           text: displayText,
           fontFamily,
           fontSize,
-          fill: layer.color ?? '#000000',
+          fill: isEditable ? '#1d4ed8' : (layer.color ?? '#000000'),
           textAlign: (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
+          stroke: isEditable ? '#1d4ed8' : undefined,
+          strokeWidth: isEditable ? 1 : 0,
+          strokeDashArray: isEditable ? [4, 4] : [],
         });
       }
-      obj.setCoords();
+      if (!skipBox) obj.setCoords();
       break;
     }
   }

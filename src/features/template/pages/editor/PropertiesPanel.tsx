@@ -10,12 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import type {
-  AnyLayer,
-  EditorState,
-  FontEntry,
-  ImageAsset,
-} from './useEditorState';
+import type { AnyLayer, EditorState, FontEntry, ImageAsset } from './useEditorState';
 
 // ─── Small reusable field components ─────────────────────────────────────────
 
@@ -64,10 +59,7 @@ const ColorField = ({
   return (
     <Field label={label}>
       <div className="flex items-center gap-2">
-        <div
-          className="h-7 w-7 shrink-0 cursor-pointer rounded border"
-          style={{ backgroundColor: safeHex }}
-        />
+        <div className="h-7 w-7 shrink-0 rounded border" style={{ backgroundColor: safeHex }} />
         <HexColorInput
           color={safeHex}
           onChange={onChange}
@@ -80,7 +72,27 @@ const ColorField = ({
   );
 };
 
-const RgbaField = ({
+// Parse rgba(R,G,B,A) where A is 0-255, or #RRGGBB
+function parseRgba(str: string): { r: number; g: number; b: number; a: number } {
+  const m = str.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*(\d+))?\s*\)/);
+  if (m) return { r: +m[1], g: +m[2], b: +m[3], a: m[4] !== undefined ? +m[4] : 255 };
+  const hex = str.replace('#', '');
+  if (hex.length === 6) {
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+      a: 255,
+    };
+  }
+  return { r: 0, g: 0, b: 0, a: 0 };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b].map((v) => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('');
+}
+
+const RgbaColorField = ({
   label,
   value,
   onChange,
@@ -88,19 +100,40 @@ const RgbaField = ({
   label: string;
   value: string;
   onChange: (v: string) => void;
-}) => (
-  <Field label={label}>
-    <Input
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder="rgba(0,0,0,128) or #RRGGBB"
-      className="h-7 font-mono text-xs"
-    />
-    <p className="text-[10px] text-muted-foreground">rgba(R,G,B,0-255) или #RRGGBB</p>
-  </Field>
-);
+}) => {
+  const { r, g, b, a } = parseRgba(value);
+  const hex = rgbToHex(r, g, b);
 
-// ─── Box fields (position + size) ────────────────────────────────────────────
+  const handleHex = (newHex: string) => {
+    const h = newHex.replace('#', '');
+    if (h.length === 6) {
+      onChange(`rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`);
+    }
+  };
+
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <div
+          className="h-7 w-7 shrink-0 rounded border"
+          style={{ backgroundColor: hex, opacity: a / 255 }}
+        />
+        <HexColorInput color={hex} onChange={handleHex} prefixed className="h-7 flex-1 rounded border px-2 font-mono text-xs" />
+      </div>
+      <HexColorPicker color={hex} onChange={handleHex} style={{ width: '100%', height: 120 }} />
+      <Field label={`Прозрачность: ${Math.round((a / 255) * 100)}%`}>
+        <input
+          type="range"
+          min={0}
+          max={255}
+          value={a}
+          onChange={(e) => onChange(`rgba(${r},${g},${b},${Number(e.target.value)})`)}
+          className="w-full"
+        />
+      </Field>
+    </Field>
+  );
+};
 
 const BoxFields = ({
   box,
@@ -116,8 +149,6 @@ const BoxFields = ({
     <NumInput label="В" value={box[3]} min={1} onChange={(v) => onChange([box[0], box[1], box[2], v])} />
   </div>
 );
-
-// ─── Opacity slider ───────────────────────────────────────────────────────────
 
 const OpacityField = ({
   value = 1,
@@ -139,7 +170,7 @@ const OpacityField = ({
   </Field>
 );
 
-// ─── Properties per layer type ────────────────────────────────────────────────
+// ─── Per-layer property panels ────────────────────────────────────────────────
 
 interface LayerPropsProps {
   layer: AnyLayer;
@@ -147,36 +178,6 @@ interface LayerPropsProps {
   imageAssets: ImageAsset[];
   onChange: (layer: AnyLayer) => void;
 }
-
-const BackgroundProps = ({ layer, onChange }: LayerPropsProps) => {
-  if (layer.type !== 'background') return null;
-  return (
-    <ColorField label="Цвет фона" value={layer.color} onChange={(c) => onChange({ ...layer, color: c })} />
-  );
-};
-
-const RectProps = ({ layer, onChange }: LayerPropsProps) => {
-  if (layer.type !== 'rect') return null;
-  return (
-    <>
-      <BoxFields box={layer.box} onChange={(b) => onChange({ ...layer, box: b })} />
-      <ColorField label="Цвет" value={layer.color} onChange={(c) => onChange({ ...layer, color: c })} />
-      <OpacityField value={layer.opacity} onChange={(v) => onChange({ ...layer, opacity: v })} />
-    </>
-  );
-};
-
-const ColorTintProps = ({ layer, onChange }: LayerPropsProps) => {
-  if (layer.type !== 'color_tint') return null;
-  return (
-    <>
-      <RgbaField label="Цвет тинта" value={layer.color} onChange={(c) => onChange({ ...layer, color: c })} />
-      {layer.box && (
-        <BoxFields box={layer.box} onChange={(b) => onChange({ ...layer, box: b })} />
-      )}
-    </>
-  );
-};
 
 const PhotoProps = ({ layer, onChange }: LayerPropsProps) => {
   if (layer.type !== 'photo') return null;
@@ -190,13 +191,16 @@ const PhotoProps = ({ layer, onChange }: LayerPropsProps) => {
           className="h-7 text-sm"
         />
       </Field>
-      <Field label="Обрезка">
-        <Select value={layer.gravity ?? 'center'} onValueChange={(v) => onChange({ ...layer, gravity: v })}>
+      <Field label="Позиция обрезки">
+        <Select
+          value={layer.gravity ?? 'center'}
+          onValueChange={(v) => onChange({ ...layer, gravity: v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="center">Center</SelectItem>
-            <SelectItem value="top">Top</SelectItem>
-            <SelectItem value="bottom">Bottom</SelectItem>
+            <SelectItem value="center">По центру</SelectItem>
+            <SelectItem value="top">Сверху</SelectItem>
+            <SelectItem value="bottom">Снизу</SelectItem>
           </SelectContent>
         </Select>
       </Field>
@@ -209,12 +213,12 @@ const GradientProps = ({ layer, onChange }: LayerPropsProps) => {
   return (
     <>
       <BoxFields box={layer.box} onChange={(b) => onChange({ ...layer, box: b })} />
-      <RgbaField
+      <RgbaColorField
         label="Цвет начала (прозрачный)"
         value={layer.colorFrom}
         onChange={(c) => onChange({ ...layer, colorFrom: c })}
       />
-      <RgbaField
+      <RgbaColorField
         label="Цвет конца (непрозрачный)"
         value={layer.colorTo}
         onChange={(c) => onChange({ ...layer, colorTo: c })}
@@ -231,7 +235,10 @@ const ImageLayerProps = ({ layer, onChange, imageAssets }: LayerPropsProps) => {
     <>
       <BoxFields box={layer.box} onChange={(b) => onChange({ ...layer, box: b })} />
       <Field label="Файл (из ресурсов)">
-        <Select value={layer.file || '__none__'} onValueChange={(v) => onChange({ ...layer, file: v === '__none__' ? '' : v })}>
+        <Select
+          value={layer.file || '__none__'}
+          onValueChange={(v) => onChange({ ...layer, file: v === '__none__' ? '' : v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue placeholder="Выбрать..." /></SelectTrigger>
           <SelectContent>
             <SelectItem value="__none__">— не выбран —</SelectItem>
@@ -242,7 +249,10 @@ const ImageLayerProps = ({ layer, onChange, imageAssets }: LayerPropsProps) => {
         </Select>
       </Field>
       <Field label="Выравнивание">
-        <Select value={layer.align ?? 'center'} onValueChange={(v) => onChange({ ...layer, align: v })}>
+        <Select
+          value={layer.align ?? 'center'}
+          onValueChange={(v) => onChange({ ...layer, align: v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="left">Слева</SelectItem>
@@ -265,10 +275,16 @@ const ImageLayerProps = ({ layer, onChange, imageAssets }: LayerPropsProps) => {
 
 const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
   if (layer.type !== 'text') return null;
+  const isEditable = layer.editable === true;
   return (
     <>
+      {isEditable && (
+        <div className="rounded border border-blue-200 bg-blue-50 px-2 py-1.5 text-xs text-blue-700">
+          Поле ввода — пользователь заполняет текст при создании фото
+        </div>
+      )}
       <BoxFields box={layer.box} onChange={(b) => onChange({ ...layer, box: b })} />
-      <Field label="Ключ поля">
+      <Field label="Ключ поля (name)">
         <Input
           value={layer.name}
           onChange={(e) => onChange({ ...layer, name: e.target.value })}
@@ -282,8 +298,23 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
           className="h-7 text-sm"
         />
       </Field>
+      <Field label="Редактируемый пользователем">
+        <Select
+          value={isEditable ? 'yes' : 'no'}
+          onValueChange={(v) => onChange({ ...layer, editable: v === 'yes' })}
+        >
+          <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="yes">Да — пользователь вводит текст</SelectItem>
+            <SelectItem value="no">Нет — фиксированный текст</SelectItem>
+          </SelectContent>
+        </Select>
+      </Field>
       <Field label="Шрифт">
-        <Select value={layer.font ?? '__default__'} onValueChange={(v) => onChange({ ...layer, font: v === '__default__' ? undefined : v })}>
+        <Select
+          value={layer.font ?? '__default__'}
+          onValueChange={(v) => onChange({ ...layer, font: v === '__default__' ? undefined : v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="__default__">Times New Roman</SelectItem>
@@ -293,7 +324,11 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
           </SelectContent>
         </Select>
       </Field>
-      <ColorField label="Цвет текста" value={layer.color ?? '#000000'} onChange={(c) => onChange({ ...layer, color: c })} />
+      <ColorField
+        label="Цвет текста"
+        value={layer.color ?? '#000000'}
+        onChange={(c) => onChange({ ...layer, color: c })}
+      />
       <div className="grid grid-cols-2 gap-2">
         <NumInput
           label="Мин. размер"
@@ -323,7 +358,10 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
         />
       </div>
       <Field label="Горизонт. выравнивание">
-        <Select value={layer.align ?? 'left'} onValueChange={(v) => onChange({ ...layer, align: v })}>
+        <Select
+          value={layer.align ?? 'left'}
+          onValueChange={(v) => onChange({ ...layer, align: v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="left">Слева</SelectItem>
@@ -333,7 +371,10 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
         </Select>
       </Field>
       <Field label="Верт. выравнивание">
-        <Select value={layer.verticalAlign ?? 'top'} onValueChange={(v) => onChange({ ...layer, verticalAlign: v })}>
+        <Select
+          value={layer.verticalAlign ?? 'top'}
+          onValueChange={(v) => onChange({ ...layer, verticalAlign: v })}
+        >
           <SelectTrigger className="h-7 text-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="top">Сверху</SelectItem>
@@ -365,10 +406,7 @@ export const PropertiesPanel = ({ state, onUpdateLayer }: PropertiesPanelProps) 
   }
 
   const { layer } = selected;
-
-  const handleChange = (updated: AnyLayer) => {
-    onUpdateLayer(selected._id, updated);
-  };
+  const handleChange = (updated: AnyLayer) => onUpdateLayer(selected._id, updated);
 
   const props: LayerPropsProps = {
     layer,
@@ -377,14 +415,18 @@ export const PropertiesPanel = ({ state, onUpdateLayer }: PropertiesPanelProps) 
     onChange: handleChange,
   };
 
+  const typeLabel: Record<string, string> = {
+    photo: 'Фото-слот',
+    gradient: 'Градиент',
+    image: 'Изображение',
+    text: layer.type === 'text' && layer.editable ? 'Ред. текст' : 'Текст',
+  };
+
   return (
     <div className="space-y-3 overflow-y-auto px-1">
       <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {layer.type}
+        {typeLabel[layer.type] ?? layer.type}
       </div>
-      {layer.type === 'background' && <BackgroundProps {...props} />}
-      {layer.type === 'rect' && <RectProps {...props} />}
-      {layer.type === 'color_tint' && <ColorTintProps {...props} />}
       {layer.type === 'photo' && <PhotoProps {...props} />}
       {layer.type === 'gradient' && <GradientProps {...props} />}
       {layer.type === 'image' && <ImageLayerProps {...props} />}
