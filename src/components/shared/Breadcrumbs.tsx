@@ -9,22 +9,31 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-type BreadcrumbLink = { url: string; label: string };
+type BreadcrumbLinkItem =
+  | { url: string; onClick?: never; label: string }
+  | { onClick: () => void; url?: never; label: string };
 
-export function Breadcrumbs({ links }: { links: BreadcrumbLink[] }) {
+export function Breadcrumbs({ links }: { links: BreadcrumbLinkItem[] }) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         {links.map((link, i) => {
           const isLast = i === links.length - 1;
+          const key = link.url ?? link.label;
           return (
-            <Fragment key={link.url}>
+            <Fragment key={key}>
               <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage>{link.label}</BreadcrumbPage>
+                ) : link.onClick ? (
+                  <BreadcrumbLink asChild>
+                    <button onClick={link.onClick} className="cursor-pointer">
+                      {link.label}
+                    </button>
+                  </BreadcrumbLink>
                 ) : (
                   <BreadcrumbLink asChild>
-                    <Link to={link.url}>{link.label}</Link>
+                    <Link to={link.url!}>{link.label}</Link>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>

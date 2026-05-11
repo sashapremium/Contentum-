@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { useNavigate, useParams } from 'react-router';
 import { Redo2, Undo2 } from 'lucide-react';
 
-import { THEATRE } from '@/app/router/routes';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Error } from '@/components/shared/Error';
@@ -118,21 +117,24 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
     if (mode === 'create') {
       createMutation.mutate(
         { theatreId: parsedTheatreId, payload },
-        { onSuccess: () => navigate(THEATRE) },
+        { onSuccess: () => navigate(-1) },
       );
     } else {
-      updateMutation.mutate({
-        theatreId: parsedTheatreId,
-        templateId: templateId!,
-        payload,
-      });
+      updateMutation.mutate(
+        {
+          theatreId: parsedTheatreId,
+          templateId: templateId!,
+          payload,
+        },
+        { onSuccess: () => navigate(-1) },
+      );
     }
   };
 
   const handleDelete = () => {
     deleteMutation.mutate(
       { theatreId: parsedTheatreId, templateId: templateId! },
-      { onSuccess: () => navigate(THEATRE) },
+      { onSuccess: () => navigate(-1) },
     );
   };
 
@@ -156,7 +158,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   // ── Breadcrumbs ───────────────────────────────────────────────────────────
 
   const breadcrumbs = [
-    { url: THEATRE, label: 'Управление учреждением' },
+    { onClick: () => navigate(-1), label: 'Управление учреждением' },
     {
       url: '#',
       label:
@@ -184,7 +186,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
                       field.onChange(e);
                       dispatch({ type: 'SET_NAME', name: e.target.value });
                     }}
-                    className="h-8 w-96 text-sm"
+                    className="h-8 w-80 text-sm"
                     placeholder="Название шаблона"
                   />
                 </FormControl>
