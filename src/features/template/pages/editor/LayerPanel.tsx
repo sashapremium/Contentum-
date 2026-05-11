@@ -141,7 +141,7 @@ export const LayerPanel = ({
             onClick={() =>
               addLayer(() => ({
                 type: 'photo' as const,
-                name: `photo${entries.filter((e) => e.layer.type === 'photo').length + 1}`,
+                name: `Фото ${entries.filter((e) => e.layer.type === 'photo').length + 1}`,
                 box: [0, 0, canvas.width, canvas.height],
                 crop: 'cover',
                 gravity: 'center',
