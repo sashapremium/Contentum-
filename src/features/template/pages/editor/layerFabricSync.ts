@@ -150,18 +150,17 @@ export async function loadImageAsset(
   canvas: Canvas,
   objectMap: Map<string, FabricObject>,
   entry: EditorEntry,
+  entries: EditorEntry[],
   imageAssets: ImageAsset[],
-  onNaturalSize?: (id: string, box: [number, number, number, number]) => void,
 ): Promise<void> {
   if (entry.layer.type !== 'image') return;
   const { file, box, opacity } = entry.layer as Extract<AnyLayer, { type: 'image' }>;
 
-  if (!file) return; // no selection — reconcile already shows the placeholder rect
+  if (!file) return;
 
   const asset = imageAssets.find((a) => a.path === file);
   if (!asset?.previewUrl) return;
 
-  // Skip if the same file is already loaded into this slot
   const current = objectMap.get(entry._id);
   if (current instanceof FabricImage && getLoadedFile(current) === file) return;
 
@@ -173,25 +172,32 @@ export async function loadImageAsset(
     const naturalW = imgObj.width;
     const naturalH = imgObj.height;
 
-    // Place at natural size (scaleX/Y = 1) at the box origin.
-    // onNaturalSize will update state so the box matches the real image dimensions,
-    // after which updateFabricObject will keep scale in sync on every reconcile.
+    // Scale to the existing box dimensions — do NOT override state with natural dims.
     imgObj.set({
       ...HANDLE_OPTS,
       left: box[0],
       top: box[1],
-      scaleX: 1,
-      scaleY: 1,
+      scaleX: naturalW > 0 && box[2] > 0 ? box[2] / naturalW : 1,
+      scaleY: naturalH > 0 && box[3] > 0 ? box[3] / naturalH : 1,
       opacity: opacity ?? 1,
     });
     setData(imgObj, entry._id, file);
 
+    // Remove placeholder, add image, then move it to the correct z-position.
+    const entryZ = entries.findIndex((e) => e._id === entry._id);
     canvas.remove(placeholder);
-    canvas.add(imgObj);
+    canvas.add(imgObj); // adds at top, initialises canvas ref + coords
+    if (entryZ >= 0) {
+      const arr = canvas._objects as FabricObject[];
+      const currentIdx = arr.indexOf(imgObj);
+      if (currentIdx !== entryZ) {
+        arr.splice(currentIdx, 1);
+        arr.splice(entryZ, 0, imgObj);
+      }
+    }
+
     objectMap.set(entry._id, imgObj);
     canvas.renderAll();
-
-    onNaturalSize?.(entry._id, [box[0], box[1], naturalW, naturalH]);
   } catch {
     // keep placeholder on error
   }
@@ -251,16 +257,9 @@ export function reconcileCanvas(
     if (obj) newOrder.push(obj);
   }
 
-  // Re-sort canvas objects to match layer order
-  const canvasObjects = canvas.getObjects();
-  newOrder.forEach((obj, targetIdx) => {
-    const currentIdx = canvasObjects.indexOf(obj);
-    if (currentIdx !== targetIdx && currentIdx !== -1) {
-      const arr = canvas._objects as FabricObject[];
-      arr.splice(currentIdx, 1);
-      arr.splice(targetIdx, 0, obj);
-    }
-  });
+  // Re-order canvas objects to match entries z-order.
+  // Splice-based sort with a stale snapshot is buggy, so replace the array in-place.
+  (canvas._objects as FabricObject[]).splice(0, canvas._objects.length, ...newOrder);
 
   if (activeId) {
     const obj = objectMap.get(activeId);

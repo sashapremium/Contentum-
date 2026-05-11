@@ -1,5 +1,4 @@
 import { useEffect, useReducer, useState } from 'react';
-import { BACKEND_URL } from '@/app/router/routes';
 import type { Template, TemplateLayer } from '../../types';
 
 // ─── Extended layer union (editor adds background/rect/color_tint) ────────────
@@ -150,7 +149,10 @@ function makeId(): string {
   return crypto.randomUUID();
 }
 
-function templateToState(template: Template, assetBaseUrl?: string): EditorState {
+function templateToState(
+  template: Template,
+  assetBaseUrl?: string,
+): EditorState {
   const fonts: FontEntry[] = Object.entries(template.fonts ?? {}).map(
     ([key, f]) => ({
       key,
@@ -168,7 +170,10 @@ function templateToState(template: Template, assetBaseUrl?: string): EditorState
   // Pre-populate image assets from image layers so the canvas can show them
   const imageAssets: ImageAsset[] = assetBaseUrl
     ? template.layers
-        .filter((l): l is Extract<typeof l, { type: 'image' }> => l.type === 'image' && !!l.file)
+        .filter(
+          (l): l is Extract<typeof l, { type: 'image' }> =>
+            l.type === 'image' && !!l.file,
+        )
         .map((l) => ({
           path: l.file,
           previewUrl: `${assetBaseUrl}/${l.file}`,
@@ -262,7 +267,10 @@ interface HistoryState {
   future: EditorState[];
 }
 
-function historyReducer(state: HistoryState, action: HistoryAction): HistoryState {
+function historyReducer(
+  state: HistoryState,
+  action: HistoryAction,
+): HistoryState {
   if (action.type === 'UNDO') {
     if (state.past.length === 0) return state;
     const previous = state.past[state.past.length - 1];
@@ -307,7 +315,7 @@ function historyReducer(state: HistoryState, action: HistoryAction): HistoryStat
 export function useEditorState(initialTemplate?: Template, theatreId?: number) {
   const assetBaseUrl =
     initialTemplate && theatreId
-      ? `${BACKEND_URL}/media/brandbooks/${theatreId}/${initialTemplate.id}`
+      ? `/media/brandbooks/${theatreId}/`
       : undefined;
 
   const init = initialTemplate
@@ -338,7 +346,7 @@ export function useEditorState(initialTemplate?: Template, theatreId?: number) {
       loadFont(f.family, `${assetBaseUrl}/${f.file}`),
     );
     Promise.all(promises).then(() => setFontsLoadedAt(Date.now()));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [

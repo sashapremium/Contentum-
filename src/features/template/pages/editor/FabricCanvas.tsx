@@ -121,11 +121,7 @@ export const FabricCanvas = ({
     // Load real images asynchronously for image-type layers
     for (const entry of entries) {
       if (entry.layer.type === 'image') {
-        loadImageAsset(fc, objectMapRef.current, entry, imageAssets, (id, naturalBox) => {
-          // Sync state box to the image's natural pixel dimensions so
-          // updateFabricObject can compute scaleX/Y correctly on every reconcile.
-          onMoveResizeRef.current(id, naturalBox);
-        });
+        loadImageAsset(fc, objectMapRef.current, entry, entries, imageAssets);
       }
     }
   }, [entries, fonts, imageAssets, canvasW, canvasH, fontsLoadedAt]);
