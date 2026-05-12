@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loading } from '@/components/shared/Loading';
 import { Error } from '@/components/shared/Error';
 import { PageWrapper } from '@/components/shared/PageWrapper';
@@ -7,8 +6,8 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { POST } from '@/app/router/routes';
 import { useChatQuery } from '../queries/useChatQuery';
-import { MetricsSummaryTab } from '@/features/messages/components/MessageGenerated/MetricsSummaryTab';
-import { MetricsVariantsTab } from '@/features/messages/components/MessageGenerated/MetricsVariantsTab';
+import { GeneratedVariantCard } from '@/features/messages/components/GeneratedVariantCard';
+import { getVariantLabels } from '@/features/messages/components/MessageGenerated/metricsUtils';
 
 export function MetricsPage() {
   const { chatId, messageId } = useParams<{
@@ -40,32 +39,37 @@ export function MetricsPage() {
   }
 
   const items = message.payload.content;
-  const chatUrl = `${POST}/${chatId}`;
+  const labels = getVariantLabels(items);
+  const bestIdx = labels.indexOf('Лучший вариант');
 
   return (
     <PageWrapper
-      size="medium"
+      size="wide"
       header={
         <Breadcrumbs
           links={[
-            { url: chatUrl, label: chat.title },
-            { url: '#', label: 'Метрики' },
+            { url: `${POST}/${chatId}`, label: chat.title },
+            { url: '#', label: 'Подробный обзор' },
           ]}
         />
       }
     >
-      <Tabs defaultValue="summary" className="mt-2">
-        <TabsList>
-          <TabsTrigger value="summary">Сводка</TabsTrigger>
-          <TabsTrigger value="variants">По вариантам</TabsTrigger>
-        </TabsList>
-        <TabsContent value="summary" className="mt-4">
-          <MetricsSummaryTab items={items} />
-        </TabsContent>
-        <TabsContent value="variants" className="mt-4">
-          <MetricsVariantsTab items={items} />
-        </TabsContent>
-      </Tabs>
+      <div
+        className="mt-2 grid gap-4"
+        style={{
+          gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
+        }}
+      >
+        {items.map((item, idx) => (
+          <GeneratedVariantCard
+            key={idx}
+            item={item}
+            index={idx}
+            label={labels[idx]}
+            isBest={idx === bestIdx}
+          />
+        ))}
+      </div>
     </PageWrapper>
   );
 }

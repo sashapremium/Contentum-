@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {
-  formatScore,
   getActiveMetrics,
   OVERALL_SCORE_KEY,
   scoreColor,
@@ -81,7 +80,7 @@ export const GeneratedVariantCard = ({
               className="text-xl font-bold tabular-nums"
               style={{ color: scoreColor(score) }}
             >
-              {formatScore(score)}
+              {(score * 100).toFixed(1)}
             </span>
           )}
         </div>
@@ -100,31 +99,28 @@ export const GeneratedVariantCard = ({
           {item.text}
         </div>
 
-        <div className="flex gap-1">
-          {isOverflowing && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-xs text-muted-foreground"
-              onClick={() => setExpanded((e) => !e)}
-            >
-              {expanded ? 'Свернуть' : 'Развернуть'}
-            </Button>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2 text-xs text-muted-foreground gap-1.5"
-            onClick={handleCopy}
+        {isOverflowing && (
+          <button
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            onClick={() => setExpanded((e) => !e)}
           >
-            {copied ? (
-              <CheckIcon className="size-3.5" />
-            ) : (
-              <CopyIcon className="size-3.5" />
-            )}
-            {copied ? 'Скопировано' : 'Скопировать'}
-          </Button>
-        </div>
+            {expanded ? 'Свернуть' : 'Развернуть'}
+          </button>
+        )}
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full gap-2"
+          onClick={handleCopy}
+        >
+          {copied ? (
+            <CheckIcon className="size-4" />
+          ) : (
+            <CopyIcon className="size-4" />
+          )}
+          {copied ? 'Скопировано' : 'Скопировать'}
+        </Button>
       </CardContent>
     </Card>
   );
