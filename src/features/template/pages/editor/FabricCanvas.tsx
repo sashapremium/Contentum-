@@ -102,7 +102,7 @@ export const FabricCanvas = ({
         debounceTimersRef.current.delete(id);
         fromFabricRef.current = true;
         onMoveResizeRef.current(id, box);
-      }, 1000);
+      }, 500);
       debounceTimersRef.current.set(id, timer);
     });
 

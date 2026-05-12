@@ -45,8 +45,10 @@ function countImageUsages(entries: EditorEntry[], path: string) {
 const fontSchema = z.object({
   key: z
     .string()
-    .min(1, 'Введите ключ')
-    .regex(/^[\w-]+$/, 'Только буквы, цифры, _ и -'),
+    .refine(
+      (v) => v === '' || /^[\p{L}\p{N}_-]+$/u.test(v),
+      'Только буквы, цифры, _ и -',
+    ),
 });
 
 type FontFormValues = z.infer<typeof fontSchema>;

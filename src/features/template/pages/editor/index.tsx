@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -59,10 +59,8 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   }>();
   const parsedTheatreId = Number(theatreId);
 
-  const [state, dispatch, { canUndo, canRedo }, fontsLoadedAt] = useEditorState(
-    initialTemplate,
-    parsedTheatreId,
-  );
+  const [state, rawDispatch, { canUndo, canRedo }, fontsLoadedAt] =
+    useEditorState(initialTemplate, parsedTheatreId);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const nameForm = useForm<NameForm>({
@@ -78,6 +76,20 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   const createMutation = useCreateTemplateMutation();
   const updateMutation = useUpdateTemplateMutation();
   const deleteMutation = useDeleteTemplateMutation();
+
+  const createMutationRef = useRef(createMutation);
+  const updateMutationRef = useRef(updateMutation);
+  createMutationRef.current = createMutation;
+  updateMutationRef.current = updateMutation;
+
+  const dispatch: typeof rawDispatch = useCallback(
+    (action) => {
+      if (createMutationRef.current.isError) createMutationRef.current.reset();
+      if (updateMutationRef.current.isError) updateMutationRef.current.reset();
+      rawDispatch(action);
+    },
+    [rawDispatch],
+  );
 
   const isPending =
     createMutation.isPending ||
@@ -261,7 +273,11 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
         </div>
       </div>
 
-      {isError && <Error description="Не удалось сохранить шаблон" />}
+      {isError && (
+        <div className="mb-4">
+          <Error description="Не удалось сохранить шаблон" />
+        </div>
+      )}
 
       {/* ── Main editor layout ───────────────────────────────────────────── */}
       <div className="flex gap-4" style={{ minHeight: 580 }}>

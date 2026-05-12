@@ -112,7 +112,7 @@ const SliderField = ({
   const handleChange = (vals: number[]) => {
     setLocal(vals[0]);
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => onChangeRef.current(vals[0]), 1000);
+    timerRef.current = setTimeout(() => onChangeRef.current(vals[0]), 500);
   };
 
   const display = displayValue ? displayValue(local) : String(local);
@@ -132,14 +132,11 @@ const SliderField = ({
 
 // ─── BoxFields with RHF + zod + debounce ─────────────────────────────────────
 
-const posInt = z
+const anyInt = z
   .string()
-  .refine((v) => /^\d+$/.test(v) && parseInt(v, 10) >= 0, { message: '≥ 0' });
-const posSize = z
-  .string()
-  .refine((v) => /^\d+$/.test(v) && parseInt(v, 10) >= 1, { message: '≥ 1' });
+  .refine((v) => /^-?\d+$/.test(v), { message: 'Целое число' });
 
-const boxSchema = z.object({ x: posInt, y: posInt, w: posSize, h: posSize });
+const boxSchema = z.object({ x: anyInt, y: anyInt, w: anyInt, h: anyInt });
 type BoxFormValues = z.infer<typeof boxSchema>;
 
 const BOX_FIELDS = [
@@ -209,12 +206,12 @@ const BoxFields = ({
       const newBox: [number, number, number, number] = [nx, ny, nw, nh];
       lastBoxRef.current = newBox;
       onChangeRef.current(newBox);
-    }, 1000);
+    }, 500);
   };
 
   return (
     <Form {...form}>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 items-start gap-2">
         {BOX_FIELDS.map(({ name, label }) => (
           <FormField
             key={name}
@@ -281,7 +278,7 @@ const ColorField = ({
   const handleChange = (color: string) => {
     setLocal(color);
     if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => onChangeRef.current(color), 1000);
+    timerRef.current = setTimeout(() => onChangeRef.current(color), 500);
   };
 
   return (
@@ -381,7 +378,7 @@ const RgbaColorField = ({
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       onChangeRef.current(`rgba(${next.r},${next.g},${next.b},${next.a})`);
-    }, 1000);
+    }, 500);
   };
 
   const handleHex = (newHex: string) => {
