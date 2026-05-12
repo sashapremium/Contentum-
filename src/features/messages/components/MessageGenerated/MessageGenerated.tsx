@@ -1,17 +1,17 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import type { GeneratedTextMessage } from '@/features/chat/types/chat.types';
+import { MetricsCompareDialog } from './MetricsCompareDialog';
+import { formatMetricValue } from './metricsUtils';
 
 interface MessageGeneratedProps {
   message: GeneratedTextMessage;
 }
 
-function formatMetricValue(value: number | boolean): string {
-  if (typeof value === 'boolean') return value ? 'Да' : 'Нет';
-  return String(value);
-}
-
 export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
   const items = message.payload.content ?? [];
+  const [open, setOpen] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -28,6 +28,17 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
+          Сравнить метрики
+        </Button>
+        <MetricsCompareDialog
+          open={open}
+          onOpenChange={setOpen}
+          items={items}
+        />
+      </div>
+
       {items.map((item, idx) => {
         const metricsEntries = Object.entries(item.metrics ?? {}).filter(
           ([, v]) => v !== 'disabled',
@@ -43,30 +54,6 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
             <CardContent className="space-y-3">
               <div className="whitespace-pre-wrap text-sm leading-relaxed">
                 {item.text}
-              </div>
-
-              <div className="border-t pt-3">
-                {metricsEntries.length === 0 ? (
-                  <div className="text-sm text-muted-foreground">
-                    Метрики отсутствуют
-                  </div>
-                ) : (
-                  <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
-                    {metricsEntries.map(([key, value]) => (
-                      <div
-                        key={key}
-                        className="flex flex-col items-start gap-1"
-                      >
-                        <div className="text-sm font-medium text-foreground">
-                          {key}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {formatMetricValue(value)}
-                        </div>
-                      </div>
-                    ))}
-                  </dl>
-                )}
               </div>
             </CardContent>
           </Card>
