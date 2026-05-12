@@ -1,10 +1,5 @@
 import { CheckIcon, XIcon } from 'lucide-react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {
   categorizeMetrics,
@@ -85,7 +80,7 @@ export const MetricsVariantCard = ({
           </div>
         )}
 
-        {bool.length > 0 && (
+        {/* {bool.length > 0 && (
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
             {bool.map(({ key, value }) => (
               <div key={key} className="flex items-center gap-1.5 text-xs">
@@ -104,21 +99,18 @@ export const MetricsVariantCard = ({
               </div>
             ))}
           </div>
-        )}
+        )} */}
 
-        {count.length > 0 && (
+        {/* {count.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {count.map(({ key, value }) => (
-              <div
-                key={key}
-                className="rounded-md border px-2 py-1 text-xs"
-              >
+              <div key={key} className="rounded-md border px-2 py-1 text-xs">
                 <span className="text-muted-foreground">{key}: </span>
                 <span className="font-medium">{value}</span>
               </div>
             ))}
           </div>
-        )}
+        )} */}
       </CardContent>
     </Card>
   );

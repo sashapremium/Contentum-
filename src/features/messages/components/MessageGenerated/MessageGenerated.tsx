@@ -40,9 +40,6 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
       </div>
 
       {items.map((item, idx) => {
-        const metricsEntries = Object.entries(item.metrics ?? {}).filter(
-          ([, v]) => v !== 'disabled',
-        ) as [string, number | boolean][];
         const title = `Вариант ${idx + 1}`;
 
         return (

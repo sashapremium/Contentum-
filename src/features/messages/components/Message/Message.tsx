@@ -41,12 +41,11 @@ export const Message = ({ message, chatId }: MessageProps) => {
     >
       <div
         className={cx(
-          'max-w-[100%] lg:max-w-[75%] p-4 text-sm shadow-sm rounded-xl',
+          'w-[100%] p-4 text-sm shadow-sm rounded-xl',
           isUser
             ? 'bg-primary text-primary-foreground'
             : 'bg-muted text-foreground',
           isUser ? 'rounded-br-none' : 'rounded-bl-none',
-          message.type === 'form' && 'min-w-[100%] lg:min-w-[75%]',
         )}
       >
         {renderMessageContent()}
