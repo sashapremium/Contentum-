@@ -1,7 +1,12 @@
 export const POST = '/post';
 export const POST_CREATE = `${POST}/create`;
 export const POST_DETAIL = `${POST}/:chatId`;
+export const POST_METRICS = `${POST}/:chatId/metrics/:messageId`;
 export const POST_TITLE = 'Создать пост';
+
+export function postMetricsUrl(chatId: string, messageId: number): string {
+  return `${POST}/${chatId}/metrics/${messageId}`;
+}
 
 export const PHOTO = '/photo';
 export const PHOTO_CREATE = `${PHOTO}/create`;

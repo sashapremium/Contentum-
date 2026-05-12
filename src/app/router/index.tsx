@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import LoginPage from '@/features/auth/pages/LoginPage';
 import HomePage from '@/features/home/pages/HomePage';
 import ChatPage from '@/features/chat/pages/ChatPage';
+import { MetricsPage } from '@/features/chat/pages/MetricsPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute';
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
@@ -13,6 +14,7 @@ import {
   PHOTO_DETAIL,
   POST_CREATE,
   POST_DETAIL,
+  POST_METRICS,
   THEATRE,
   THEATRE_CREATE,
   THEATRE_TEMPLATE_CREATE,
@@ -57,6 +59,11 @@ const router = createBrowserRouter([
       {
         path: POST_DETAIL,
         element: <ChatPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: POST_METRICS,
+        element: <MetricsPage />,
         errorElement: <ErrorPage />,
       },
       {
