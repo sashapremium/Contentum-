@@ -5,12 +5,9 @@ interface MessageGeneratedProps {
   message: GeneratedTextMessage;
 }
 
-function stripMetricPrefix(value: string): string {
-  const index = value.indexOf('|');
-
-  if (index === -1) return value;
-
-  return value.slice(index + 1);
+function formatMetricValue(value: number | boolean): string {
+  if (typeof value === 'boolean') return value ? 'Да' : 'Нет';
+  return String(value);
 }
 
 export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
@@ -32,7 +29,9 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
   return (
     <div className="space-y-4">
       {items.map((item, idx) => {
-        const metricsEntries = Object.entries(item.metrics ?? {});
+        const metricsEntries = Object.entries(item.metrics ?? {}).filter(
+          ([, v]) => v !== 'disabled',
+        ) as [string, number | boolean][];
         const title = `Вариант ${idx + 1}`;
 
         return (
@@ -62,7 +61,7 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
                           {key}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {stripMetricPrefix(value)}
+                          {formatMetricValue(value)}
                         </div>
                       </div>
                     ))}

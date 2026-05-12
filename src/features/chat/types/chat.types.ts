@@ -14,9 +14,19 @@ export type ChatMessageType = z.infer<typeof ChatMessageTypeSchema>;
 export const FormPayloadSchema = FormStepSchema;
 export type FormPayload = z.infer<typeof FormPayloadSchema>;
 
+export const MetricValueSchema = z.union([
+  z.number(),
+  z.boolean(),
+  z.literal('disabled'),
+]);
+export type MetricValue = z.infer<typeof MetricValueSchema>;
+
+export const MetricsSchema = z.record(z.string(), MetricValueSchema);
+export type Metrics = z.infer<typeof MetricsSchema>;
+
 export const GeneratedTextSchema = z.object({
   text: z.string(),
-  metrics: z.record(z.string(), z.string()), // flexible for now
+  metrics: MetricsSchema,
 });
 export type GeneratedText = z.infer<typeof GeneratedTextSchema>;
 
