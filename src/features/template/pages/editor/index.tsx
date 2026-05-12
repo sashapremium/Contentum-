@@ -181,7 +181,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   ];
 
   return (
-    <PageWrapper wide header={<Breadcrumbs links={breadcrumbs} />}>
+    <PageWrapper size="wide" header={<Breadcrumbs links={breadcrumbs} />}>
       {/* ── Toolbar ─────────────────────────────────────────────────────── */}
       <div className="space-y-4">
         <Form {...nameForm}>

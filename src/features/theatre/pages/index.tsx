@@ -47,7 +47,7 @@ export const TheatrePage = () => {
 
   return (
     <PageWrapper
-      wide
+      size="wide"
       header={<Breadcrumbs links={[{ label: THEATRE_TITLE, url: THEATRE }]} />}
     >
       <Tabs value={activeTab} onValueChange={handleTabChange}>

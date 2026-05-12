@@ -97,3 +97,22 @@ export function collectAllBoolKeys(items: GeneratedText[]): string[] {
   }
   return Array.from(keys);
 }
+
+export type VariantQualityLabel = 'Слабый' | 'Средний' | 'Лучший вариант';
+
+export function getVariantLabels(items: GeneratedText[]): VariantQualityLabel[] {
+  const scores = items.map((item, idx) => {
+    const v = item.metrics[OVERALL_SCORE_KEY];
+    return { idx, score: typeof v === 'number' ? v : 0 };
+  });
+
+  const sorted = [...scores].sort((a, b) => b.score - a.score);
+  const labels: VariantQualityLabel[] = new Array(items.length).fill('Средний');
+
+  sorted.forEach(({ idx }, rank) => {
+    if (rank === 0) labels[idx] = 'Лучший вариант';
+    else if (rank === sorted.length - 1 && sorted.length > 1) labels[idx] = 'Слабый';
+  });
+
+  return labels;
+}

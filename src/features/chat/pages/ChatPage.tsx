@@ -39,7 +39,7 @@ export default function ChatPage() {
   }
 
   return (
-    <PageWrapper wide header={<PageHeading>{chat.title}</PageHeading>}>
+    <PageWrapper size="medium" header={<PageHeading>{chat.title}</PageHeading>}>
       <Messages chatId={chat.id} sendLoading={isPending} />
     </PageWrapper>
   );

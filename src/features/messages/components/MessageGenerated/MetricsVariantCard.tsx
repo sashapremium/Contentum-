@@ -1,4 +1,3 @@
-import { CheckIcon, XIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {
@@ -20,7 +19,7 @@ export const MetricsVariantCard = ({
   index,
 }: MetricsVariantCardProps) => {
   const active = getActiveMetrics(item);
-  const { score, count, bool } = categorizeMetrics(active);
+  const { score } = categorizeMetrics(active);
   const overall = score.find((s) => s.key === OVERALL_SCORE_KEY);
   const otherScores = score.filter((s) => s.key !== OVERALL_SCORE_KEY);
   const variantColor = VARIANT_COLORS[index] ?? VARIANT_COLORS[0];

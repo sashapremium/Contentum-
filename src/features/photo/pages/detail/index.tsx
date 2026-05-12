@@ -127,7 +127,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
   };
 
   return (
-    <PageWrapper wide header={<PageHeading>{session.title}</PageHeading>}>
+    <PageWrapper size="wide" header={<PageHeading>{session.title}</PageHeading>}>
       <div className="space-y-8">
         <p className="text-sm text-muted-foreground">
           Шаблон: {session.templateName} · Учреждение: {session.theatreName}

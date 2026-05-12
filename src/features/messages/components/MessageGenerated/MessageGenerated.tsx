@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { GeneratedTextMessage } from '@/features/chat/types/chat.types';
+import { GeneratedVariantCard } from '../GeneratedVariantCard';
 import { MetricsCompareDialog } from './MetricsCompareDialog';
-import { formatMetricValue } from './metricsUtils';
+import { getVariantLabels } from './metricsUtils';
 
 interface MessageGeneratedProps {
   message: GeneratedTextMessage;
@@ -26,11 +27,31 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
     );
   }
 
+  const labels = getVariantLabels(items);
+  const bestIdx = labels.indexOf('Лучший вариант');
+
   return (
     <div className="space-y-4">
+      <div
+        className="grid gap-4"
+        style={{
+          gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
+        }}
+      >
+        {items.map((item, idx) => (
+          <GeneratedVariantCard
+            key={idx}
+            item={item}
+            index={idx}
+            label={labels[idx]}
+            isBest={idx === bestIdx}
+          />
+        ))}
+      </div>
+
       <div className="flex justify-end">
         <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-          Сравнить метрики
+          Подробный обзор
         </Button>
         <MetricsCompareDialog
           open={open}
@@ -38,24 +59,6 @@ export const MessageGenerated = ({ message }: MessageGeneratedProps) => {
           items={items}
         />
       </div>
-
-      {items.map((item, idx) => {
-        const title = `Вариант ${idx + 1}`;
-
-        return (
-          <Card key={idx} className="gap-2">
-            <CardHeader>
-              <CardTitle className="text-base">{title}</CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-3">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                {item.text}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      })}
     </div>
   );
 };
