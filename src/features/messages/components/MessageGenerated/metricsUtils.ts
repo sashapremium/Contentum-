@@ -54,9 +54,9 @@ export function formatScore(value: number): string {
 }
 
 export function scoreColor(value: number): string {
-  if (value >= 0.7) return 'var(--color-success)';
-  if (value >= 0.4) return 'var(--color-chart-4)';
-  return 'var(--color-error)';
+  if (value >= 0.7) return 'var(--color-green-500)';
+  if (value >= 0.4) return 'var(--color-amber-500)';
+  return 'var(--color-red-500)';
 }
 
 export function formatMetricValue(value: number | boolean): string {
@@ -72,9 +72,7 @@ export function getActiveMetrics(
   ) as Record<string, number | boolean>;
 }
 
-export function collectAllScoreKeys(
-  items: GeneratedText[],
-): string[] {
+export function collectAllScoreKeys(items: GeneratedText[]): string[] {
   const keys = new Set<string>();
   for (const item of items) {
     const active = getActiveMetrics(item);
@@ -100,7 +98,9 @@ export function collectAllBoolKeys(items: GeneratedText[]): string[] {
 
 export type VariantQualityLabel = 'Слабый' | 'Средний' | 'Лучший вариант';
 
-export function getVariantLabels(items: GeneratedText[]): VariantQualityLabel[] {
+export function getVariantLabels(
+  items: GeneratedText[],
+): VariantQualityLabel[] {
   const scores = items.map((item, idx) => {
     const v = item.metrics[OVERALL_SCORE_KEY];
     return { idx, score: typeof v === 'number' ? v : 0 };
@@ -111,7 +111,8 @@ export function getVariantLabels(items: GeneratedText[]): VariantQualityLabel[] 
 
   sorted.forEach(({ idx }, rank) => {
     if (rank === 0) labels[idx] = 'Лучший вариант';
-    else if (rank === sorted.length - 1 && sorted.length > 1) labels[idx] = 'Слабый';
+    else if (rank === sorted.length - 1 && sorted.length > 1)
+      labels[idx] = 'Слабый';
   });
 
   return labels;

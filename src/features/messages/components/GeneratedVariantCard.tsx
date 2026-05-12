@@ -1,20 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckIcon, CopyIcon } from 'lucide-react';
+import { CheckIcon, CircleCheck, CircleX, CopyIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {
+  categorizeMetrics,
   getActiveMetrics,
   OVERALL_SCORE_KEY,
   scoreColor,
 } from './MessageGenerated/metricsUtils';
 import type { VariantQualityLabel } from './MessageGenerated/metricsUtils';
 
+export interface DerivedMetrics {
+  ifeval: number;
+  distinct: number;
+  llm_judge: number;
+  sumac: number;
+  mauve: number;
+}
+
+const METRIC_LABELS: Record<keyof DerivedMetrics, string> = {
+  ifeval: 'Следование требованиям',
+  distinct: 'Лексическое разнообразие',
+  llm_judge: 'Эмоциональный окрас',
+  sumac: 'Фактическая достоверность',
+  mauve: 'Похожесть на референсы',
+};
+
 interface GeneratedVariantCardProps {
   item: GeneratedText;
   index: number;
   label: VariantQualityLabel;
   isBest: boolean;
+  derivedMetrics?: DerivedMetrics;
+  showAnalytics?: boolean;
+}
+
+function BoolBadge({ value }: { value: boolean }) {
+  return value ? (
+    <CircleCheck className="size-4 text-green-500" />
+  ) : (
+    <CircleX className="size-4 text-red-500" />
+  );
 }
 
 const labelConfig: Record<
@@ -37,15 +64,99 @@ const labelConfig: Record<
   },
 };
 
+function CircularProgress({
+  value,
+  size = 44,
+}: {
+  value: number;
+  size?: number;
+}) {
+  const strokeWidth = 4;
+  const r = (size - strokeWidth) / 2;
+  const circ = 2 * Math.PI * r;
+  const target = circ * (1 - value);
+  const color = scoreColor(value);
+
+  const [offset, setOffset] = useState(circ);
+  const [animated, setAnimated] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      setOffset(target);
+      setAnimated(true);
+    });
+    return () => cancelAnimationFrame(id);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleClick = () => {
+    setAnimated(false);
+    setOffset(circ);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setAnimated(true);
+        setOffset(target);
+      });
+    });
+  };
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      className="cursor-pointer shrink-0"
+      onClick={handleClick}
+    >
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        className="text-muted-foreground/20"
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        stroke={color}
+        style={{
+          transition: animated ? 'stroke-dashoffset 0.7s ease-out' : 'none',
+        }}
+      />
+      <text
+        x={size / 2}
+        y={size / 2}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize="14"
+        fontWeight="600"
+        fill={color}
+      >
+        {(value * 100).toFixed(0)}
+      </text>
+    </svg>
+  );
+}
+
 export const GeneratedVariantCard = ({
   item,
   index,
   label,
   isBest,
+  derivedMetrics,
+  showAnalytics,
 }: GeneratedVariantCardProps) => {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -85,7 +196,7 @@ export const GeneratedVariantCard = ({
           )}
         </div>
         <span
-          className={`self-start rounded-md px-2 py-0.5 text-xs font-medium ${badgeClass}`}
+          className={`self-start rounded-md px-2 py-1 text-xs font-medium ${badgeClass}`}
         >
           {badgeText}
         </span>
@@ -108,12 +219,48 @@ export const GeneratedVariantCard = ({
           </button>
         )}
 
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full gap-2"
-          onClick={handleCopy}
-        >
+        {derivedMetrics && (
+          <div className="border-t pt-3 space-y-2">
+            {(Object.keys(METRIC_LABELS) as Array<keyof DerivedMetrics>).map(
+              (key) => (
+                <div
+                  key={key}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="text-sm text-muted-foreground truncate">
+                    {METRIC_LABELS[key]}
+                  </span>
+                  <CircularProgress value={derivedMetrics[key]} />
+                </div>
+              ),
+            )}
+          </div>
+        )}
+
+        {showAnalytics && (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={() => setAnalyticsOpen((o) => !o)}
+            >
+              {analyticsOpen ? 'Скрыть аналитику' : 'Подробная аналитика'}
+            </Button>
+            {analyticsOpen && (
+              <div className="space-y-2 border-t pt-3">
+                {categorizeMetrics(active).bool.map(({ key, value }) => (
+                  <div key={key} className="flex items-center  gap-2">
+                    <BoolBadge value={value} />
+                    <span className="text-xs text-muted-foreground">{key}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        <Button size="sm" className="w-full gap-2" onClick={handleCopy}>
           {copied ? (
             <CheckIcon className="size-4" />
           ) : (
