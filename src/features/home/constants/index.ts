@@ -21,11 +21,11 @@ export const HEADER_ITEMS = [
     Icon: Image,
     url: PHOTO_CREATE,
   },
-  {
-    title: GALLERY_TITLE,
-    Icon: Images,
-    url: GALLERY,
-  },
+  // {
+  //   title: GALLERY_TITLE,
+  //   Icon: Images,
+  //   url: GALLERY,
+  // },
   {
     title: THEATRE_TITLE,
     Icon: Landmark,
