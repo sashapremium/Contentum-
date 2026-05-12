@@ -1,20 +1,8 @@
 import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Layers, Trash2, Upload } from 'lucide-react';
 
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
@@ -39,19 +27,6 @@ function countImageUsages(entries: EditorEntry[], path: string) {
     (e) => e.layer.type === 'image' && e.layer.file === path,
   ).length;
 }
-
-// ─── Font upload form ─────────────────────────────────────────────────────────
-
-const fontSchema = z.object({
-  key: z
-    .string()
-    .refine(
-      (v) => v === '' || /^[\p{L}\p{N}_-]+$/u.test(v),
-      'Только буквы, цифры, _ и -',
-    ),
-});
-
-type FontFormValues = z.infer<typeof fontSchema>;
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -79,42 +54,19 @@ export const AssetManager = ({
   const [deleteFont, setDeleteFont] = useState<FontEntry | null>(null);
   const [deleteImage, setDeleteImage] = useState<ImageAsset | null>(null);
 
-  const fontForm = useForm<FontFormValues>({
-    resolver: zodResolver(fontSchema),
-    defaultValues: { key: '' },
-  });
-
   const handleFontUpload = (file: File) => {
-    fontForm.handleSubmit((values) => {
-      const ext = file.name.split('.').pop()?.toLowerCase() ?? 'otf';
-      const key =
-        values.key.trim() ||
-        file.name.replace(/\.[^.]+$/, '').replace(/\s+/g, '_');
-      const family = key;
-      const path = `fonts/${key}.${ext}`;
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'otf';
+    const key = file.name.replace(/\.[^.]+$/, '').replace(/\s+/g, '_');
+    const family = key;
+    const path = `fonts/${key}.${ext}`;
 
-      file.arrayBuffer().then((buf) => {
-        const ff = new FontFace(family, buf);
-        ff.load().then((loaded) => document.fonts.add(loaded));
-      });
-
-      onAddFont({
-        key,
-        file: path,
-        family,
-        pendingFile: file,
-        objectUrl: URL.createObjectURL(file),
-      });
-
-      fontForm.reset();
-      if (fontFileRef.current) fontFileRef.current.value = '';
-    })();
-  };
-
-  const triggerFontFileDialog = () => {
-    fontForm.trigger('key').then((valid) => {
-      if (valid) fontFileRef.current?.click();
+    file.arrayBuffer().then((buf) => {
+      const ff = new FontFace(family, buf);
+      ff.load().then((loaded) => document.fonts.add(loaded));
     });
+
+    onAddFont({ key, file: path, family, pendingFile: file, objectUrl: URL.createObjectURL(file) });
+    if (fontFileRef.current) fontFileRef.current.value = '';
   };
 
   const handleImageUpload = (file: File) => {
@@ -166,42 +118,27 @@ export const AssetManager = ({
 
             {/* ── Fonts tab ──────────────────────────────────────────── */}
             <TabsContent value="fonts" className="space-y-4">
-              <Form {...fontForm}>
-                <div className="space-y-2">
-                  <FormField
-                    control={fontForm.control}
-                    name="key"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Название шрифта</FormLabel>
-                        <FormControl>
-                          <Input placeholder="heading" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={triggerFontFileDialog}
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Загрузить .otf / .ttf
-                  </Button>
-                  <input
-                    ref={fontFileRef}
-                    type="file"
-                    accept=".otf,.ttf,.woff,.woff2"
-                    className="hidden"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      if (f) handleFontUpload(f);
-                    }}
-                  />
-                </div>
-              </Form>
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => fontFileRef.current?.click()}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  Загрузить .otf / .ttf
+                </Button>
+                <input
+                  ref={fontFileRef}
+                  type="file"
+                  accept=".otf,.ttf,.woff,.woff2"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFontUpload(f);
+                  }}
+                />
+              </div>
 
               <div className="space-y-2">
                 {fonts.length === 0 && (
