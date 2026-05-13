@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,13 @@ import { PageHeading } from '@/components/shared/PageHeading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -28,6 +35,179 @@ import type { PhotoInputImage, PhotoSession } from '../../types/photos.types';
 import { usePhotoSessionQuery } from '../../queries/usePhotoSessionQuery';
 import { useUpdatePhotoSessionMutation } from '../../queries/useUpdatePhotoSessionMutation';
 
+const MAX_DISPLAY_SIZE = 450;
+
+// ─── Image position modal ─────────────────────────────────────────────────────
+
+interface ImagePositionModalProps {
+  open: boolean;
+  file: File | null;
+  dimensions: { width: number; height: number };
+  fieldLabel: string;
+  onConfirm: (croppedFile: File) => void;
+  onCancel: () => void;
+}
+
+const ImagePositionModal = ({
+  open,
+  file,
+  dimensions,
+  fieldLabel,
+  onConfirm,
+  onCancel,
+}: ImagePositionModalProps) => {
+  const containerScale = Math.min(
+    MAX_DISPLAY_SIZE / dimensions.width,
+    MAX_DISPLAY_SIZE / dimensions.height,
+  );
+  const displayW = Math.round(dimensions.width * containerScale);
+  const displayH = Math.round(dimensions.height * containerScale);
+
+  const [imgSize, setImgSize] = useState<{ w: number; h: number } | null>(null);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const draggingRef = useRef(false);
+  const lastPointerRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!file) {
+      setObjectUrl(null);
+      setImgSize(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setObjectUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
+
+  const handleImgLoad = useCallback(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    // Display image at containerScale so 1 image pixel = 1 template pixel in the viewport
+    const dW = img.naturalWidth * containerScale;
+    const dH = img.naturalHeight * containerScale;
+    setImgSize({ w: dW, h: dH });
+    setOffset({
+      x: Math.round((displayW - dW) / 2),
+      y: Math.round((displayH - dH) / 2),
+    });
+  }, [displayW, displayH, containerScale]);
+
+  // Only clamp axes where the image is larger than the frame (prevent blank strips)
+  const clampedOffset = useCallback(
+    (x: number, y: number, iw: number, ih: number) => ({
+      x: iw > displayW ? Math.min(0, Math.max(displayW - iw, x)) : x,
+      y: ih > displayH ? Math.min(0, Math.max(displayH - ih, y)) : y,
+    }),
+    [displayW, displayH],
+  );
+
+  const handleConfirm = () => {
+    const img = imgRef.current;
+    const canvas = canvasRef.current;
+    if (!img || !canvas || !imgSize) return;
+
+    canvas.width = dimensions.width;
+    canvas.height = dimensions.height;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Crop the exact region of the original image that maps to the frame.
+    // offset is image top-left relative to frame; invert and unscale to get source coords.
+    const srcX = -offset.x / containerScale;
+    const srcY = -offset.y / containerScale;
+    const srcW = displayW / containerScale; // equals dimensions.width
+    const srcH = displayH / containerScale; // equals dimensions.height
+    ctx.drawImage(
+      img,
+      srcX, srcY, srcW, srcH,
+      0, 0, dimensions.width, dimensions.height,
+    );
+
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        onConfirm(
+          new File([blob], file?.name ?? 'image.jpg', { type: 'image/jpeg' }),
+        );
+      },
+      'image/jpeg',
+      0.95,
+    );
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onCancel()}>
+      <DialogContent className="max-w-fit" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Настройте изображение: {fieldLabel}</DialogTitle>
+        </DialogHeader>
+        <p className="text-sm text-muted-foreground">
+          Перетащите изображение, чтобы выбрать нужную область (
+          {dimensions.width}×{dimensions.height})
+        </p>
+
+        <div
+          className="relative overflow-hidden rounded border bg-muted select-none"
+          style={{ width: displayW, height: displayH }}
+        >
+          {objectUrl && (
+            <img
+              ref={imgRef}
+              src={objectUrl}
+              alt="preview"
+              draggable={false}
+              onLoad={handleImgLoad}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                draggingRef.current = true;
+                lastPointerRef.current = { x: e.clientX, y: e.clientY };
+                (e.currentTarget as Element).setPointerCapture(e.pointerId);
+              }}
+              onPointerMove={(e) => {
+                if (!draggingRef.current || !imgSize) return;
+                const dx = e.clientX - lastPointerRef.current.x;
+                const dy = e.clientY - lastPointerRef.current.y;
+                lastPointerRef.current = { x: e.clientX, y: e.clientY };
+                setOffset((prev) =>
+                  clampedOffset(prev.x + dx, prev.y + dy, imgSize.w, imgSize.h),
+                );
+              }}
+              onPointerUp={() => {
+                draggingRef.current = false;
+              }}
+              className="absolute cursor-grab active:cursor-grabbing select-none"
+              style={
+                imgSize
+                  ? {
+                      width: imgSize.w,
+                      height: imgSize.h,
+                      left: offset.x,
+                      top: offset.y,
+                    }
+                  : { opacity: 0 }
+              }
+            />
+          )}
+        </div>
+
+        <canvas ref={canvasRef} className="hidden" />
+
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel}>
+            Отмена
+          </Button>
+          <Button onClick={handleConfirm} disabled={!imgSize}>
+            Применить
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 // ─── Image input (not RHF-managed — file inputs are uncontrolled) ─────────────
 
 interface PhotoImageInputProps {
@@ -43,19 +223,34 @@ const PhotoImageInput = ({
   selectedFile,
   onFileSelect,
 }: PhotoImageInputProps) => {
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const previewUrl = selectedFile
     ? URL.createObjectURL(selectedFile)
     : currentUrl
       ? `${currentUrl}`
       : null;
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+    if (inputRef.current) inputRef.current.value = '';
+    if (field.dimensions) {
+      setPendingFile(file);
+    } else {
+      onFileSelect(file);
+    }
+  };
+
   return (
     <div className="grid gap-2">
       <Label>{field.label}</Label>
       <Input
+        ref={inputRef}
         type="file"
         accept="image/*"
-        onChange={(e) => onFileSelect(e.target.files?.[0] ?? null)}
+        onChange={handleFileChange}
       />
       {previewUrl && (
         <div className="space-y-1">
@@ -75,6 +270,19 @@ const PhotoImageInput = ({
             </a>
           )}
         </div>
+      )}
+      {field.dimensions && (
+        <ImagePositionModal
+          open={pendingFile !== null}
+          file={pendingFile}
+          dimensions={field.dimensions}
+          fieldLabel={field.label}
+          onConfirm={(croppedFile) => {
+            setPendingFile(null);
+            onFileSelect(croppedFile);
+          }}
+          onCancel={() => setPendingFile(null)}
+        />
       )}
     </div>
   );

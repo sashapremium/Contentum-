@@ -75,6 +75,12 @@ export const PhotoInputImageSchema = z.object({
   required: z.boolean(),
   crop: z.string(),
   gravity: z.string(),
+  dimensions: z
+    .object({
+      width: z.number().int().positive(),
+      height: z.number().int().positive(),
+    })
+    .optional(),
 });
 export type PhotoInputImage = z.infer<typeof PhotoInputImageSchema>;
 

@@ -229,8 +229,8 @@ export function MetricsPage() {
         ))}
       </div>
 
-      <div className="mt-8 grid grid-cols-3 gap-6 items-start">
-        <div className="col-span-2 rounded-lg border overflow-hidden">
+      <div className="mt-8 grid grid-cols-5 gap-6 items-start">
+        <div className="col-span-3 rounded-lg border overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50">
@@ -293,7 +293,7 @@ export function MetricsPage() {
           </table>
         </div>
 
-        <div className="col-span-1 rounded-lg border p-4 space-y-4">
+        <div className="col-span-2 rounded-lg border p-4 space-y-4">
           <p className="text-sm font-medium">Как читать метрики?</p>
           {(Object.keys(DERIVED_LABELS) as Array<keyof DerivedMetrics>).map(
             (key) => {
