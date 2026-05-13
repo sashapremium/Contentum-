@@ -3,16 +3,19 @@ import { useAuthStore } from '@/features/auth/store/auth.store';
 import { tokenStorage } from '@/features/auth/utils/tokenStorage';
 import { queryClient } from '@/lib/query';
 
+// const API_PREFIX = 'http://localhost:8000/api';
+const API_PREFIX = '/api';
+
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_PREFIX,
 });
 
 const refreshApi = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_PREFIX,
 });
 
 api.interceptors.request.use(
