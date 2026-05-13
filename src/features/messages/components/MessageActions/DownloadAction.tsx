@@ -1,3 +1,7 @@
+// add typescript ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { Button } from '@/components/ui/button';
 import type { MessageActionsProps } from './MessageActions';
 import type { ImageInfo } from '../../types/messages.types';

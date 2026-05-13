@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppRouter } from '@/app/router';
 import { AuthProvider } from './features/auth/providers/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';

@@ -3,12 +3,12 @@ import {
   POST_CREATE,
   PHOTO_TITLE,
   PHOTO_CREATE,
-  GALLERY_TITLE,
-  GALLERY,
+  // GALLERY_TITLE,
+  // GALLERY,
   THEATRE_TITLE,
   THEATRE,
 } from '@/app/router/routes';
-import { SquarePen, Images, Landmark, Image } from 'lucide-react';
+import { SquarePen, Landmark, Image } from 'lucide-react';
 
 export const HEADER_ITEMS = [
   {

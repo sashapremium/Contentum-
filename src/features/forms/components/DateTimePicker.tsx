@@ -32,7 +32,6 @@ export const DateTimePicker = ({
   disabled,
 }: DateTimePickerProps) => {
   const [open, setOpen] = useState(false);
-  const iso = typeof value === 'string' ? value : '';
   const parsed = useMemo(
     () => (value ? parseLocalDateTime(value) : null),
     [value],
