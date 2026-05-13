@@ -30,4 +30,5 @@ export const THEATRE_BRANDBOOK_DETAIL = `${THEATRE}/brandbook/:brandbookId`;
 export const THEATRE_BRANDBOOK_IMPORT = `${THEATRE}/brandbook/import`;
 export const BRANDBOOK_TITLE = 'Импорт брендбука';
 
-export const BACKEND_URL = 'http://127.0.0.1:8000';
+export const BACKEND_URL = '';
+// export const BACKEND_URL = 'http://127.0.0.1:8000';
