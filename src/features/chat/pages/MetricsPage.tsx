@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Loading } from '@/components/shared/Loading';
 import { Error } from '@/components/shared/Error';
@@ -23,50 +23,13 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   getActiveMetrics,
+  getDashboardMetrics,
+  getMetricCount,
   getVariantLabels,
+  LENGTH_KEY,
   OVERALL_SCORE_KEY,
   scoreColor,
 } from '@/features/messages/components/MessageGenerated/metricsUtils';
-import type { GeneratedText } from '@/features/chat/types/chat.types';
-
-const DISTINCT_KEY = 'Лексическое разнообразие';
-
-function randBetween(min: number, max: number): number {
-  return parseFloat((min + Math.random() * (max - min)).toFixed(4));
-}
-
-function calculateDerivedMetrics(item: GeneratedText) {
-  const active = getActiveMetrics(item);
-
-  // ifeval: fraction of true booleans among all non-disabled boolean metrics
-  const bools = Object.values(active).filter(
-    (v): v is boolean => typeof v === 'boolean',
-  );
-  const ifeval =
-    bools.length === 0 ? 0 : bools.filter(Boolean).length / bools.length;
-
-  // distinct: lexical diversity score from backend metrics
-  const distinctRaw = active[DISTINCT_KEY];
-  const distinct = typeof distinctRaw === 'number' ? distinctRaw : 0;
-
-  // llm_judge
-  let llm_judge: number;
-  if (ifeval > 0.7 && distinct > 0.7) {
-    llm_judge = randBetween(0.7, 0.93);
-  } else if (Math.min(ifeval, distinct) >= 0.4) {
-    llm_judge = randBetween(0.4, 0.65);
-  } else {
-    llm_judge = randBetween(0.1, 0.35);
-  }
-
-  // sumac
-  const sumac = ifeval > 0.5 ? randBetween(0.65, 0.95) : randBetween(0.1, 0.3);
-
-  // mauve
-  const mauve = randBetween(0.5, 0.85);
-
-  return { ifeval, distinct, llm_judge, sumac, mauve } satisfies DerivedMetrics;
-}
 
 export function MetricsPage() {
   const { chatId, messageId } = useParams<{
@@ -84,16 +47,9 @@ export function MetricsPage() {
   }, [chat, msgIdNum]);
 
   const variantMetrics = useMemo(
-    () => generatedMessage?.payload.content.map(calculateDerivedMetrics) ?? [],
+    () => generatedMessage?.payload.content.map(getDashboardMetrics) ?? [],
     [generatedMessage],
   );
-
-  useEffect(() => {
-    if (variantMetrics.length === 0) return;
-    variantMetrics.forEach((metrics, idx) => {
-      console.log(`Вариант ${idx + 1}:`, metrics);
-    });
-  }, [variantMetrics]);
 
   const [copied, setCopied] = useState(false);
 
@@ -133,7 +89,8 @@ export function MetricsPage() {
   const DERIVED_LABELS: Record<keyof DerivedMetrics, string> = {
     ifeval: 'Следование требованиям',
     distinct: 'Лексическое разнообразие',
-    llm_judge: 'Эмоциональный окрас',
+    toneMatch: 'Соответствие тональности',
+    audienceMatch: 'Соответствие целевой аудитории',
     sumac: 'Фактическая достоверность',
     mauve: 'Похожесть на референсы',
   };
@@ -143,8 +100,10 @@ export function MetricsPage() {
       'Проверяет, насколько полно текст выполняет все требования из запроса пользователя.',
     distinct:
       'Измеряет богатство словаря через уникальные биграммы — чем выше показатель, тем разнообразнее язык текста.',
-    llm_judge:
-      'Оценивает естественность звучания, соответствие тональности бренда и уместность для целевой аудитории.',
+    toneMatch:
+      'Показывает, насколько текст соответствует заданной тональности публикации.',
+    audienceMatch:
+      'Показывает, насколько текст учитывает целевую аудиторию из параметров генерации.',
     sumac:
       'Проверяет точность фактов путём семантического сравнения с реальной базой мероприятий.',
     mauve:
@@ -154,7 +113,8 @@ export function MetricsPage() {
   const METRIC_ICONS: Record<keyof DerivedMetrics, LucideIcon> = {
     ifeval: ListChecks,
     distinct: Sparkles,
-    llm_judge: Palette,
+    toneMatch: Palette,
+    audienceMatch: Palette,
     sumac: ShieldCheck,
     mauve: FileSearch,
   };
@@ -229,8 +189,8 @@ export function MetricsPage() {
         ))}
       </div>
 
-      <div className="mt-8 grid grid-cols-5 gap-6 items-start">
-        <div className="col-span-3 rounded-lg border overflow-hidden">
+      <div className="mt-8 grid grid-cols-3 gap-6 items-start">
+        <div className="col-span-2 rounded-lg border overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b bg-muted/50">
@@ -268,6 +228,25 @@ export function MetricsPage() {
                   );
                 })}
               </tr>
+              <tr className="bg-muted/20">
+                <td className="px-3 py-2 text-muted-foreground">
+                  Длина текста
+                </td>
+                {items.map((item, idx) => {
+                  const length = getMetricCount(item, LENGTH_KEY);
+                  return (
+                    <td key={idx} className="px-3 py-2 text-center">
+                      {length !== null ? (
+                        <span className="font-medium tabular-nums">
+                          {length}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
               {(Object.keys(DERIVED_LABELS) as Array<keyof DerivedMetrics>).map(
                 (key, rowIdx) => (
                   <tr
@@ -293,7 +272,7 @@ export function MetricsPage() {
           </table>
         </div>
 
-        <div className="col-span-2 rounded-lg border p-4 space-y-4">
+        <div className="col-span-1 rounded-lg border p-4 space-y-4">
           <p className="text-sm font-medium">Как читать метрики?</p>
           {(Object.keys(DERIVED_LABELS) as Array<keyof DerivedMetrics>).map(
             (key) => {

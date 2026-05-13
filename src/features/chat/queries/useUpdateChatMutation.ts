@@ -6,7 +6,9 @@ import type {
 } from '../types/chat.types';
 import { CHAT_QUERY_KEYS } from './chat.queryKeys';
 
-interface UpdateChatVariables {
+export const UPDATE_CHAT_MUTATION_KEY = ['chat', 'update'] as const;
+
+export interface UpdateChatVariables {
   id: string;
   data: ChatUpdateRequest;
 }
@@ -15,6 +17,7 @@ export const useUpdateChatMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation<ChatUpdateResponse, unknown, UpdateChatVariables>({
+    mutationKey: UPDATE_CHAT_MUTATION_KEY,
     mutationFn: ({ id, data }) => updateChat(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({

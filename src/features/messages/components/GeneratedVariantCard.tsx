@@ -6,23 +6,21 @@ import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {
   categorizeMetrics,
   getActiveMetrics,
+  getMetricCount,
+  LENGTH_KEY,
   OVERALL_SCORE_KEY,
   scoreColor,
+  type DashboardMetrics,
 } from './MessageGenerated/metricsUtils';
 import type { VariantQualityLabel } from './MessageGenerated/metricsUtils';
 
-export interface DerivedMetrics {
-  ifeval: number;
-  distinct: number;
-  llm_judge: number;
-  sumac: number;
-  mauve: number;
-}
+export type DerivedMetrics = DashboardMetrics;
 
 const METRIC_LABELS: Record<keyof DerivedMetrics, string> = {
   ifeval: 'Следование требованиям',
   distinct: 'Лексическое разнообразие',
-  llm_judge: 'Эмоциональный окрас',
+  toneMatch: 'Соответствие тональности',
+  audienceMatch: 'Соответствие целевой аудитории',
   sumac: 'Фактическая достоверность',
   mauve: 'Похожесть на референсы',
 };
@@ -167,6 +165,7 @@ export const GeneratedVariantCard = ({
   const active = getActiveMetrics(item);
   const overallScore = active[OVERALL_SCORE_KEY];
   const score = typeof overallScore === 'number' ? overallScore : null;
+  const textLength = getMetricCount(item, LENGTH_KEY);
   const { className: badgeClass, text: badgeText } = labelConfig[label];
 
   const handleCopy = () => {
@@ -200,6 +199,11 @@ export const GeneratedVariantCard = ({
         >
           {badgeText}
         </span>
+        {textLength !== null && (
+          <span className="mt-2 self-start rounded-md border px-2 py-1 text-xs text-muted-foreground">
+            Длина: {textLength} симв.
+          </span>
+        )}
       </CardHeader>
 
       <CardContent className="space-y-3">
