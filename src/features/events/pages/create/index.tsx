@@ -1,16 +1,23 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
 
-import { THEATRE, EVENT_CREATE_TITLE, THEATRE_TITLE } from '@/app/router/routes';
+import {
+  THEATRE,
+  EVENT_CREATE_TITLE,
+  THEATRE_TITLE,
+} from '@/app/router/routes';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
-import { Error } from '@/components/shared/Error';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Field, FieldLabel } from '@/components/ui/field';
-import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -42,17 +49,6 @@ export const EventCreatePage = () => {
     },
   });
 
-  const formValues = useWatch({ control: form.control });
-  const mounted = useRef(false);
-  const resetRef = useRef(createMutation.reset);
-  useLayoutEffect(() => { resetRef.current = createMutation.reset; });
-
-  useEffect(() => {
-    if (!mounted.current) { mounted.current = true; return; }
-    form.clearErrors();
-    resetRef.current();
-  }, [formValues, form]);
-
   const handleSubmit = (values: EventCreateRequest) => {
     createMutation.mutate(values, {
       onSuccess: () => navigate({ pathname: THEATRE, hash: 'events' }),
@@ -73,10 +69,15 @@ export const EventCreatePage = () => {
       <Card>
         <CardContent>
           <Form {...form}>
-            <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={form.handleSubmit(handleSubmit)}
+            >
               <header className="space-y-2">
                 <span className="text-xl font-semibold">Создание события</span>
-                <p className="text-sm text-muted-foreground">Заполните данные нового события</p>
+                <p className="text-sm text-muted-foreground">
+                  Заполните данные нового события
+                </p>
               </header>
 
               <div className="flex flex-col gap-3">
@@ -115,10 +116,17 @@ export const EventCreatePage = () => {
                     <Field data-invalid={!!fieldState.error}>
                       <FieldLabel>Тип события</FieldLabel>
                       <FormControl>
-                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value ?? ''}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Выберите тип">
-                              {EVENT_TYPE_OPTIONS.find((o) => o.value === field.value)?.label}
+                              {
+                                EVENT_TYPE_OPTIONS.find(
+                                  (o) => o.value === field.value,
+                                )?.label
+                              }
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
@@ -142,10 +150,17 @@ export const EventCreatePage = () => {
                     <Field data-invalid={!!fieldState.error}>
                       <FieldLabel>Возрастное ограничение</FieldLabel>
                       <FormControl>
-                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                        <Select
+                          value={field.value ?? ''}
+                          onValueChange={field.onChange}
+                        >
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Выберите ограничение">
-                              {AGE_LIMIT_OPTIONS.find((o) => o.value === field.value)?.label}
+                              {
+                                AGE_LIMIT_OPTIONS.find(
+                                  (o) => o.value === field.value,
+                                )?.label
+                              }
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
@@ -183,7 +198,11 @@ export const EventCreatePage = () => {
                     <Field data-invalid={!!fieldState.error}>
                       <FieldLabel>Дата и время</FieldLabel>
                       <FormControl>
-                        <DateTimePicker value={field.value} onChange={field.onChange} />
+                        <DateTimePicker
+                          mustBeFuture
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </Field>
@@ -204,10 +223,6 @@ export const EventCreatePage = () => {
                   )}
                 />
               </div>
-
-              {createMutation.isError && (
-                <Error description="Не удалось создать событие" />
-              )}
 
               <div className="flex justify-end">
                 <Button type="submit" disabled={createMutation.isPending}>

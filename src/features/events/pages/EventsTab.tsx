@@ -15,6 +15,7 @@ import {
 import type { Event } from '../types';
 import { useEventsQuery } from '../queries/useEventsQuery';
 import { useDeleteEventMutation } from '../queries/useDeleteEventMutation';
+import { EVENT_TYPE_OPTIONS } from '../constants';
 import {
   THEATRE_EVENT_CREATE,
   THEATRE_EVENT_DETAIL,
@@ -59,7 +60,7 @@ export const EventsTab = () => {
               {(event.eventType || event.datetime) && (
                 <div className="text-sm text-muted-foreground">
                   {[
-                    event.eventType,
+                    EVENT_TYPE_OPTIONS.find((o) => o.value === event.eventType)?.label,
                     event.datetime &&
                       new Date(event.datetime).toLocaleString('ru-RU'),
                   ]
