@@ -1,17 +1,24 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { generatePath, Link, useNavigate } from 'react-router';
 import { FilePlus, Settings2, Trash2 } from 'lucide-react';
 
-import { EVENT_CREATE, eventDetailUrl } from '@/app/router/routes';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { Error } from '@/components/shared/Error';
 import { Loading } from '@/components/shared/Loading';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 import type { Event } from '../types';
 import { useEventsQuery } from '../queries/useEventsQuery';
 import { useDeleteEventMutation } from '../queries/useDeleteEventMutation';
+import {
+  THEATRE_EVENT_CREATE,
+  THEATRE_EVENT_DETAIL,
+} from '@/app/router/routes';
 
 export const EventsTab = () => {
   const navigate = useNavigate();
@@ -21,7 +28,8 @@ export const EventsTab = () => {
   const [deleteTarget, setDeleteTarget] = useState<Event | null>(null);
 
   if (eventsQuery.isLoading) return <Loading />;
-  if (eventsQuery.isError) return <Error description="Не удалось загрузить события" />;
+  if (eventsQuery.isError)
+    return <Error description="Не удалось загрузить события" />;
 
   const events = eventsQuery.data?.events ?? [];
 
@@ -29,7 +37,7 @@ export const EventsTab = () => {
     <div className="space-y-4">
       <div>
         <Button asChild>
-          <Link to={EVENT_CREATE}>
+          <Link to={THEATRE_EVENT_CREATE}>
             <FilePlus />
             Создать событие
           </Link>
@@ -50,7 +58,11 @@ export const EventsTab = () => {
               <div className="font-medium">{event.title}</div>
               {(event.eventType || event.datetime) && (
                 <div className="text-sm text-muted-foreground">
-                  {[event.eventType, event.datetime && new Date(event.datetime).toLocaleString('ru-RU')]
+                  {[
+                    event.eventType,
+                    event.datetime &&
+                      new Date(event.datetime).toLocaleString('ru-RU'),
+                  ]
                     .filter(Boolean)
                     .join(' · ')}
                 </div>
@@ -62,7 +74,13 @@ export const EventsTab = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => navigate(eventDetailUrl(event.id))}
+                    onClick={() =>
+                      navigate(
+                        generatePath(THEATRE_EVENT_DETAIL, {
+                          eventId: String(event.id),
+                        }),
+                      )
+                    }
                   >
                     <Settings2 />
                   </Button>

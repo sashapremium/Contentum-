@@ -9,8 +9,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
 import TestFormsPage from '../pages/TestForms';
 import {
-  EVENT_CREATE,
-  EVENT_DETAIL,
+  THEATRE_EVENT_CREATE,
+  THEATRE_EVENT_DETAIL,
   GALLERY,
   PHOTO_CREATE,
   PHOTO_DETAIL,
@@ -108,18 +108,19 @@ const router = createBrowserRouter([
             element: <TemplateDetailPage />,
             errorElement: <ErrorPage />,
           },
+          {
+            path: THEATRE_EVENT_CREATE,
+            element: <EventCreatePage />,
+            errorElement: <ErrorPage />,
+          },
+          {
+            path: THEATRE_EVENT_DETAIL,
+            element: <EventDetailPage />,
+            errorElement: <ErrorPage />,
+          },
         ],
       },
-      {
-        path: EVENT_CREATE,
-        element: <EventCreatePage />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: EVENT_DETAIL,
-        element: <EventDetailPage />,
-        errorElement: <ErrorPage />,
-      },
+
       {
         path: 'testForms',
         element: <TestFormsPage />,

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router';
 
 import {
   THEATRE,
-  EVENT_CREATE,
   EVENT_CREATE_TITLE,
   THEATRE_TITLE,
 } from '@/app/router/routes';
