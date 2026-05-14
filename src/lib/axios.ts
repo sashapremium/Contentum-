@@ -3,8 +3,8 @@ import { useAuthStore } from '@/features/auth/store/auth.store';
 import { tokenStorage } from '@/features/auth/utils/tokenStorage';
 import { queryClient } from '@/lib/query';
 
-const API_PREFIX = 'http://localhost:8000/api';
-// const API_PREFIX = '/api';
+// const API_PREFIX = 'http://localhost:8000/api';
+const API_PREFIX = '/api';
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
