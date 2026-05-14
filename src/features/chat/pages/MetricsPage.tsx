@@ -21,6 +21,7 @@ import {
   Star,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   getActiveMetrics,
   getDashboardMetrics,
@@ -132,46 +133,87 @@ export function MetricsPage() {
       }
     >
       {bestIdx >= 0 && (
-        <div className="mb-4 flex items-center gap-6 rounded-lg border-2 border-amber-400 bg-muted/30 px-5 py-4">
-          <Star className="size-7 shrink-0 text-amber-400" />
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold">
-              Рекомендованный вариант: №{bestIdx + 1}
-            </p>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              Лучше всего соблюдает требования брифа, содержит ключевые элементы
-              события и имеет сбалансированный стиль.
-            </p>
-          </div>
-          {bestScore !== null && (
-            <div className="shrink-0 text-center">
-              <p
-                className="text-2xl font-bold tabular-nums"
-                style={{ color: scoreColor(bestScore) }}
-              >
-                {bestScore.toFixed(2)}
+        <div className="mb-4 rounded-lg border-2 border-amber-400 bg-muted/30 px-5 py-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <Star className="hidden sm:block size-7 shrink-0 text-amber-400" />
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold">
+                Рекомендованный вариант: №{bestIdx + 1}
               </p>
-              <p className="text-xs text-muted-foreground">Общая оценка</p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                Лучше всего соблюдает требования брифа, содержит ключевые
+                элементы события и имеет сбалансированный стиль.
+              </p>
             </div>
-          )}
-          <div className="flex shrink-0 items-center gap-2">
-            <Button onClick={handleCopyBest}>
-              {copied ? (
-                <CheckIcon className="size-4" />
-              ) : (
-                <CopyIcon className="size-4" />
+            <div className="flex  flex-col sm:flex-row items-center justify-between sm:justify-end gap-4 sm:gap-6">
+              {bestScore !== null && (
+                <div className="text-center">
+                  <p
+                    className="text-2xl font-bold tabular-nums"
+                    style={{ color: scoreColor(bestScore) }}
+                  >
+                    {bestScore.toFixed(2)}
+                  </p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Общая оценка</p>
+                </div>
               )}
-              {copied ? 'Скопировано' : 'Скопировать'}
-            </Button>
-            <Button variant="outline" asChild>
-              <Link to={`${POST}/${chatId}`}>Перегенерировать</Link>
-            </Button>
+              <div className="flex flex-col sm:flex-row items-center gap-2">
+                <Button onClick={handleCopyBest}>
+                  {copied ? (
+                    <CheckIcon className="size-4" />
+                  ) : (
+                    <CopyIcon className="size-4" />
+                  )}
+                  {copied ? 'Скопировано' : 'Скопировать'}
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to={`${POST}/${chatId}`}>Перегенерировать</Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Mobile: tabs */}
+      <div className="sm:hidden">
+        <Tabs defaultValue={String(bestIdx >= 0 ? bestIdx : 0)}>
+          <TabsList className="w-full mb-4">
+            {items.map((_, idx) => (
+              <TabsTrigger
+                key={idx}
+                value={String(idx)}
+                className={
+                  idx === bestIdx
+                    ? 'data-[state=active]:text-green-600 flex items-center gap-1.5'
+                    : ''
+                }
+              >
+                Вариант {idx + 1}
+                {idx === bestIdx && (
+                  <span className="size-1.5 rounded-full bg-green-500" />
+                )}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {items.map((item, idx) => (
+            <TabsContent key={idx} value={String(idx)}>
+              <GeneratedVariantCard
+                item={item}
+                index={idx}
+                label={labels[idx]}
+                isBest={idx === bestIdx}
+                derivedMetrics={variantMetrics[idx]}
+                showAnalytics
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+
+      {/* Desktop: grid */}
       <div
-        className="grid gap-4"
+        className="hidden sm:grid gap-4"
         style={{
           gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
         }}
@@ -189,16 +231,16 @@ export function MetricsPage() {
         ))}
       </div>
 
-      <div className="mt-8 grid grid-cols-3 gap-6 items-start">
-        <div className="col-span-2 rounded-lg border overflow-hidden">
-          <table className="w-full text-sm">
+      <div className="mt-8 grid gap-6 items-start sm:grid-cols-3">
+        <div className="sm:col-span-2 rounded-lg border overflow-hidden">
+          <table className="w-full text-xs sm:text-sm">
             <thead>
               <tr className="border-b bg-muted/50">
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">
+                <th className="px-2 py-1.5 sm:px-3 sm:py-2 text-left font-medium text-muted-foreground">
                   Метрика
                 </th>
                 {items.map((_, idx) => (
-                  <th key={idx} className="px-3 py-2 text-center font-medium">
+                  <th key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center font-medium">
                     Вариант {idx + 1}
                   </th>
                 ))}
@@ -206,14 +248,14 @@ export function MetricsPage() {
             </thead>
             <tbody>
               <tr>
-                <td className="px-3 py-2 text-muted-foreground">
+                <td className="px-2 py-1.5 sm:px-3 sm:py-2 text-muted-foreground">
                   Общая оценка
                 </td>
                 {items.map((item, idx) => {
                   const active = getActiveMetrics(item);
                   const s = active[OVERALL_SCORE_KEY];
                   return (
-                    <td key={idx} className="px-3 py-2 text-center">
+                    <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
                       {typeof s === 'number' ? (
                         <span
                           className="font-semibold tabular-nums"
@@ -229,13 +271,13 @@ export function MetricsPage() {
                 })}
               </tr>
               <tr className="bg-muted/20">
-                <td className="px-3 py-2 text-muted-foreground">
+                <td className="px-2 py-1.5 sm:px-3 sm:py-2 text-muted-foreground">
                   Длина текста
                 </td>
                 {items.map((item, idx) => {
                   const length = getMetricCount(item, LENGTH_KEY);
                   return (
-                    <td key={idx} className="px-3 py-2 text-center">
+                    <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
                       {length !== null ? (
                         <span className="font-medium tabular-nums">
                           {length}
@@ -255,11 +297,11 @@ export function MetricsPage() {
                       (rowIdx + 1) % 2 === 0 ? 'bg-muted/20' : undefined
                     }
                   >
-                    <td className="px-3 py-2 text-muted-foreground">
+                    <td className="px-2 py-1.5 sm:px-3 sm:py-2 text-muted-foreground">
                       {DERIVED_LABELS[key]}
                     </td>
                     {variantMetrics.map((metrics, idx) => (
-                      <td key={idx} className="px-3 py-2 text-center">
+                      <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
                         <span className="font-semibold tabular-nums">
                           {(metrics[key] * 100).toFixed(1)}
                         </span>
@@ -272,7 +314,7 @@ export function MetricsPage() {
           </table>
         </div>
 
-        <div className="col-span-1 rounded-lg border p-4 space-y-4">
+        <div className="sm:col-span-1 rounded-lg border p-4 space-y-4">
           <p className="text-sm font-medium">Как читать метрики?</p>
           {(Object.keys(DERIVED_LABELS) as Array<keyof DerivedMetrics>).map(
             (key) => {
