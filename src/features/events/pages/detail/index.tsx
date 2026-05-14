@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useParams } from 'react-router';
@@ -9,19 +10,27 @@ import { Loading } from '@/components/shared/Loading';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Form,
   FormControl,
   FormField,
-  FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { DateTimePicker } from '@/features/forms/components/DateTimePicker';
 
 import { EventCreateRequestSchema, type EventCreateRequest } from '../../types';
 import { useEventQuery } from '../../queries/useEventQuery';
 import { useUpdateEventMutation } from '../../queries/useUpdateEventMutation';
+import { AGE_LIMIT_OPTIONS, EVENT_TYPE_OPTIONS } from '../../constants';
 
 export const EventDetailPage = () => {
   const { eventId = '' } = useParams<{ eventId: string }>();
@@ -42,8 +51,25 @@ export const EventDetailPage = () => {
           datetime: eventQuery.data.datetime,
           place: eventQuery.data.place,
         }
-      : { title: '' },
+      : {
+          title: '',
+          eventType: '',
+          datetime: '',
+          description: '',
+          ageLimit: '',
+          genre: '',
+          place: '',
+        },
   });
+
+  console.log('Form values', form.getValues());
+  useEffect(() => {
+    const { unsubscribe } = form.watch(() => {
+      form.clearErrors();
+      updateMutation.reset();
+    });
+    return unsubscribe;
+  }, [form, updateMutation]);
 
   const handleSubmit = (payload: EventCreateRequest) => {
     updateMutation.mutate(
@@ -58,13 +84,17 @@ export const EventDetailPage = () => {
 
   const event = eventQuery.data!;
 
-  const breadcrumbs = [
-    { onClick: () => navigate(-1), label: THEATRE_TITLE },
-    { url: '#', label: event.title },
-  ];
-
   return (
-    <PageWrapper header={<Breadcrumbs links={breadcrumbs} />}>
+    <PageWrapper
+      header={
+        <Breadcrumbs
+          links={[
+            { onClick: () => navigate(-1), label: THEATRE_TITLE },
+            { url: '#', label: event.title },
+          ]}
+        />
+      }
+    >
       <Card>
         <CardContent>
           <Form {...form}>
@@ -85,92 +115,144 @@ export const EventDetailPage = () => {
                 <FormField
                   control={form.control}
                   name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Название*</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Название*</FieldLabel>
                       <FormControl>
                         <Input placeholder="Введите название" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Описание</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Описание</FieldLabel>
                       <FormControl>
                         <Input placeholder="Введите описание" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="eventType"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Тип события</FormLabel>
-                      <FormControl>
-                        <Input placeholder="concert, festival…" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  render={({ field, fieldState }) => {
+                    console.log('eventType', field);
+                    return (
+                      <Field data-invalid={!!fieldState.error}>
+                        <FieldLabel>Тип события</FieldLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value ?? ''}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Выберите тип">
+                                {
+                                  EVENT_TYPE_OPTIONS.find(
+                                    (o) => o.value === field.value,
+                                  )?.label
+                                }
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {EVENT_TYPE_OPTIONS.map((opt) => (
+                                <SelectItem key={opt.value} value={opt.value}>
+                                  {opt.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </Field>
+                    );
+                  }}
                 />
+
                 <FormField
                   control={form.control}
                   name="ageLimit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Возрастное ограничение</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Возрастное ограничение</FieldLabel>
                       <FormControl>
-                        <Input placeholder="0+, 6+, 12+…" {...field} />
+                        <Select
+                          value={field.value ?? ''}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Выберите ограничение">
+                              {
+                                AGE_LIMIT_OPTIONS.find(
+                                  (o) => o.value === field.value,
+                                )?.label
+                              }
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {AGE_LIMIT_OPTIONS.map((opt) => (
+                              <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="genre"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Жанр</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Жанр</FieldLabel>
                       <FormControl>
                         <Input placeholder="Введите жанр" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="datetime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Дата и время</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Дата и время</FieldLabel>
                       <FormControl>
-                        <Input type="datetime-local" {...field} />
+                        <DateTimePicker
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="place"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Место</FormLabel>
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={!!fieldState.error}>
+                      <FieldLabel>Место</FieldLabel>
                       <FormControl>
                         <Input placeholder="Введите место" {...field} />
                       </FormControl>
                       <FormMessage />
-                    </FormItem>
+                    </Field>
                   )}
                 />
               </div>

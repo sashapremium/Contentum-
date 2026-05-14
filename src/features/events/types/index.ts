@@ -27,10 +27,10 @@ export type EventListResponse = z.infer<typeof EventListResponseSchema>;
 export const EventCreateRequestSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  eventType: z.string().optional(),
+  eventType: z.string().min(1, 'Выберите тип события'),
   ageLimit: z.string().optional(),
   genre: z.string().optional(),
-  datetime: z.string().optional(),
+  datetime: z.string().min(1, 'Укажите дату и время'),
   place: z.string().optional(),
 });
 export type EventCreateRequest = z.infer<typeof EventCreateRequestSchema>;
