@@ -154,22 +154,22 @@ export function MetricsPage() {
                   >
                     {bestScore.toFixed(2)}
                   </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Общая оценка</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
+                    Общая оценка
+                  </p>
                 </div>
               )}
-              <div className="flex flex-col sm:flex-row items-center gap-2">
-                <Button onClick={handleCopyBest}>
-                  {copied ? (
-                    <CheckIcon className="size-4" />
-                  ) : (
-                    <CopyIcon className="size-4" />
-                  )}
-                  {copied ? 'Скопировано' : 'Скопировать'}
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to={`${POST}/${chatId}`}>Перегенерировать</Link>
-                </Button>
-              </div>
+              <Button className="w-[100%]  sm:w-auto" onClick={handleCopyBest}>
+                {copied ? (
+                  <CheckIcon className="size-4" />
+                ) : (
+                  <CopyIcon className="size-4" />
+                )}
+                {copied ? 'Скопировано' : 'Скопировать'}
+              </Button>
+              <Button className="w-[100%] sm:w-auto" variant="outline" asChild>
+                <Link to={`${POST}/${chatId}`}>Перегенерировать</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -240,7 +240,10 @@ export function MetricsPage() {
                   Метрика
                 </th>
                 {items.map((_, idx) => (
-                  <th key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center font-medium">
+                  <th
+                    key={idx}
+                    className="px-2 py-1.5 sm:px-3 sm:py-2 text-center font-medium"
+                  >
                     Вариант {idx + 1}
                   </th>
                 ))}
@@ -255,7 +258,10 @@ export function MetricsPage() {
                   const active = getActiveMetrics(item);
                   const s = active[OVERALL_SCORE_KEY];
                   return (
-                    <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
+                    <td
+                      key={idx}
+                      className="px-2 py-1.5 sm:px-3 sm:py-2 text-center"
+                    >
                       {typeof s === 'number' ? (
                         <span
                           className="font-semibold tabular-nums"
@@ -277,7 +283,10 @@ export function MetricsPage() {
                 {items.map((item, idx) => {
                   const length = getMetricCount(item, LENGTH_KEY);
                   return (
-                    <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
+                    <td
+                      key={idx}
+                      className="px-2 py-1.5 sm:px-3 sm:py-2 text-center"
+                    >
                       {length !== null ? (
                         <span className="font-medium tabular-nums">
                           {length}
@@ -301,7 +310,10 @@ export function MetricsPage() {
                       {DERIVED_LABELS[key]}
                     </td>
                     {variantMetrics.map((metrics, idx) => (
-                      <td key={idx} className="px-2 py-1.5 sm:px-3 sm:py-2 text-center">
+                      <td
+                        key={idx}
+                        className="px-2 py-1.5 sm:px-3 sm:py-2 text-center"
+                      >
                         <span className="font-semibold tabular-nums">
                           {(metrics[key] * 100).toFixed(1)}
                         </span>
