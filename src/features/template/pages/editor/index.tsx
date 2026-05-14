@@ -36,6 +36,7 @@ import {
   useEditorState,
   type AnyLayer,
 } from './useEditorState';
+import { THEATRE_TITLE } from '@/app/router/routes';
 
 // ─── Name form schema ─────────────────────────────────────────────────────────
 
@@ -170,7 +171,7 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   // ── Breadcrumbs ───────────────────────────────────────────────────────────
 
   const breadcrumbs = [
-    { onClick: () => navigate(-1), label: 'Управление учреждением' },
+    { onClick: () => navigate(-1), label: THEATRE_TITLE },
     {
       url: '#',
       label:

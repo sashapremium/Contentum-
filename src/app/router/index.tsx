@@ -9,6 +9,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
 import TestFormsPage from '../pages/TestForms';
 import {
+  EVENT_CREATE,
+  EVENT_DETAIL,
   GALLERY,
   PHOTO_CREATE,
   PHOTO_DETAIL,
@@ -29,6 +31,8 @@ import { PhotoDetailPage } from '@/features/photo/pages/detail';
 import { TemplateCreatePage } from '@/features/template/pages/create';
 import { TemplateDetailPage } from '@/features/template/pages/detail';
 import { TheatreCreatePage } from '@/features/theatre/pages/create';
+import { EventCreatePage } from '@/features/events/pages/create';
+import { EventDetailPage } from '@/features/events/pages/detail';
 
 const router = createBrowserRouter([
   {
@@ -105,6 +109,16 @@ const router = createBrowserRouter([
             errorElement: <ErrorPage />,
           },
         ],
+      },
+      {
+        path: EVENT_CREATE,
+        element: <EventCreatePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: EVENT_DETAIL,
+        element: <EventDetailPage />,
+        errorElement: <ErrorPage />,
       },
       {
         path: 'testForms',

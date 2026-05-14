@@ -30,5 +30,15 @@ export const THEATRE_BRANDBOOK_DETAIL = `${THEATRE}/brandbook/:brandbookId`;
 export const THEATRE_BRANDBOOK_IMPORT = `${THEATRE}/brandbook/import`;
 export const BRANDBOOK_TITLE = 'Импорт брендбука';
 
+export const EVENT = '/events';
+export const EVENT_CREATE = `${EVENT}/create`;
+export const EVENT_DETAIL = `${EVENT}/:eventId`;
+export const EVENT_TITLE = 'События';
+export const EVENT_CREATE_TITLE = 'Создать событие';
+
+export function eventDetailUrl(id: number): string {
+  return `${EVENT}/${id}`;
+}
+
 // export const BACKEND_URL = '';
 export const BACKEND_URL = 'http://127.0.0.1:8000';

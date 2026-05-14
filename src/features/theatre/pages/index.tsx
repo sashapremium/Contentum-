@@ -5,10 +5,11 @@ import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import { EventsTab } from '@/features/events/pages/EventsTab';
 import { TemplatesTab } from './TemplatesTab';
 import { TheatresTab } from './TheatresTab';
 
-const VALID_TABS = ['theatres', 'templates'] as const;
+const VALID_TABS = ['theatres', 'events', 'templates'] as const;
 type TabValue = (typeof VALID_TABS)[number];
 
 export const TheatrePage = () => {
@@ -52,10 +53,14 @@ export const TheatrePage = () => {
       <Tabs value={activeTab} onValueChange={handleTabChange}>
         <TabsList className="w-full">
           <TabsTrigger value="theatres" className="flex-1">Учреждения</TabsTrigger>
+          <TabsTrigger value="events" className="flex-1">События</TabsTrigger>
           <TabsTrigger value="templates" className="flex-1">Шаблоны</TabsTrigger>
         </TabsList>
         <TabsContent value="theatres" className="mt-4">
           <TheatresTab />
+        </TabsContent>
+        <TabsContent value="events" className="mt-4">
+          <EventsTab />
         </TabsContent>
         <TabsContent value="templates" className="mt-4">
           <TemplatesTab

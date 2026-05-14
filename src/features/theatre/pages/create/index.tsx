@@ -2,7 +2,12 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';
 
-import { THEATRE, THEATRE_CREATE, THEATRE_TITLE, THEATRE_CREATE_TITLE } from '@/app/router/routes';
+import {
+  THEATRE,
+  THEATRE_CREATE,
+  THEATRE_TITLE,
+  THEATRE_CREATE_TITLE,
+} from '@/app/router/routes';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { Error } from '@/components/shared/Error';
 import { PageWrapper } from '@/components/shared/PageWrapper';
@@ -45,7 +50,16 @@ export const TheatreCreatePage = () => {
   };
 
   return (
-    <PageWrapper header={<Breadcrumbs links={[{ url: THEATRE, label: THEATRE_TITLE }, { url: THEATRE_CREATE, label: THEATRE_CREATE_TITLE }]} />}>
+    <PageWrapper
+      header={
+        <Breadcrumbs
+          links={[
+            { url: THEATRE, label: THEATRE_TITLE },
+            { url: THEATRE_CREATE, label: THEATRE_CREATE_TITLE },
+          ]}
+        />
+      }
+    >
       <Card>
         <CardContent>
           <Form {...form}>
