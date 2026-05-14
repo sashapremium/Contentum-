@@ -85,23 +85,20 @@ const ImagePositionModal = ({
   const handleImgLoad = useCallback(() => {
     const img = imgRef.current;
     if (!img) return;
-    // Display image at containerScale so 1 image pixel = 1 template pixel in the viewport
-    const dW = img.naturalWidth * containerScale;
-    const dH = img.naturalHeight * containerScale;
-    setImgSize({ w: dW, h: dH });
-    setOffset({
-      x: Math.round((displayW - dW) / 2),
-      y: Math.round((displayH - dH) / 2),
-    });
-  }, [displayW, displayH, containerScale]);
+    // Scale so image fills the frame height exactly; width follows aspect ratio.
+    const scale = displayH / img.naturalHeight;
+    const dW = img.naturalWidth * scale;
+    setImgSize({ w: dW, h: displayH });
+    setOffset({ x: Math.round((displayW - dW) / 2), y: 0 });
+  }, [displayW, displayH]);
 
-  // Only clamp axes where the image is larger than the frame (prevent blank strips)
+  // Y is locked (image fills height); only clamp X when image is wider than frame.
   const clampedOffset = useCallback(
-    (x: number, y: number, iw: number, ih: number) => ({
+    (x: number, _y: number, iw: number) => ({
       x: iw > displayW ? Math.min(0, Math.max(displayW - iw, x)) : x,
-      y: ih > displayH ? Math.min(0, Math.max(displayH - ih, y)) : y,
+      y: 0,
     }),
-    [displayW, displayH],
+    [displayW],
   );
 
   const handleConfirm = () => {
@@ -114,12 +111,13 @@ const ImagePositionModal = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Crop the exact region of the original image that maps to the frame.
-    // offset is image top-left relative to frame; invert and unscale to get source coords.
-    const srcX = -offset.x / containerScale;
-    const srcY = -offset.y / containerScale;
-    const srcW = displayW / containerScale; // equals dimensions.width
-    const srcH = displayH / containerScale; // equals dimensions.height
+    // Recover the display scale from imgSize (= naturalSize * displayScale).
+    // Use it to map the frame back to original image coordinates for a lossless crop.
+    const displayScale = imgSize.w / img.naturalWidth;
+    const srcX = -offset.x / displayScale;
+    const srcY = -offset.y / displayScale;
+    const srcW = displayW / displayScale;
+    const srcH = displayH / displayScale;
     ctx.drawImage(
       img,
       srcX, srcY, srcW, srcH,
@@ -172,7 +170,7 @@ const ImagePositionModal = ({
                 const dy = e.clientY - lastPointerRef.current.y;
                 lastPointerRef.current = { x: e.clientX, y: e.clientY };
                 setOffset((prev) =>
-                  clampedOffset(prev.x + dx, prev.y + dy, imgSize.w, imgSize.h),
+                  clampedOffset(prev.x + dx, prev.y + dy, imgSize.w),
                 );
               }}
               onPointerUp={() => {
@@ -184,6 +182,7 @@ const ImagePositionModal = ({
                   ? {
                       width: imgSize.w,
                       height: imgSize.h,
+                      maxWidth: 'none',
                       left: offset.x,
                       top: offset.y,
                     }
