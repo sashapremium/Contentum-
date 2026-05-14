@@ -1,15 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Event } from '../types';
 import { fetchEvent } from '../api';
-
-export const EVENT_QUERY_KEYS = {
-  all: ['events'] as const,
-  byId: (id: string) => [...EVENT_QUERY_KEYS.all, id] as const,
-};
+import type { Event } from '../types';
+import { EVENT_QUERY_KEYS } from './events.queryKeys';
 
 export const useEventQuery = (id: string) => {
   return useQuery<Event>({
-    queryKey: EVENT_QUERY_KEYS.byId(id),
+    queryKey: EVENT_QUERY_KEYS.detail(id),
     queryFn: () => fetchEvent(id),
     enabled: Boolean(id),
   });
