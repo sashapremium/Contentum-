@@ -37,8 +37,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-// ─── Rename dialog ────────────────────────────────────────────────────────────
-
 interface RenameTarget {
   theatreId: number;
   templateId: string;
@@ -116,8 +114,6 @@ const RenameTemplateDialog = ({
     </Dialog>
   );
 };
-
-// ─── Tab ──────────────────────────────────────────────────────────────────────
 
 interface DeleteTarget {
   theatreId: number;

@@ -4,7 +4,6 @@ import { z } from 'zod';
 export const LoginUserSchema = z.object({
   id: z.number(),
   email: z.email(),
-  // fullName: ZOD_FIELDS.fullName,
   role: z.enum(['user']),
 });
 

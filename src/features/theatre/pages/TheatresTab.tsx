@@ -38,27 +38,27 @@ import { useTheatresQuery } from '../queries/useTheatresQuery';
 import { useDeleteTheatreMutation } from '../queries/useDeleteTheatreMutation';
 import { useUpdateTheatreMutation } from '../queries/useUpdateTheatreMutation';
 
-// ─── Update dialog ────────────────────────────────────────────────────────────
-
 interface UpdateTheatreDialogProps {
   theatre: Theatre | null;
   onClose: () => void;
 }
 
-const UpdateTheatreDialog = ({ theatre, onClose }: UpdateTheatreDialogProps) => {
+const UpdateTheatreDialog = ({
+  theatre,
+  onClose,
+}: UpdateTheatreDialogProps) => {
   const updateMutation = useUpdateTheatreMutation();
 
   const form = useForm<TheatreCreateRequest>({
     resolver: zodResolver(TheatreCreateRequestSchema),
-    values: theatre ? { name: theatre.name, address: theatre.address } : { name: '', address: '' },
+    values: theatre
+      ? { name: theatre.name, address: theatre.address }
+      : { name: '', address: '' },
   });
 
   const onSubmit = (payload: TheatreCreateRequest) => {
     if (!theatre) return;
-    updateMutation.mutate(
-      { id: theatre.id, payload },
-      { onSuccess: onClose },
-    );
+    updateMutation.mutate({ id: theatre.id, payload }, { onSuccess: onClose });
   };
 
   return (
@@ -113,8 +113,6 @@ const UpdateTheatreDialog = ({ theatre, onClose }: UpdateTheatreDialogProps) => 
   );
 };
 
-// ─── Tab ──────────────────────────────────────────────────────────────────────
-
 export const TheatresTab = () => {
   const theatresQuery = useTheatresQuery();
   const deleteMutation = useDeleteTheatreMutation();
@@ -123,7 +121,8 @@ export const TheatresTab = () => {
   const [deleteTarget, setDeleteTarget] = useState<Theatre | null>(null);
 
   if (theatresQuery.isLoading) return <Loading />;
-  if (theatresQuery.isError) return <Error description="Не удалось загрузить учреждения" />;
+  if (theatresQuery.isError)
+    return <Error description="Не удалось загрузить учреждения" />;
 
   const theatres = theatresQuery.data?.theatres ?? [];
 
@@ -151,13 +150,19 @@ export const TheatresTab = () => {
             <div>
               <div className="font-medium">{theatre.name}</div>
               {theatre.address && (
-                <div className="text-sm text-muted-foreground">{theatre.address}</div>
+                <div className="text-sm text-muted-foreground">
+                  {theatre.address}
+                </div>
               )}
             </div>
             <div className="flex gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={() => setEditTarget(theatre)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setEditTarget(theatre)}
+                  >
                     <Settings2 />
                   </Button>
                 </TooltipTrigger>
@@ -181,7 +186,10 @@ export const TheatresTab = () => {
         ))}
       </div>
 
-      <UpdateTheatreDialog theatre={editTarget} onClose={() => setEditTarget(null)} />
+      <UpdateTheatreDialog
+        theatre={editTarget}
+        onClose={() => setEditTarget(null)}
+      />
 
       <ConfirmDialog
         open={Boolean(deleteTarget)}

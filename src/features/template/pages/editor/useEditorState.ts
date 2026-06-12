@@ -1,18 +1,12 @@
 import { useEffect, useReducer, useState } from 'react';
 import type { Template, TemplateLayer } from '../../types';
 
-// ─── Extended layer union (editor adds background/rect/color_tint) ────────────
-
 export type AnyLayer = TemplateLayer;
-
-// ─── Editor-only wrapper for each layer (adds stable _id) ─────────────────────
 
 export interface EditorEntry {
   _id: string;
   layer: AnyLayer;
 }
-
-// ─── Asset types ──────────────────────────────────────────────────────────────
 
 export interface FontEntry {
   key: string;
@@ -28,8 +22,6 @@ export interface ImageAsset {
   previewUrl?: string;
 }
 
-// ─── State ────────────────────────────────────────────────────────────────────
-
 export interface EditorState {
   templateId: string;
   name: string;
@@ -41,8 +33,6 @@ export interface EditorState {
   entries: EditorEntry[];
   selectedId: string | null;
 }
-
-// ─── Actions ──────────────────────────────────────────────────────────────────
 
 export type EditorAction =
   | { type: 'SET_NAME'; name: string }
@@ -59,8 +49,6 @@ export type EditorAction =
   | { type: 'ADD_IMAGE_ASSET'; asset: ImageAsset }
   | { type: 'REMOVE_IMAGE_ASSET'; path: string }
   | { type: 'SET_PALETTE'; palette: Record<string, string> };
-
-// ─── Reducer ──────────────────────────────────────────────────────────────────
 
 function reducer(state: EditorState, action: EditorAction): EditorState {
   switch (action.type) {
@@ -143,8 +131,6 @@ function reducer(state: EditorState, action: EditorAction): EditorState {
   }
 }
 
-// ─── Initial state builders ───────────────────────────────────────────────────
-
 function makeId(): string {
   return crypto.randomUUID();
 }
@@ -167,7 +153,6 @@ function templateToState(
     layer,
   }));
 
-  // Pre-populate image assets from image layers so the canvas can show them
   const imageAssets: ImageAsset[] = assetBaseUrl
     ? template.layers
         .filter(
@@ -207,8 +192,6 @@ function emptyState(): EditorState {
   };
 }
 
-// ─── Serialization: state → Template JSON ─────────────────────────────────────
-
 export function stateToTemplate(state: EditorState): Template {
   const fonts: Record<string, { file: string; family: string }> = {};
   for (const f of state.fonts) {
@@ -224,9 +207,7 @@ export function stateToTemplate(state: EditorState): Template {
     fonts: Object.keys(fonts).length > 0 ? fonts : undefined,
     layers: state.entries.map((e) => {
       const layer = e.layer;
-      // Backend heuristic: editable = name is set AND defaultText is empty.
-      // Strip defaultText from editable text layers so the backend correctly
-      // marks them as user-input fields regardless of the preview placeholder.
+
       if (layer.type === 'text' && layer.editable) {
         return { ...layer, defaultText: '' };
       }
@@ -246,17 +227,12 @@ export function stateToPendingAssets(state: EditorState): Record<string, File> {
   return assets;
 }
 
-// ─── Public hook helpers ──────────────────────────────────────────────────────
-
 export function makeEntry(layer: AnyLayer): EditorEntry {
   return { _id: makeId(), layer };
 }
 
-// ─── History ──────────────────────────────────────────────────────────────────
-
 const MAX_HISTORY = 50;
 
-// SELECT only changes which layer is highlighted — not worth polluting history
 const NON_UNDOABLE = new Set<EditorAction['type']>(['SELECT']);
 
 export type HistoryAction = EditorAction | { type: 'UNDO' } | { type: 'REDO' };
@@ -310,8 +286,6 @@ function historyReducer(
   };
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
 export function useEditorState(initialTemplate?: Template, theatreId?: number) {
   const assetBaseUrl =
     initialTemplate && theatreId
@@ -328,7 +302,6 @@ export function useEditorState(initialTemplate?: Template, theatreId?: number) {
     future: [],
   });
 
-  // Track when remote fonts finish loading so FabricCanvas re-renders text layers
   const [fontsLoadedAt, setFontsLoadedAt] = useState(0);
 
   useEffect(() => {
@@ -346,7 +319,6 @@ export function useEditorState(initialTemplate?: Template, theatreId?: number) {
       loadFont(f.family, `${assetBaseUrl}/${f.file}`),
     );
     Promise.all(promises).then(() => setFontsLoadedAt(Date.now()));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return [

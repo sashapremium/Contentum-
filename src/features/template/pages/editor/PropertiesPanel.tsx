@@ -30,8 +30,6 @@ import type {
   ImageAsset,
 } from './useEditorState';
 
-// ─── Small reusable field components ─────────────────────────────────────────
-
 const Field = ({
   label,
   children,
@@ -69,8 +67,6 @@ const NumInput = ({
     />
   </Field>
 );
-
-// ─── SliderField with debounce ───────────────────────────────────────────────
 
 const SliderField = ({
   label,
@@ -130,8 +126,6 @@ const SliderField = ({
   );
 };
 
-// ─── BoxFields with RHF + zod + debounce ─────────────────────────────────────
-
 const anyInt = z
   .string()
   .refine((v) => /^-?\d+$/.test(v), { message: 'Целое число' });
@@ -172,14 +166,13 @@ const BoxFields = ({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastBoxRef = useRef<[number, number, number, number]>(box);
 
-  // Sync external box changes (canvas drag) into the form
   useEffect(() => {
     const [bx, by, bw, bh] = box;
     const [lx, ly, lw, lh] = lastBoxRef.current;
     if (bx === lx && by === ly && bw === lw && bh === lh) return;
     lastBoxRef.current = [bx, by, bw, bh];
     form.reset({ x: String(bx), y: String(by), w: String(bw), h: String(bh) });
-  }, [box[0], box[1], box[2], box[3]]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [box[0], box[1], box[2], box[3]]);
 
   const handleFieldChange = (field: keyof BoxFormValues, value: string) => {
     const current = { ...form.getValues(), [field]: value };
@@ -241,8 +234,6 @@ const BoxFields = ({
   );
 };
 
-// ─── ColorField with debounce ─────────────────────────────────────────────────
-
 const ColorField = ({
   label,
   value,
@@ -261,13 +252,11 @@ const ColorField = ({
     onChangeRef.current = onChange;
   });
 
-  // Derived-state: sync when prop changes externally (undo/redo)
   if (prevValue !== value) {
     setPrevValue(value);
     setLocal(safeHex(value));
   }
 
-  // Cancel any pending dispatch when the external value changes
   useEffect(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -303,8 +292,6 @@ const ColorField = ({
     </Field>
   );
 };
-
-// ─── RgbaColorField with debounce ─────────────────────────────────────────────
 
 function parseRgba(str: string): {
   r: number;
@@ -360,13 +347,11 @@ const RgbaColorField = ({
     onChangeRef.current = onChange;
   });
 
-  // Derived-state: sync when prop changes externally (undo/redo)
   if (prevValue !== value) {
     setPrevValue(value);
     setLocal(parseRgba(value));
   }
 
-  // Cancel any pending dispatch when the external value changes
   useEffect(() => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -452,8 +437,6 @@ const OpacityField = ({
     onChange={onChange}
   />
 );
-
-// ─── Per-layer property panels ────────────────────────────────────────────────
 
 interface LayerPropsProps {
   layer: AnyLayer;
@@ -712,8 +695,6 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
     </>
   );
 };
-
-// ─── Main PropertiesPanel ─────────────────────────────────────────────────────
 
 interface PropertiesPanelProps {
   state: EditorState;

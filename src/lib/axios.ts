@@ -66,26 +66,21 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Non-401 errors have nothing to do with auth — pass through immediately.
     if (error.response?.status !== 401) {
       return Promise.reject(error);
     }
 
     const { tokens, setTokens, isAuthenticated } = useAuthStore.getState();
 
-    // Already logged out (e.g. a deferred retry firing after logout) — reject
-    // silently so we don't call logout() a second time or show duplicate toasts.
     if (!isAuthenticated) {
       return Promise.reject(error);
     }
 
-    // The refresh endpoint itself returned 401 — refresh token is invalid.
     if (originalRequest.url?.includes('/auth/refresh')) {
       logoutAndClear();
       return Promise.reject(error);
     }
 
-    // No refresh token in store — can't attempt refresh.
     if (!tokens?.refresh) {
       logoutAndClear();
       return Promise.reject(error);

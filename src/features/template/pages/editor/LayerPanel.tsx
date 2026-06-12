@@ -13,8 +13,6 @@ import { Button } from '@/components/ui/button';
 
 import type { AnyLayer, EditorState } from './useEditorState';
 
-// ─── Icons per layer type ─────────────────────────────────────────────────────
-
 function layerIcon(layer: AnyLayer): React.ReactNode {
   if (layer.type === 'text') {
     return layer.editable ? (
@@ -47,8 +45,6 @@ function layerLabel(layer: AnyLayer): string {
       return 'Слой';
   }
 }
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 interface LayerPanelProps {
   state: EditorState;

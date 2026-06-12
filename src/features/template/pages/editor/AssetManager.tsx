@@ -14,8 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import type { EditorEntry, FontEntry, ImageAsset } from './useEditorState';
 
-// ─── helpers ─────────────────────────────────────────────────────────────────
-
 function countFontUsages(entries: EditorEntry[], fontKey: string) {
   return entries.filter(
     (e) => e.layer.type === 'text' && e.layer.font === fontKey,
@@ -27,8 +25,6 @@ function countImageUsages(entries: EditorEntry[], path: string) {
     (e) => e.layer.type === 'image' && e.layer.file === path,
   ).length;
 }
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 interface AssetManagerProps {
   fonts: FontEntry[];
@@ -65,7 +61,13 @@ export const AssetManager = ({
       ff.load().then((loaded) => document.fonts.add(loaded));
     });
 
-    onAddFont({ key, file: path, family, pendingFile: file, objectUrl: URL.createObjectURL(file) });
+    onAddFont({
+      key,
+      file: path,
+      family,
+      pendingFile: file,
+      objectUrl: URL.createObjectURL(file),
+    });
     if (fontFileRef.current) fontFileRef.current.value = '';
   };
 

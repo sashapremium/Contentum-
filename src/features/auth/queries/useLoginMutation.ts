@@ -13,8 +13,6 @@ export const useLoginMutation = () => {
         access: data.accessToken,
         refresh: data.refreshToken,
       });
-      // Wipe any stale cache / error states from the previous session so that
-      // all queries start fresh after the user logs in.
       qc.clear();
     },
   });

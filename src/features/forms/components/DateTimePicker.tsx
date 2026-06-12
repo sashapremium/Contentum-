@@ -13,12 +13,12 @@ import { ru } from 'date-fns/locale';
 import { buildLocalDateTime, parseLocalDateTime } from '@/lib/dateTime';
 
 interface DateTimePickerProps {
-  value: string | null | undefined; // ISO string or empty
-  onChange: (next: string) => void; // ISO string or ''
+  value: string | null | undefined;
+  onChange: (next: string) => void;
   disabled?: boolean;
   mustBeFuture?: boolean;
   placeholder?: string;
-  defaultTime?: string; // 'HH:mm:ss'
+  defaultTime?: string;
 }
 
 const DEFAULT_TIME = '17:00';
@@ -39,12 +39,12 @@ export const DateTimePicker = ({
 
   const selectedDate = useMemo(() => {
     if (!parsed) return undefined;
-    // Create date in local time at midnight; no timezone shift for just date UI.
+
     return new Date(parsed.y, parsed.m - 1, parsed.d);
   }, [parsed]);
 
   const timeValue = useMemo(() => {
-    if (!parsed) return defaultTime; // 'HH:mm'
+    if (!parsed) return defaultTime;
     return `${String(parsed.hh).padStart(2, '0')}:${String(parsed.mm).padStart(2, '0')}`;
   }, [parsed, defaultTime]);
 

@@ -46,7 +46,7 @@ const BaseFieldSchema = z.object({
   name: z.string().min(1),
   label: z.string().min(1),
   required: z.boolean(),
-  value: z.unknown().nullable(), // null means “empty”; non-null means default
+  value: z.unknown().nullable(),
 });
 
 export const TextFieldSchema = BaseFieldSchema.extend({
@@ -59,7 +59,7 @@ export type TextField = z.infer<typeof TextFieldSchema>;
 export const SearchFieldSchema = BaseFieldSchema.extend({
   type: z.literal('search'),
   options: z.array(FieldOptionSchema),
-  validation: TextValidationSchema.optional(), // usually text-like constraints
+  validation: TextValidationSchema.optional(),
 }).loose();
 
 export type SearchField = z.infer<typeof SearchFieldSchema>;

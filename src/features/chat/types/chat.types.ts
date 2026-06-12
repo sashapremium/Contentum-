@@ -31,13 +31,13 @@ export const GeneratedTextSchema = z.object({
 export type GeneratedText = z.infer<typeof GeneratedTextSchema>;
 
 export const GeneratedTextPayloadSchema = z.object({
-  content: z.array(GeneratedTextSchema), // ["...", "...", "..."]
+  content: z.array(GeneratedTextSchema),
   versionNumber: z.number().int(),
 });
 export type GeneratedTextPayload = z.infer<typeof GeneratedTextPayloadSchema>;
 
 export const RegenerationRequestPayloadSchema = z.object({
-  mode: z.string().min(1), // e.g. "comment_only"
+  mode: z.string().min(1),
   comment: z.string(),
 });
 export type RegenerationRequestPayload = z.infer<
@@ -105,24 +105,19 @@ export const ChatSchema = z.object({
 
   user: UserSchema,
 
-  type: ChatTypeSchema, // currently "announcement"
+  type: ChatTypeSchema,
 
   title: z.string().min(1).max(255),
 
-  updatedAt: z.string(), // ISO string
+  updatedAt: z.string(),
   isActive: z.boolean(),
 
-  // Optional — if backend still returns messages for detailed view
   messages: ChatMessagesSchema.optional(),
   messageCount: z.number().int().optional(),
 });
 export type Chat = z.infer<typeof ChatSchema>;
 
 export const ChatListResponseSchema = z.object({
-  // count: z.number().int(),
-  // next: z.url().nullable(),
-  // previous: z.url().nullable(),
-  // results: z.array(ChatSchema),
   chats: z.array(ChatSchema),
   payload: FormStepSchema,
 });
@@ -136,7 +131,7 @@ export type ChatCreateRequest = z.infer<typeof ChatCreateSchema>;
 
 export const ChatCreateResponseSchema = z.object({
   chatId: z.uuid(),
-  type: z.string().min(1), // currently "form", future-proof
+  type: z.string().min(1),
   payload: z.unknown(),
 });
 export type ChatCreateResponse = z.infer<typeof ChatCreateResponseSchema>;

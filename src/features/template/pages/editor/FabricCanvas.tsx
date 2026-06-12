@@ -10,7 +10,7 @@ import {
 } from './layerFabricSync';
 
 const MAX_DISPLAY_PX = 700;
-const PLACEHOLDER_STROKE = '#51a2ff'; // gray-400 — tweak here to change all placeholder borders
+const PLACEHOLDER_STROKE = '#51a2ff';
 
 interface FabricCanvasProps {
   canvasSize: { width: number; height: number };
@@ -36,14 +36,14 @@ export const FabricCanvas = ({
   const canvasElRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<Canvas | null>(null);
   const objectMapRef = useRef<Map<string, FabricObject>>(new Map());
-  // Prevent reconciliation loop when Fabric fires and we update React state
+
   const fromFabricRef = useRef(false);
-  // Always-current ref so the canvas event handler never holds a stale closure
+
   const onMoveResizeRef = useRef(onMoveResize);
   useEffect(() => {
     onMoveResizeRef.current = onMoveResize;
   });
-  // Boxes dragged but not yet dispatched (debounce window) — reconcile skips their position
+
   const pendingBoxesRef = useRef<Map<string, [number, number, number, number]>>(
     new Map(),
   );
@@ -56,7 +56,6 @@ export const FabricCanvas = ({
   const displayW = Math.round(canvasW * scale);
   const displayH = Math.round(canvasH * scale);
 
-  // ── Init / destroy canvas ────────────────────────────────────────────────────
   useEffect(() => {
     if (!canvasElRef.current) return;
 
@@ -90,11 +89,9 @@ export const FabricCanvas = ({
       if (!id) return;
       const box = fabricToBox(obj);
 
-      // Cancel any existing debounce timer for this object
       const existing = debounceTimersRef.current.get(id);
       if (existing) clearTimeout(existing);
 
-      // Hold the box so reconcile won't snap it back during the debounce window
       pendingBoxesRef.current.set(id, box);
 
       const timer = setTimeout(() => {
@@ -110,10 +107,8 @@ export const FabricCanvas = ({
       fc.dispose();
       fabricRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canvasW, canvasH]); // Re-init when canvas size changes
+  }, [canvasW, canvasH]);
 
-  // ── Reconcile entries → canvas objects ───────────────────────────────────────
   useEffect(() => {
     const fc = fabricRef.current;
     if (!fc) return;
@@ -132,7 +127,6 @@ export const FabricCanvas = ({
       PLACEHOLDER_STROKE,
     );
 
-    // Load real images asynchronously for image-type layers
     for (const entry of entries) {
       if (entry.layer.type === 'image') {
         loadImageAsset(fc, objectMapRef.current, entry, entries, imageAssets);
@@ -140,7 +134,6 @@ export const FabricCanvas = ({
     }
   }, [entries, fonts, imageAssets, canvasW, canvasH, fontsLoadedAt]);
 
-  // ── Sync external selectedId → canvas selection ──────────────────────────────
   useEffect(() => {
     const fc = fabricRef.current;
     if (!fc) return;

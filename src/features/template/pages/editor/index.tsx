@@ -38,14 +38,10 @@ import {
 } from './useEditorState';
 import { THEATRE_TITLE } from '@/app/router/routes';
 
-// ─── Name form schema ─────────────────────────────────────────────────────────
-
 const nameSchema = z.object({
   name: z.string().min(1, 'Название не может быть пустым'),
 });
 type NameForm = z.infer<typeof nameSchema>;
-
-// ─── Shared editor UI ─────────────────────────────────────────────────────────
 
 interface EditorPageProps {
   mode: 'create' | 'update';
@@ -69,7 +65,6 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
     defaultValues: { name: state.name },
   });
 
-  // Keep form in sync when undo/redo changes the name
   useEffect(() => {
     nameForm.setValue('name', state.name, { shouldValidate: true });
   }, [state.name, nameForm]);
@@ -99,7 +94,6 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
 
   const isError = createMutation.isError || updateMutation.isError;
 
-  // ── Keyboard shortcuts ───────────────────────────────────────────────────────
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement).tagName;
@@ -118,8 +112,6 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [dispatch]);
-
-  // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleSave = () => {
     const manifest = stateToTemplate(state);
@@ -167,8 +159,6 @@ export const EditorPage = ({ mode, initialTemplate }: EditorPageProps) => {
   ) => {
     dispatch({ type: 'UPDATE_BOX', id, box });
   };
-
-  // ── Breadcrumbs ───────────────────────────────────────────────────────────
 
   const breadcrumbs = [
     { onClick: () => navigate(-1), label: THEATRE_TITLE },

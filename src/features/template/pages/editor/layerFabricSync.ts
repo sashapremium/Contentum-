@@ -13,11 +13,9 @@ import type {
   ImageAsset,
 } from './useEditorState';
 
-// ─── Custom data tag on Fabric objects ───────────────────────────────────────
-
 interface FabricData {
   _id: string;
-  loadedFile?: string; // tracks which file a FabricImage was loaded from
+  loadedFile?: string;
 }
 
 function setData(obj: FabricObject, id: string, loadedFile?: string) {
@@ -36,8 +34,6 @@ function getLoadedFile(obj: FabricObject): string | undefined {
   return (obj as unknown as { data?: FabricData }).data?.loadedFile;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function boxToProps(box: [number, number, number, number]) {
   return { left: box[0], top: box[1], width: box[2], height: box[3] };
 }
@@ -52,8 +48,6 @@ export function fabricToBox(
     Math.round(obj.height * obj.scaleY),
   ];
 }
-
-// ─── Gradient helper ──────────────────────────────────────────────────────────
 
 function makeLinearGradient(
   colorFrom: string,
@@ -71,15 +65,11 @@ function makeLinearGradient(
   });
 }
 
-// ─── Common Fabric control style ──────────────────────────────────────────────
-
 const HANDLE_OPTS = {
   cornerSize: 8,
   cornerStyle: 'circle' as const,
   transparentCorners: false,
 };
-
-// ─── Layer → Fabric object ────────────────────────────────────────────────────
 
 export function layerToFabricObject(
   entry: EditorEntry,
@@ -161,13 +151,13 @@ export function layerToFabricObject(
           fill: isEditable ? '#51a2ff' : (layer.color ?? '#000000'),
           textAlign:
             (layer.align as 'left' | 'right' | 'center' | 'justify') ?? 'left',
-          // Editable slots get a dashed blue border so designer sees it's a user-input field
+
           stroke: placeholderStroke,
           strokeWidth: isEditable ? 1 : 0,
           borderColor: placeholderStroke,
           cornerColor: placeholderStroke,
           strokeDashArray: isEditable ? [4, 4] : [],
-          editable: false, // canvas editing off; value comes from PropertiesPanel
+          editable: false,
           splitByGrapheme: false,
         }),
       );
@@ -177,8 +167,6 @@ export function layerToFabricObject(
       return null;
   }
 }
-
-// ─── Load real image into placeholder (async) ─────────────────────────────────
 
 export async function loadImageAsset(
   canvas: Canvas,
@@ -213,7 +201,6 @@ export async function loadImageAsset(
     const naturalW = imgObj.width;
     const naturalH = imgObj.height;
 
-    // Scale to the existing box dimensions — do NOT override state with natural dims.
     imgObj.set({
       ...HANDLE_OPTS,
       left: box[0],
@@ -224,10 +211,9 @@ export async function loadImageAsset(
     });
     setData(imgObj, entry._id, file);
 
-    // Remove placeholder, add image, then move it to the correct z-position.
     const entryZ = entries.findIndex((e) => e._id === entry._id);
     canvas.remove(placeholder);
-    canvas.add(imgObj); // adds at top, initialises canvas ref + coords
+    canvas.add(imgObj);
     if (entryZ >= 0) {
       const arr = canvas._objects as FabricObject[];
       const currentIdx = arr.indexOf(imgObj);
@@ -239,12 +225,8 @@ export async function loadImageAsset(
 
     objectMap.set(entry._id, imgObj);
     canvas.renderAll();
-  } catch {
-    // keep placeholder on error
-  }
+  } catch {}
 }
-
-// ─── Reconcile canvas with entries ────────────────────────────────────────────
 
 export function reconcileCanvas(
   canvas: Canvas,
@@ -261,7 +243,6 @@ export function reconcileCanvas(
 
   canvas.discardActiveObject();
 
-  // Remove objects no longer in entries
   const entryIds = new Set(entries.map((e) => e._id));
   for (const [id, obj] of objectMap) {
     if (!entryIds.has(id)) {
@@ -275,8 +256,6 @@ export function reconcileCanvas(
   for (const entry of entries) {
     let obj = objectMap.get(entry._id);
 
-    // Image file was cleared or changed: drop the FabricImage so a fresh
-    // placeholder rect is created below, then loadImageAsset reloads it.
     if (obj instanceof FabricImage && entry.layer.type === 'image') {
       const currentFile = (entry.layer as Extract<AnyLayer, { type: 'image' }>)
         .file;
@@ -306,8 +285,6 @@ export function reconcileCanvas(
     if (obj) newOrder.push(obj);
   }
 
-  // Re-order canvas objects to match entries z-order.
-  // Splice-based sort with a stale snapshot is buggy, so replace the array in-place.
   (canvas._objects as FabricObject[]).splice(
     0,
     canvas._objects.length,
@@ -321,8 +298,6 @@ export function reconcileCanvas(
 
   canvas.renderAll();
 }
-
-// ─── Update a Fabric object in-place ─────────────────────────────────────────
 
 function updateFabricObject(
   obj: FabricObject,
@@ -354,8 +329,6 @@ function updateFabricObject(
 
     case 'image':
       if (obj instanceof FabricImage) {
-        // FabricImage.width/height are the natural pixel dimensions.
-        // Displayed size = naturalW * scaleX, so we derive scale from the box.
         if (!skipBox) {
           obj.set({
             left: layer.box[0],
@@ -372,7 +345,6 @@ function updateFabricObject(
           obj.set({ opacity: layer.opacity ?? 1 });
         }
       } else {
-        // Placeholder rect — simple box update
         obj.set({ ...pos, opacity: layer.opacity ?? 1 });
         if (!skipBox) obj.setCoords();
       }

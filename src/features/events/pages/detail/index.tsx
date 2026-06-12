@@ -35,10 +35,6 @@ import { useEventQuery } from '../../queries/useEventQuery';
 import { useUpdateEventMutation } from '../../queries/useUpdateEventMutation';
 import { AGE_LIMIT_OPTIONS, EVENT_TYPE_OPTIONS } from '../../constants';
 
-// ─── Form ─────────────────────────────────────────────────────────────────────
-// Separate component so it only mounts after data is ready, guaranteeing
-// defaultValues are set correctly on first render (no reactive reset flash).
-
 const EventEditForm = ({ event }: { event: Event }) => {
   const navigate = useNavigate();
   const updateMutation = useUpdateEventMutation();
@@ -224,8 +220,6 @@ const EventEditForm = ({ event }: { event: Event }) => {
     </Form>
   );
 };
-
-// ─── Page ──────────────────────────────────────────────────────────────────────
 
 export const EventDetailPage = () => {
   const { eventId = '' } = useParams<{ eventId: string }>();

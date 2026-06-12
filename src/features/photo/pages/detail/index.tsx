@@ -37,8 +37,6 @@ import { useUpdatePhotoSessionMutation } from '../../queries/useUpdatePhotoSessi
 
 const MAX_DISPLAY_SIZE = 450;
 
-// ─── Image position modal ─────────────────────────────────────────────────────
-
 interface ImagePositionModalProps {
   open: boolean;
   file: File | null;
@@ -85,14 +83,13 @@ const ImagePositionModal = ({
   const handleImgLoad = useCallback(() => {
     const img = imgRef.current;
     if (!img) return;
-    // Scale so image fills the frame height exactly; width follows aspect ratio.
+
     const scale = displayH / img.naturalHeight;
     const dW = img.naturalWidth * scale;
     setImgSize({ w: dW, h: displayH });
     setOffset({ x: Math.round((displayW - dW) / 2), y: 0 });
   }, [displayW, displayH]);
 
-  // Y is locked (image fills height); only clamp X when image is wider than frame.
   const clampedOffset = useCallback(
     (x: number, _y: number, iw: number) => ({
       x: iw > displayW ? Math.min(0, Math.max(displayW - iw, x)) : x,
@@ -111,8 +108,6 @@ const ImagePositionModal = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Recover the display scale from imgSize (= naturalSize * displayScale).
-    // Use it to map the frame back to original image coordinates for a lossless crop.
     const displayScale = imgSize.w / img.naturalWidth;
     const srcX = -offset.x / displayScale;
     const srcY = -offset.y / displayScale;
@@ -120,8 +115,14 @@ const ImagePositionModal = ({
     const srcH = displayH / displayScale;
     ctx.drawImage(
       img,
-      srcX, srcY, srcW, srcH,
-      0, 0, dimensions.width, dimensions.height,
+      srcX,
+      srcY,
+      srcW,
+      srcH,
+      0,
+      0,
+      dimensions.width,
+      dimensions.height,
     );
 
     canvas.toBlob(
@@ -207,8 +208,6 @@ const ImagePositionModal = ({
   );
 };
 
-// ─── Image input (not RHF-managed — file inputs are uncontrolled) ─────────────
-
 interface PhotoImageInputProps {
   field: PhotoInputImage;
   currentUrl?: string;
@@ -287,8 +286,6 @@ const PhotoImageInput = ({
   );
 };
 
-// ─── Inner form — receives session as a guaranteed prop ───────────────────────
-
 const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
   const updateSessionMutation = useUpdatePhotoSessionMutation();
   const [selectedFiles, setSelectedFiles] = useState<
@@ -334,7 +331,10 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
   };
 
   return (
-    <PageWrapper size="wide" header={<PageHeading>{session.title}</PageHeading>}>
+    <PageWrapper
+      size="wide"
+      header={<PageHeading>{session.title}</PageHeading>}
+    >
       <div className="space-y-8">
         <p className="text-sm text-muted-foreground">
           Шаблон: {session.templateName} · Учреждение: {session.theatreName}
@@ -488,8 +488,6 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
     </PageWrapper>
   );
 };
-
-// ─── Outer page — handles loading / error ─────────────────────────────────────
 
 export const PhotoDetailPage = () => {
   const { photoId } = useParams<{ photoId: string }>();

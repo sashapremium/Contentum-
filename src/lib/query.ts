@@ -12,11 +12,9 @@ function handleGlobalError(error: string) {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Never retry 401s — the axios interceptor already retries after token
-      // refresh. A React Query retry on top just produces duplicate toasts and
-      // fires the interceptor a second time while tokens are gone.
       retry: (failureCount, error) => {
-        const status = (error as { response?: { status?: number } })?.response?.status;
+        const status = (error as { response?: { status?: number } })?.response
+          ?.status;
         if (status === 401) return false;
         return failureCount < 1;
       },

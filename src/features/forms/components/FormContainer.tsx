@@ -34,7 +34,7 @@ export const FormContainer = ({ formStep, onSubmit }: FormContainerProps) => {
 
   const eventId = useWatch({
     control: form.control,
-    name: 'eventId', // must match the field name in your schema
+    name: 'eventId',
   }) as string | undefined;
   const shouldShowEventInfo = Boolean(eventId);
 

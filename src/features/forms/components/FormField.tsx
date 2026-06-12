@@ -306,6 +306,5 @@ export const FormField = ({ field }: FormFieldProps) => {
     );
   }
 
-  // Fallback for unsupported types
   return null;
 };

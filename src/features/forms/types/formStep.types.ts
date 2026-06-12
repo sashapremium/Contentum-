@@ -40,7 +40,7 @@ export const FormStepSchema = z.object({
   step: StepSchema,
   type: z.literal('form'),
   title: z.string().min(1),
-  description: z.string().nullable().optional(), // allow missing or null if backend varies
+  description: z.string().nullable().optional(),
   disabled: z.boolean(),
   modes: z.array(FormModeSchema).min(1),
 });
