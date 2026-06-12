@@ -243,11 +243,27 @@ const PhotoImageInput = ({
   return (
     <div className="grid gap-2">
       <Label>{field.label}</Label>
+      <div
+        className="flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2 text-sm hover:bg-muted/50"
+        onClick={() => inputRef.current?.click()}
+      >
+        <span className="shrink-0 text-muted-foreground">Выберите файл</span>
+        <span className="truncate">
+          {selectedFile
+            ? selectedFile.name
+              ? selectedFile.name
+              : 'Файл не выбран'
+            : currentUrl
+              ? currentUrl.split('/').pop()
+              : 'Файл не выбран'}
+        </span>
+      </div>
       <Input
         ref={inputRef}
         type="file"
         accept="image/*"
         onChange={handleFileChange}
+        className="hidden"
       />
       {previewUrl && (
         <div className="space-y-1">
