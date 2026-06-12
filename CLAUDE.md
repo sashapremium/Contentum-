@@ -61,3 +61,17 @@ Defined in [src/app/router/index.tsx](src/app/router/index.tsx). Route path cons
 ### UI components
 
 Radix UI primitives wrapped with Tailwind v4 in `src/components/ui/`. Shared layout components (`PageWrapper`, `PageHeading`, `ConfirmDialog`, etc.) live in `src/components/shared/`.
+
+---
+
+paths:
+
+- "src/api/\*_/_.ts"
+
+---
+
+# API Development Rules
+
+- All API endpoints must include input validation
+- Use the standard error response format
+- Include OpenAPI documentation comments
