@@ -392,18 +392,18 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
 
               {/* Right: Result */}
               <div className="lg:w-2/3 space-y-3">
-                <div className="text-lg font-semibold">Результат</div>
-                {!latestVariant ? (
-                  <div className="text-sm text-muted-foreground">
-                    Пока нет сгенерированных вариантов
-                  </div>
-                ) : (
-                  <Card className="max-w-[500px]">
-                    <CardContent>
+                <Card className="max-w-[500px]">
+                  <CardContent className="space-y-4">
+                    <div className="text-base font-semibold">Результат</div>
+                    {!latestVariant ? (
+                      <div className="text-sm text-muted-foreground">
+                        Пока нет сгенерированных вариантов
+                      </div>
+                    ) : (
                       <MessageImage info={latestVariant} />
-                    </CardContent>
-                  </Card>
-                )}
+                    )}
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
@@ -452,7 +452,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
         </Form>
 
         {/* History */}
-        <div className="space-y-3">
+        {/* <div className="space-y-3">
           <div className="text-lg font-semibold">История вариантов</div>
           {!session.history.length && (
             <div className="text-sm text-muted-foreground">
@@ -482,7 +482,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                 </Card>
               ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </PageWrapper>
   );
