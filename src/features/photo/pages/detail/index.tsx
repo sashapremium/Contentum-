@@ -336,60 +336,75 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
       header={<PageHeading>{session.title}</PageHeading>}
     >
       <div className="space-y-8">
-        <p className="text-sm text-muted-foreground">
-          Шаблон: {session.templateName} · Учреждение: {session.theatreName}
-        </p>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-col gap-4 lg:flex-row">
-              <Card className="flex-1">
-                <CardContent className="space-y-4">
-                  <div className="text-base font-semibold">Тексты</div>
-                  {session.inputSchema.texts.map((field) => (
-                    <FormField
-                      key={field.key}
-                      control={form.control}
-                      name={field.key}
-                      render={({ field: rhfField }) => (
-                        <FormItem>
-                          <FormLabel>{field.label}</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              {...rhfField}
-                              placeholder={field.label}
-                              maxLength={field.maxLength}
-                              rows={1}
-                              className="resize-none"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </CardContent>
-              </Card>
+              {/* Left: text + photo inputs */}
+              <div className="flex flex-col gap-4 lg:w-1/3">
+                <Card>
+                  <CardContent className="space-y-4">
+                    <div className="text-base font-semibold">Тексты</div>
+                    {session.inputSchema.texts.map((field) => (
+                      <FormField
+                        key={field.key}
+                        control={form.control}
+                        name={field.key}
+                        render={({ field: rhfField }) => (
+                          <FormItem>
+                            <FormLabel>{field.label}</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                {...rhfField}
+                                placeholder={field.label}
+                                maxLength={field.maxLength}
+                                rows={1}
+                                className="resize-none"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </CardContent>
+                </Card>
 
-              <Card className="flex-1">
-                <CardContent className="space-y-4">
-                  <div className="text-base font-semibold">Фото</div>
-                  {session.inputSchema.images.map((field) => (
-                    <PhotoImageInput
-                      key={field.key}
-                      field={field}
-                      currentUrl={session.images[field.key]}
-                      selectedFile={selectedFiles[field.key] ?? null}
-                      onFileSelect={(file) =>
-                        setSelectedFiles((prev) => ({
-                          ...prev,
-                          [field.key]: file,
-                        }))
-                      }
-                    />
-                  ))}
-                </CardContent>
-              </Card>
+                <Card>
+                  <CardContent className="space-y-4">
+                    <div className="text-base font-semibold">Фото</div>
+                    {session.inputSchema.images.map((field) => (
+                      <PhotoImageInput
+                        key={field.key}
+                        field={field}
+                        currentUrl={session.images[field.key]}
+                        selectedFile={selectedFiles[field.key] ?? null}
+                        onFileSelect={(file) =>
+                          setSelectedFiles((prev) => ({
+                            ...prev,
+                            [field.key]: file,
+                          }))
+                        }
+                      />
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Right: Result */}
+              <div className="lg:w-2/3 space-y-3">
+                <div className="text-lg font-semibold">Результат</div>
+                {!latestVariant ? (
+                  <div className="text-sm text-muted-foreground">
+                    Пока нет сгенерированных вариантов
+                  </div>
+                ) : (
+                  <Card className="max-w-[500px]">
+                    <CardContent>
+                      <MessageImage info={latestVariant} />
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -405,6 +420,29 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                     ? 'Перегенерировать'
                     : 'Сгенерировать'}
               </Button>
+              {latestVariant && (
+                <>
+                  <Button asChild variant="outline">
+                    <a
+                      href={`${latestVariant.resultPng}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      download="photo_v.png"
+                    >
+                      Скачать PNG
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <a
+                      href={`${latestVariant.resultWebp}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Скачать WEBP
+                    </a>
+                  </Button>
+                </>
+              )}
             </div>
 
             {updateSessionMutation.isError && (
@@ -412,45 +450,6 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
             )}
           </form>
         </Form>
-
-        {/* Result */}
-        <div className="space-y-3">
-          <div className="text-lg font-semibold">Результат</div>
-          {!latestVariant ? (
-            <div className="text-sm text-muted-foreground">
-              Пока нет сгенерированных вариантов
-            </div>
-          ) : (
-            <>
-              <Card className="max-w-[500px]">
-                <CardContent>
-                  <MessageImage info={latestVariant} />
-                </CardContent>
-              </Card>
-              <div className="flex flex-wrap gap-3">
-                <Button asChild variant="outline">
-                  <a
-                    href={`${latestVariant.resultPng}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    download="photo_v.png"
-                  >
-                    Скачать PNG
-                  </a>
-                </Button>
-                <Button asChild variant="outline">
-                  <a
-                    href={`${latestVariant.resultWebp}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Скачать WEBP
-                  </a>
-                </Button>
-              </div>
-            </>
-          )}
-        </div>
 
         {/* History */}
         <div className="space-y-3">
