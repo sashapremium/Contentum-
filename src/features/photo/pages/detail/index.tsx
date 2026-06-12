@@ -240,23 +240,53 @@ const PhotoImageInput = ({
     }
   };
 
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   return (
     <div className="grid gap-2">
       <Label>{field.label}</Label>
-      <div
-        className="flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2 text-sm hover:bg-muted/50"
-        onClick={() => inputRef.current?.click()}
-      >
-        <span className="shrink-0 text-muted-foreground">Выберите файл</span>
-        <span className="truncate">
-          {selectedFile
-            ? selectedFile.name
+      <div className="flex flex-col gap-3">
+        <div
+          className="flex flex-1 cursor-pointer items-center gap-3 rounded-md border px-3 py-2 text-sm hover:bg-muted/50"
+          onClick={() => inputRef.current?.click()}
+        >
+          <span className="shrink-0 text-muted-foreground">
+            {selectedFile || currentUrl ? 'Выбранный файл' : 'Выберите файл'}
+          </span>
+          <span className="truncate">
+            {selectedFile
               ? selectedFile.name
-              : 'Файл не выбран'
-            : currentUrl
-              ? currentUrl.split('/').pop()
-              : 'Файл не выбран'}
-        </span>
+              : currentUrl
+                ? currentUrl.split('/').pop()
+                : 'Файл не выбран'}
+          </span>
+        </div>
+
+        {previewUrl && (
+          <>
+            <img
+              src={previewUrl}
+              alt={field.label}
+              className="size-[100px] shrink-0 cursor-pointer rounded object-cover"
+              onClick={() => setPreviewOpen(true)}
+            />
+            <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+              <DialogContent
+                aria-describedby={undefined}
+                className="w-fit max-w-[90vw] sm:max-w-[90vw]"
+              >
+                <DialogHeader>
+                  <DialogTitle>{field.label}</DialogTitle>
+                </DialogHeader>
+                <img
+                  src={previewUrl}
+                  alt={field.label}
+                  className="max-h-[60vh] max-w-[calc(60vw-3rem)] rounded object-contain"
+                />
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
       </div>
       <Input
         ref={inputRef}
@@ -265,25 +295,6 @@ const PhotoImageInput = ({
         onChange={handleFileChange}
         className="hidden"
       />
-      {previewUrl && (
-        <div className="space-y-1">
-          <img
-            src={previewUrl}
-            alt={field.label}
-            className="max-h-[200px] rounded object-cover"
-          />
-          {!selectedFile && currentUrl && (
-            <a
-              href={previewUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs text-muted-foreground hover:underline"
-            >
-              Текущее изображение
-            </a>
-          )}
-        </div>
-      )}
       {field.dimensions && (
         <ImagePositionModal
           open={pendingFile !== null}
@@ -403,6 +414,45 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                     ))}
                   </CardContent>
                 </Card>
+
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    type="submit"
+                    disabled={
+                      !allRequiredImagesProvided ||
+                      updateSessionMutation.isPending
+                    }
+                  >
+                    {updateSessionMutation.isPending
+                      ? 'Создание...'
+                      : hasHistory
+                        ? 'Изменить'
+                        : 'Создать'}
+                  </Button>
+                  {latestVariant && (
+                    <>
+                      <Button asChild>
+                        <a
+                          href={`${latestVariant.resultPng}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          download="photo_v.png"
+                        >
+                          Скачать PNG
+                        </a>
+                      </Button>
+                      <Button asChild>
+                        <a
+                          href={`${latestVariant.resultWebp}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Скачать WEBP
+                        </a>
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Right: Result */}
@@ -431,44 +481,6 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                   </CardContent>
                 </Card>
               </div>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <Button
-                type="submit"
-                disabled={
-                  !allRequiredImagesProvided || updateSessionMutation.isPending
-                }
-              >
-                {updateSessionMutation.isPending
-                  ? 'Создание...'
-                  : hasHistory
-                    ? 'Изменить'
-                    : 'Создать'}
-              </Button>
-              {latestVariant && (
-                <>
-                  <Button asChild>
-                    <a
-                      href={`${latestVariant.resultPng}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      download="photo_v.png"
-                    >
-                      Скачать PNG
-                    </a>
-                  </Button>
-                  <Button asChild>
-                    <a
-                      href={`${latestVariant.resultWebp}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Скачать WEBP
-                    </a>
-                  </Button>
-                </>
-              )}
             </div>
 
             {updateSessionMutation.isError && (

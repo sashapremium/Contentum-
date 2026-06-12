@@ -34,5 +34,5 @@ export const THEATRE_EVENT_CREATE = `${THEATRE}/events/create`;
 export const THEATRE_EVENT_DETAIL = `${THEATRE}/events/:eventId`;
 export const EVENT_CREATE_TITLE = 'Создать мероприятие';
 
-// export const BACKEND_URL = '';
-export const BACKEND_URL = 'http://127.0.0.1:8000';
+export const BACKEND_URL = '';
+// export const BACKEND_URL = 'http://127.0.0.1:8000';
