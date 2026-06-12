@@ -27,7 +27,7 @@ export type EventListResponse = z.infer<typeof EventListResponseSchema>;
 export const EventCreateRequestSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  eventType: z.string().min(1, 'Выберите тип события'),
+  eventType: z.string().min(1, 'Выберите тип мероприятия'),
   ageLimit: z.string().optional(),
   genre: z.string().optional(),
   datetime: z.string().min(1, 'Укажите дату и время'),

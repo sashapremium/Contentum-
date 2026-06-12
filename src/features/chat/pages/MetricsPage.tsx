@@ -142,7 +142,7 @@ export function MetricsPage() {
               </p>
               <p className="mt-0.5 text-sm text-muted-foreground">
                 Лучше всего соблюдает требования брифа, содержит ключевые
-                элементы события и имеет сбалансированный стиль.
+                элементы мероприятия и имеет сбалансированный стиль.
               </p>
             </div>
             <div className="flex  flex-col sm:flex-row items-center justify-between sm:justify-end gap-4 sm:gap-6">

@@ -54,7 +54,7 @@ export const EventInfo = ({ event }: EventInfoProps) => {
         <Separator />
 
         <div className="text-xs text-muted-foreground">
-          ID события: {event.id}
+          ID мероприятия: {event.id}
         </div>
       </CardContent>
     </Card>

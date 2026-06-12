@@ -63,9 +63,11 @@ const EventEditForm = ({ event }: { event: Event }) => {
     <Form {...form}>
       <form className="space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
         <header className="space-y-2">
-          <span className="text-xl font-semibold">Редактирование события</span>
+          <span className="text-xl font-semibold">
+            Редактирование мероприятия
+          </span>
           <p className="text-sm text-muted-foreground">
-            Измените данные события
+            Измените данные мероприятия
           </p>
         </header>
 
@@ -103,7 +105,7 @@ const EventEditForm = ({ event }: { event: Event }) => {
             name="eventType"
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error}>
-                <FieldLabel>Тип события</FieldLabel>
+                <FieldLabel>Тип мероприятия</FieldLabel>
                 <FormControl>
                   <Select
                     value={field.value ?? ''}
@@ -228,7 +230,7 @@ export const EventDetailPage = () => {
 
   if (eventQuery.isLoading) return <Loading />;
   if (eventQuery.isError)
-    return <Error description="Не удалось загрузить событие" />;
+    return <Error description="Не удалось загрузить мероприятие" />;
 
   const event = eventQuery.data!;
 

@@ -40,7 +40,11 @@ export const TheatrePage = () => {
       next.set('theatre', String(id));
     }
     navigate(
-      { pathname: location.pathname, search: next.toString(), hash: location.hash },
+      {
+        pathname: location.pathname,
+        search: next.toString(),
+        hash: location.hash,
+      },
       { replace: true },
     );
   };
@@ -52,9 +56,15 @@ export const TheatrePage = () => {
     >
       <Tabs value={activeTab} onValueChange={handleTabChange}>
         <TabsList className="w-full">
-          <TabsTrigger value="theatres" className="flex-1">Учреждения</TabsTrigger>
-          <TabsTrigger value="events" className="flex-1">События</TabsTrigger>
-          <TabsTrigger value="templates" className="flex-1">Шаблоны</TabsTrigger>
+          <TabsTrigger value="theatres" className="flex-1">
+            Учреждения
+          </TabsTrigger>
+          <TabsTrigger value="events" className="flex-1">
+            Мероприятия
+          </TabsTrigger>
+          <TabsTrigger value="templates" className="flex-1">
+            Шаблоны
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="theatres" className="mt-4">
           <TheatresTab />

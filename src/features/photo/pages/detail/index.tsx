@@ -29,7 +29,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { MessageImage } from '@/features/messages/components/Message/MessageImage';
 
 import type { PhotoInputImage, PhotoSession } from '../../types/photos.types';
 import { usePhotoSessionQuery } from '../../queries/usePhotoSessionQuery';
@@ -392,7 +391,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
 
               {/* Right: Result */}
               <div className="lg:w-2/3 space-y-3">
-                <Card className="max-w-[500px]">
+                <Card>
                   <CardContent className="space-y-4">
                     <div className="text-base font-semibold">Результат</div>
                     {!latestVariant ? (
@@ -400,7 +399,18 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                         Пока нет сгенерированных вариантов
                       </div>
                     ) : (
-                      <MessageImage info={latestVariant} />
+                      <a
+                        href={latestVariant.resultPng}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center justify-center"
+                      >
+                        <img
+                          src={latestVariant.resultPng}
+                          alt="Сгенерированное изображение"
+                          className="max-h-[500px] max-w-full rounded-xl object-contain cursor-pointer transition hover:opacity-90"
+                        />
+                      </a>
                     )}
                   </CardContent>
                 </Card>
@@ -415,14 +425,14 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                 }
               >
                 {updateSessionMutation.isPending
-                  ? 'Генерация...'
+                  ? 'Создание...'
                   : hasHistory
-                    ? 'Перегенерировать'
-                    : 'Сгенерировать'}
+                    ? 'Изменить'
+                    : 'Создать'}
               </Button>
               {latestVariant && (
                 <>
-                  <Button asChild variant="outline">
+                  <Button asChild>
                     <a
                       href={`${latestVariant.resultPng}`}
                       target="_blank"
@@ -432,7 +442,7 @@ const PhotoDetailForm = ({ session }: { session: PhotoSession }) => {
                       Скачать PNG
                     </a>
                   </Button>
-                  <Button asChild variant="outline">
+                  <Button asChild>
                     <a
                       href={`${latestVariant.resultWebp}`}
                       target="_blank"

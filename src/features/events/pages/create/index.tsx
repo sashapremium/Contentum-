@@ -74,9 +74,11 @@ export const EventCreatePage = () => {
               onSubmit={form.handleSubmit(handleSubmit)}
             >
               <header className="space-y-2">
-                <span className="text-xl font-semibold">Создание события</span>
+                <span className="text-xl font-semibold">
+                  Создание мероприятия
+                </span>
                 <p className="text-sm text-muted-foreground">
-                  Заполните данные нового события
+                  Заполните данные нового мероприятия
                 </p>
               </header>
 
@@ -114,7 +116,7 @@ export const EventCreatePage = () => {
                   name="eventType"
                   render={({ field, fieldState }) => (
                     <Field data-invalid={!!fieldState.error}>
-                      <FieldLabel>Тип события</FieldLabel>
+                      <FieldLabel>Тип мероприятия</FieldLabel>
                       <FormControl>
                         <Select
                           value={field.value ?? ''}

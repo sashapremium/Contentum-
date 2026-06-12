@@ -30,7 +30,7 @@ export const EventsTab = () => {
 
   if (eventsQuery.isLoading) return <Loading />;
   if (eventsQuery.isError)
-    return <Error description="Не удалось загрузить события" />;
+    return <Error description="Не удалось загрузить мероприятия" />;
 
   const events = eventsQuery.data?.events ?? [];
 
@@ -40,13 +40,13 @@ export const EventsTab = () => {
         <Button asChild>
           <Link to={THEATRE_EVENT_CREATE}>
             <FilePlus />
-            Создать событие
+            Создать мероприятие
           </Link>
         </Button>
       </div>
 
       {events.length === 0 && (
-        <p className="text-sm text-muted-foreground">События не найдены</p>
+        <p className="text-sm text-muted-foreground">Мероприятия не найдены</p>
       )}
 
       <div className="space-y-2">
@@ -60,7 +60,8 @@ export const EventsTab = () => {
               {(event.eventType || event.datetime) && (
                 <div className="text-sm text-muted-foreground">
                   {[
-                    EVENT_TYPE_OPTIONS.find((o) => o.value === event.eventType)?.label,
+                    EVENT_TYPE_OPTIONS.find((o) => o.value === event.eventType)
+                      ?.label,
                     event.datetime &&
                       new Date(event.datetime).toLocaleString('ru-RU'),
                   ]
@@ -109,8 +110,8 @@ export const EventsTab = () => {
       <ConfirmDialog
         open={Boolean(deleteTarget)}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
-        title="Удалить событие?"
-        description={`Событие «${deleteTarget?.title}» будет удалено безвозвратно.`}
+        title="Удалить мероприятие?"
+        description={`Мероприятие «${deleteTarget?.title}» будет удалено безвозвратно.`}
         confirmText="Удалить"
         onClickConfirm={() => {
           if (!deleteTarget) return;
