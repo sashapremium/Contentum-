@@ -1,3 +1,6 @@
+// Content sidebar: collapsible-группы "Посты" и "Изображения" со списками чатов и сессий.
+// Группа раскрыта по умолчанию, если текущий pathname начинается с её url.
+
 import { PHOTO, POST } from '@/app/router/routes';
 import {
   Collapsible,

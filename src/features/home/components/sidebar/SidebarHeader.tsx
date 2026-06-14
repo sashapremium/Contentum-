@@ -1,3 +1,6 @@
+// Header sidebar: кнопка toggle и навигационные пункты из HEADER_ITEMS.
+// Активный пункт определяется по текущему pathname. На мобильных клик закрывает sidebar.
+
 import { Button } from '@/components/ui/button';
 import {
   SidebarMenu,

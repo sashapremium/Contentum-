@@ -1,3 +1,6 @@
+// Корневой компонент sidebar: header с навигацией, content со списками, footer с пользователем.
+// collapsible="icon" - при сворачивании показывает только иконки.
+
 import { Sidebar } from '@/components/ui/sidebar';
 
 import { SidebarHeader } from './SidebarHeader';

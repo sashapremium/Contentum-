@@ -1,3 +1,5 @@
+// Обёртка для основного контента страницы. Зарезервирована для будущего общего оформления.
+
 import type { ReactNode } from 'react';
 
 interface HomeContentProps {
