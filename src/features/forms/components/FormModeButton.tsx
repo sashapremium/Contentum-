@@ -1,3 +1,5 @@
+// Переключатель режимов формы: отображает режимы как Tabs, вызывает onChange при смене.
+
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { FormMode } from '../types/formStep.types';
 

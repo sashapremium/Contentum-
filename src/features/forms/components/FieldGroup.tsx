@@ -1,3 +1,7 @@
+// Группа полей одного режима с опциональным заголовком.
+// applyFieldMappings переопределяет опции поля 'audience' на AUDIENCE_OPTIONS — захардкоженный список,
+// потому что бэкенд присылает для этого поля пустой массив options.
+
 import { cx } from 'class-variance-authority';
 import type { FormField as FormFieldType } from '../types/formField.types';
 import type { FormFieldsGroup } from '../types/formStep.types';

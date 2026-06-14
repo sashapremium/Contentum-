@@ -1,3 +1,6 @@
+// Иерархия шага формы от бэкенда: FormStep > FormMode > FormFieldsGroup > FormField.
+// FormFieldPlaceholder — упрощённое описание поля (name + type) без валидации и опций.
+
 import { z } from 'zod';
 import { FormFieldSchema } from './formField.types';
 import { StepSchema } from './step.types';

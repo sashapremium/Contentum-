@@ -1,3 +1,10 @@
+// Адаптер между конфигом формы от бэкенда и React Hook Form.
+// Бэкенд присылает FormStep с описанием полей, режимов и правил валидации.
+// Этот модуль превращает FormStep в:
+//   - buildDefaultValues: начальные значения для useForm({ defaultValues })
+//   - buildZodSchema: схему валидации для zodResolver
+// Вызывается в FormContainer при каждой смене режима (mode).
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
@@ -7,6 +14,8 @@ import type { FormField } from './types/formField.types';
 import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 import { localToDate } from '@/lib/dateTime';
 
+// Собирает начальные значения полей активного режима.
+// Если у поля есть value от бэкенда - берёт его, иначе подставляет пустое значение по типу.
 export function buildDefaultValues(
   step: FormStep,
   modeName: string,
