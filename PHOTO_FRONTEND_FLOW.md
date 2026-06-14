@@ -16,14 +16,15 @@
 4. Получить полное описание шаблона и `inputSchema`.
 5. Создать фото-сессию по выбранному шаблону.
 6. Одним запросом отправить генерацию с `texts` и несколькими photo-slot файлами.
-8. Показать результат и историю.
-9. Скачать итоговый PNG.
+7. Показать результат и историю.
+8. Скачать итоговый PNG.
 
 ---
 
 ## 1. Создать театр
 
 ### Request
+
 `POST /api/theatres/`
 
 ```json
@@ -34,6 +35,7 @@
 ```
 
 ### Response
+
 ```json
 {
   "id": 7,
@@ -55,6 +57,7 @@
 ## 2. Создать шаблон внутри пустого брендбука
 
 ### Endpoint
+
 `POST /api/theatres/{theatreId}/brandbook/templates/`
 
 ### Поддерживаемые форматы
@@ -65,6 +68,7 @@
 ### Рекомендуемый вариант для frontend
 
 Использовать `multipart/form-data`, где:
+
 - поле `template` содержит JSON-строку с manifest одного шаблона;
 - остальные поля содержат файлы ассетов этого шаблона.
 
@@ -134,10 +138,12 @@
 ```
 
 Файлы в том же multipart:
+
 - `heading.ttf`
 - `logo.png`
 
 Важно:
+
 - backend сопоставляет файлы по имени файла в manifest;
 - если в manifest указан `fonts/heading.ttf`, frontend должен приложить файл с именем `heading.ttf`;
 - если в manifest указан `images/logo.png`, frontend должен приложить файл с именем `logo.png`.
@@ -151,6 +157,7 @@
 - `layers[].box` должен быть в формате `[x, y, width, height]`.
 
 ### Response
+
 Backend вернёт полное описание шаблона:
 
 ```json
@@ -321,6 +328,7 @@ Backend вернёт полное описание шаблона:
 ```
 
 Файлы для создания этого шаблона:
+
 - `heading.ttf`
 - `body.ttf`
 - `logo.png`
@@ -330,6 +338,7 @@ Backend вернёт полное описание шаблона:
 ## 3. Обновить шаблон
 
 ### Endpoint
+
 `PATCH /api/theatres/{theatreId}/brandbook/templates/{templateId}/`
 
 ### Поддерживается ли загрузка файлов заново?
@@ -347,21 +356,25 @@ media/brandbooks/<theatre_id>/<template_id>/...
 ### Флаг удаления старых файлов
 
 Поддерживается флаг:
+
 - `replaceAssets=true`
 
 Что он делает:
+
 - если `true`, папка ассетов текущего шаблона очищается перед пересохранением;
 - если `false`, старые файлы могут переиспользоваться, если они всё ещё нужны manifest.
 
 ### Важное ограничение
 
 Сейчас нет более тонких флагов удаления на уровне отдельных файлов. То есть есть:
+
 - либо обычный `PATCH` с переиспользованием старых файлов;
 - либо `PATCH` с `replaceAssets=true`, который пересобирает ассеты шаблона заново.
 
 ### Рекомендуемый frontend-сценарий
 
 Если редактор считает шаблон полностью новой версией:
+
 - отправлять весь актуальный manifest;
 - отправлять все актуальные ассеты;
 - ставить `replaceAssets=true`.
@@ -373,9 +386,11 @@ media/brandbooks/<theatre_id>/<template_id>/...
 ## 4. Получить список шаблонов брендбука
 
 ### Endpoint
+
 `GET /api/theatres/{theatreId}/brandbook/`
 
 ### Response
+
 ```json
 {
   "theatreId": 7,
@@ -400,11 +415,13 @@ media/brandbooks/<theatre_id>/<template_id>/...
 ## 5. Получить полное описание шаблона для runtime
 
 ### Endpoint
+
 `GET /api/theatres/{theatreId}/brandbook/templates/{templateId}/`
 
 ### Зачем frontend это вызывать
 
 Чтобы:
+
 - получить полный manifest шаблона;
 - получить `inputSchema`;
 - построить форму пользовательского ввода по этому шаблону.
@@ -416,9 +433,11 @@ Frontend не должен гадать, какие именно поля нуж
 ## 6. Создать фото-сессию
 
 ### Endpoint
+
 `POST /api/photos/sessions/`
 
 ### Request
+
 ```json
 {
   "theatreId": 7,
@@ -427,10 +446,11 @@ Frontend не должен гадать, какие именно поля нуж
 ```
 
 ### Response
+
 ```json
 {
   "sessionId": "uuid",
-  "title": "Фото: Театр кукол — Poster Dark",
+  "title": "Фото: Театр кукол - Poster Dark",
   "theatreId": 7,
   "theatreName": "Театр кукол",
   "templateId": "poster_dark",
@@ -469,6 +489,7 @@ Frontend не должен гадать, какие именно поля нуж
 Frontend делает один `PATCH /api/photos/sessions/{sessionId}/` в формате `multipart/form-data`.
 
 В этом одном запросе передаются:
+
 - `texts` как JSON-строка;
 - `templateId` опционально;
 - файлы динамических фото, где имя form-поля равно ключу image-slot из `inputSchema`.
@@ -480,8 +501,18 @@ Frontend делает один `PATCH /api/photos/sessions/{sessionId}/` в фо
 ```json
 {
   "texts": [
-    { "key": "headline", "label": "Заголовок", "required": true, "maxLength": 120 },
-    { "key": "subtitle", "label": "Подзаголовок", "required": true, "maxLength": 160 },
+    {
+      "key": "headline",
+      "label": "Заголовок",
+      "required": true,
+      "maxLength": 120
+    },
+    {
+      "key": "subtitle",
+      "label": "Подзаголовок",
+      "required": true,
+      "maxLength": 160
+    },
     { "key": "cta", "label": "CTA", "required": true, "maxLength": 90 }
   ],
   "images": [
@@ -499,12 +530,14 @@ Frontend делает один `PATCH /api/photos/sessions/{sessionId}/` в фо
 `multipart/form-data`
 
 Поля формы:
+
 - `texts` = `{"headline":"ФЕСТИВАЛЬ ТЕАТРА","subtitle":"3 дня премьер и встреч","cta":"Билеты на сайте"}`
 - `heroImage` = файл `hero.jpg`
 - `speakerImage` = файл `speaker.jpg`
 - `galleryImage` = файл `gallery.jpg`
 
 Ключевая идея:
+
 - три текста уходят внутри одного поля `texts`;
 - три фото уходят в том же запросе как три файла;
 - backend сам сохранит их и подставит в нужные image-slot'ы по имени form-поля.
@@ -564,12 +597,15 @@ Frontend может отправить обычный JSON:
 ## 8. Legacy-способ: отдельный upload endpoint
 
 ### Формат
+
 `multipart/form-data`
 
 Поле:
+
 - `file`
 
 ### Response
+
 ```json
 {
   "fileId": "aabbccdd11223344.jpg",
@@ -581,6 +617,7 @@ Frontend может отправить обычный JSON:
 ### Как использовать при нескольких image-slot'ах
 
 Этот endpoint остаётся рабочим, но теперь нужен только если frontend хочет:
+
 - заранее загрузить фото отдельным шагом;
 - переиспользовать уже загруженный `relativePath`;
 - или строить flow в два этапа.
@@ -599,9 +636,11 @@ Frontend может отправить обычный JSON:
 ## 9. Сгенерировать изображение JSON-способом
 
 ### Endpoint
+
 `PATCH /api/photos/sessions/{sessionId}/`
 
 ### Актуальный формат запроса
+
 ```json
 {
   "texts": {
@@ -614,6 +653,7 @@ Frontend может отправить обычный JSON:
 ```
 
 ### Если нужно сменить шаблон в рамках сессии
+
 ```json
 {
   "templateId": "poster_dark_v2",
@@ -640,6 +680,7 @@ Backend пока ещё понимает:
 Но frontend лучше использовать новый формат `texts/images`.
 
 ### Response
+
 ```json
 {
   "versionNumber": 1,
@@ -680,6 +721,7 @@ Backend пока ещё понимает:
 ## 10. Получить историю и текущие данные сессии
 
 ### Endpoint
+
 `GET /api/photos/sessions/{sessionId}/`
 
 ### Что приходит
@@ -692,6 +734,7 @@ Backend пока ещё понимает:
 - история вариантов.
 
 Это нужно для:
+
 - экрана редактирования уже созданной карточки;
 - повторной генерации;
 - показа предыдущих результатов.
@@ -703,6 +746,7 @@ Backend пока ещё понимает:
 ### Для превью
 
 Frontend может просто показать:
+
 - `resultWebp`
 
 ### Для скачивания

@@ -1,3 +1,6 @@
+// Optimistic update: сразу добавляет временное сообщение с uuid в кэш (onMutate),
+// откатывает его при ошибке (onError), инвалидирует список при успехе (onSuccess).
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage } from '../api/messages.api';
 import { MESSAGES_QUERY_KEYS } from './messages.queryKeys';

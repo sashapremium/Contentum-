@@ -74,7 +74,7 @@ export const LayerPanel = ({
         Слои
       </div>
 
-      {/* Layer list — reversed: top layer shown first */}
+      {/* Layer list - reversed: top layer shown first */}
       <div className="flex-1 space-y-1 overflow-y-auto">
         {[...entries].reverse().map((entry, revIdx) => {
           const realIdx = entries.length - 1 - revIdx;

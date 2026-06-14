@@ -1,3 +1,6 @@
+// Вкладка "Сводка": общие оценки по вариантам, горизонтальный bar chart (recharts)
+// по score-метрикам, таблица bool-требований и числовые показатели.
+
 import { CheckIcon, XIcon } from 'lucide-react';
 import {
   Bar,
@@ -50,9 +53,7 @@ export const MetricsSummaryTab = ({ items }: MetricsSummaryTabProps) => {
 
   const hasCountMetrics = items.some((item) => {
     const active = getActiveMetrics(item);
-    return Object.values(active).some(
-      (v) => typeof v === 'number' && v > 1,
-    );
+    return Object.values(active).some((v) => typeof v === 'number' && v > 1);
   });
 
   return (
@@ -79,7 +80,7 @@ export const MetricsSummaryTab = ({ items }: MetricsSummaryTabProps) => {
                     color: score !== null ? scoreColor(score) : undefined,
                   }}
                 >
-                  {score !== null ? formatScore(score) : '—'}
+                  {score !== null ? formatScore(score) : '-'}
                 </span>
                 {score !== null && (
                   <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
@@ -104,7 +105,10 @@ export const MetricsSummaryTab = ({ items }: MetricsSummaryTabProps) => {
           <p className="mb-3 text-sm font-medium text-muted-foreground">
             Метрики качества
           </p>
-          <ResponsiveContainer width="100%" height={otherScoreKeys.length * 52 + 40}>
+          <ResponsiveContainer
+            width="100%"
+            height={otherScoreKeys.length * 52 + 40}
+          >
             <BarChart
               layout="vertical"
               data={chartData}
@@ -157,10 +161,7 @@ export const MetricsSummaryTab = ({ items }: MetricsSummaryTabProps) => {
                     Критерий
                   </th>
                   {items.map((_, idx) => (
-                    <th
-                      key={idx}
-                      className="px-3 py-2 text-center font-medium"
-                    >
+                    <th key={idx} className="px-3 py-2 text-center font-medium">
                       {VARIANT_LABELS[idx]}
                     </th>
                   ))}
@@ -191,7 +192,7 @@ export const MetricsSummaryTab = ({ items }: MetricsSummaryTabProps) => {
                               />
                             )
                           ) : (
-                            <span className="text-muted-foreground">—</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </td>
                       );

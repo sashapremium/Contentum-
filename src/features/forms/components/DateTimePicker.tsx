@@ -1,6 +1,6 @@
 // Выбор даты через Calendar+Popover и времени через Input[type=time].
 // Дата и время хранятся раздельно, итоговая строка собирается через buildLocalDateTime.
-// mustBeFuture передаётся в Calendar как minDate — скрывает прошедшие даты.
+// mustBeFuture передаётся в Calendar как minDate - скрывает прошедшие даты.
 
 import { useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';

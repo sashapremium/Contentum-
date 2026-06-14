@@ -1,3 +1,9 @@
+// Утилиты для работы с метриками сгенерированного текста.
+// categorizeMetrics разделяет метрики на score (0-1), count (>1) и bool.
+// scoreColor возвращает цвет (зелёный/жёлтый/красный) по значению score.
+// getVariantLabels присваивает каждому варианту label: лучший по OVERALL_SCORE - "Лучший вариант",
+//   худший - "Слабый", остальные - "Средний".
+
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 
 export const OVERALL_SCORE_KEY = 'Общая оценка';
@@ -88,10 +94,7 @@ export function getActiveMetrics(
   ) as Record<string, number | boolean>;
 }
 
-export function getMetricScore(
-  item: GeneratedText,
-  key: string,
-): number {
+export function getMetricScore(item: GeneratedText, key: string): number {
   const active = getActiveMetrics(item);
   const value = active[key];
   return typeof value === 'number' && value >= 0 && value <= 1 ? value : 0;

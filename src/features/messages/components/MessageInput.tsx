@@ -1,3 +1,6 @@
+// Поле ввода сообщения. Enter без Shift отправляет, Shift+Enter - перенос строки.
+// Кнопка "+" - заглушка для будущей загрузки файлов.
+
 import {
   InputGroup,
   InputGroupTextarea,

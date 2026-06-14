@@ -1,3 +1,7 @@
+// Список сообщений чата. Следит за активной UPDATE_CHAT_MUTATION через useMutationState
+// и показывает pending bubble с текстом про генерацию или обработку шага.
+// Автоскролл к последнему сообщению при изменении списка или появлении pending-обновления.
+
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
 import { Message } from './Message/Message';

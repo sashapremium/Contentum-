@@ -1,3 +1,5 @@
+// Диалог сравнения метрик всех вариантов. Вкладки: "Сводка" (MetricsSummaryTab) и "По вариантам" (MetricsVariantsTab).
+
 import {
   Dialog,
   DialogContent,

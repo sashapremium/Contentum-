@@ -1,3 +1,6 @@
+// Изображение с кликом для увеличения в Dialog. При наведении показывает кнопку скачивания.
+// prefix - опциональный базовый URL, если путь от бэкенда относительный.
+
 import { useState } from 'react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -13,7 +16,11 @@ interface MessageImageProps {
   showDownload?: boolean;
 }
 
-export const MessageImage = ({ info, prefix, showDownload = true }: MessageImageProps) => {
+export const MessageImage = ({
+  info,
+  prefix,
+  showDownload = true,
+}: MessageImageProps) => {
   const [open, setOpen] = useState(false);
 
   return (

@@ -1,3 +1,5 @@
+// Получение сообщений чата (GET /chats/:id/messages/, page_size 100) и отправка нового сообщения (POST /messages/).
+
 import { api } from '@/lib/axios';
 import {
   type Messages,

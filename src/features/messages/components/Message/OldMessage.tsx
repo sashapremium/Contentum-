@@ -1,3 +1,6 @@
+// Устаревший компонент для сообщений типа Message (text/image из messages.types).
+// Используется отдельно от основного чата - рендерит текст или MessageImage.
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 

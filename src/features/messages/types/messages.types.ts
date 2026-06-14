@@ -1,3 +1,7 @@
+// Zod-схемы для сообщений чата.
+// MessageContent - discriminated union по type: text (строка) или image (ImageInfo с url'ами).
+// SendMessageResponse содержит оба сообщения (user_message и system_message) и служебные поля генерации.
+
 import { z } from 'zod';
 
 export const ImageInfoSchema = z.object({

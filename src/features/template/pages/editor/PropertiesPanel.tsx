@@ -525,7 +525,7 @@ const ImageLayerProps = ({ layer, onChange, imageAssets }: LayerPropsProps) => {
             <SelectValue placeholder="Выбрать..." />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__none__">— не выбран —</SelectItem>
+            <SelectItem value="__none__">- не выбран -</SelectItem>
             {imageAssets.map((a) => (
               <SelectItem key={a.path} value={a.path}>
                 {a.path}
@@ -564,7 +564,7 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
     <>
       {isEditable && (
         <div className="rounded border border-blue-200 bg-blue-50 px-2 py-1.5 text-xs text-blue-600">
-          Поле ввода — пользователь заполняет текст при создании фото
+          Поле ввода - пользователь заполняет текст при создании фото
         </div>
       )}
       <BoxFields
@@ -594,8 +594,8 @@ const TextLayerProps = ({ layer, onChange, fonts }: LayerPropsProps) => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="yes">Да — пользователь вводит текст</SelectItem>
-            <SelectItem value="no">Нет — фиксированный текст</SelectItem>
+            <SelectItem value="yes">Да - пользователь вводит текст</SelectItem>
+            <SelectItem value="no">Нет - фиксированный текст</SelectItem>
           </SelectContent>
         </Select>
       </Field>

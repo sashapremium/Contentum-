@@ -1,3 +1,6 @@
+// Действия над сообщением. Для generatedText показывает кнопку перегенерации.
+// Для form и regenerationRequest не рендерит ничего.
+
 import type { ChatId, ChatMessage } from '@/features/chat/types/chat.types';
 import { RegenAction } from './RegenAction';
 import { useRegenerateMutation } from '@/features/briefs/queries/regenerateMutation';

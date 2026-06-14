@@ -1,3 +1,6 @@
+// Карточка одного варианта для вкладки "По вариантам": общая оценка с прогресс-баром
+// и список остальных score-метрик с прогресс-барами.
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import {

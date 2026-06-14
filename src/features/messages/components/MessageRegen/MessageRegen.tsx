@@ -1,3 +1,5 @@
+// Отображает комментарий пользователя к запросу перегенерации.
+
 import type { RegenerationRequestMessage } from '@/features/chat/types/chat.types';
 
 interface MessageRegenProps {

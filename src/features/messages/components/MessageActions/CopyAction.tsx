@@ -1,3 +1,5 @@
+// Кнопка копирования текста в буфер. После клика 2 секунды показывает иконку Check вместо Copy.
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Button } from '@/components/ui/button';

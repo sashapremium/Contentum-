@@ -102,7 +102,7 @@ export function MetricsPage() {
     ifeval:
       'Проверяет, насколько полно текст выполняет все требования из запроса пользователя.',
     distinct:
-      'Измеряет богатство словаря через уникальные биграммы — чем выше показатель, тем разнообразнее язык текста.',
+      'Измеряет богатство словаря через уникальные биграммы - чем выше показатель, тем разнообразнее язык текста.',
     toneMatch:
       'Показывает, насколько текст соответствует заданной тональности публикации.',
     audienceMatch:
@@ -272,7 +272,7 @@ export function MetricsPage() {
                           {(s * 100).toFixed(1)}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </td>
                   );
@@ -294,7 +294,7 @@ export function MetricsPage() {
                           {length}
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </td>
                   );
