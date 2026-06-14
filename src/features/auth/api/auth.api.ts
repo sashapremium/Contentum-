@@ -1,3 +1,4 @@
+// Запросы к бэкенду для аутентификации: вход, регистрация, обновление токенов.
 import { api } from '@/lib/axios';
 import {
   LoginResponseSchema,

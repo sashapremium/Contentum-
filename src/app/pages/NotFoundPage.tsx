@@ -1,4 +1,4 @@
-// Страница 404, показывается для всех несуществующих маршрутов (path: '*' в router)
+// Страница 404, показывается для всех несуществующих роутов (path: '*' в router)
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
 

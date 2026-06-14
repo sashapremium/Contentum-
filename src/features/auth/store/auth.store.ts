@@ -1,3 +1,5 @@
+// Zustand store для состояния аутентификации.
+// isReady: false пока AuthProvider не завершил инициализацию из localStorage.
 import { create } from 'zustand';
 import { tokenStorage } from '../utils/tokenStorage';
 

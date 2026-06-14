@@ -1,3 +1,5 @@
+// Карточка с вкладками "Вход" и "Регистрация".
+// После успешной регистрации автоматически переключается на вкладку входа.
 import { useState } from 'react';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';

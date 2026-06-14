@@ -1,3 +1,5 @@
+// При монтировании читает токены из localStorage и записывает в auth store.
+// Вызывает setReady() в любом случае, чтобы ProtectedRoute знал, что инициализация завершена.
 import { useEffect, type ReactNode } from 'react';
 import { useAuthStore } from '../store/auth.store';
 import { tokenStorage } from '../utils/tokenStorage';

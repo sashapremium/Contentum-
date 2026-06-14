@@ -1,3 +1,5 @@
+// Защищеннй роут: пока store не готов, показывает спиннер.
+// Если не аутентифицирован, перенаправляет на /login.
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import type { ReactNode } from 'react';

@@ -1,10 +1,10 @@
 // Router на базе react-router v6.
-// Защищённые маршруты вложены под "/" и обёрнуты в ProtectedRoute.
-// Каждый маршрут имеет errorElement - страницу ошибки при сбое рендеринга.
+// Защищённые роуты вложены под "/" и обёрнуты в ProtectedRoute.
+// Каждый роут имеет errorElement - страницу ошибки при сбое рендеринга.
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import LoginPage from '@/features/auth/pages/LoginPage';
-import HomePage from '@/features/home/pages/HomePage'; // корневой layout-компонент с навигацией, оборачивает все защищённые маршруты
+import HomePage from '@/features/home/pages/HomePage'; // корневой layout-компонент с навигацией, оборачивает все защищённые роуты
 import ChatPage from '@/features/chat/pages/ChatPage';
 import { MetricsPage } from '@/features/chat/pages/MetricsPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'; // перенаправляет на /login при отсутствии токена
@@ -37,7 +37,7 @@ import { TheatreCreatePage } from '@/features/theatre/pages/create';
 import { EventCreatePage } from '@/features/events/pages/create';
 import { EventDetailPage } from '@/features/events/pages/detail';
 
-// Дерево маршрутов: публичные (/login, *) и защищённые (всё под "/")
+// Дерево роутов: публичные (/login, *) и защищённые (всё под "/")
 const router = createBrowserRouter([
   {
     path: '/login',

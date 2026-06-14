@@ -1,3 +1,4 @@
+// Mutation для входа: сохраняет токены в store и сбрасывает весь query cache.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginRequest } from '../api/auth.api';
 import { useAuthStore } from '../store/auth.store';
