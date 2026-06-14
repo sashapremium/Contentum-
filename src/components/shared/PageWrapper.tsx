@@ -1,3 +1,6 @@
+// Layout-обёртка страницы: показывает header и контент с адаптивной шириной.
+// size: small (768px) / medium (1200px) / wide (полная ширина с отступами).
+// Если header не передан, на мобильных всё равно показывается кнопка открытия sidebar.
 import { cx } from 'class-variance-authority';
 import type { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react';
 import { MainHeader } from './MainHeader';

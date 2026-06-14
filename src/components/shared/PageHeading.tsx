@@ -1,3 +1,4 @@
+// Заголовок страницы (h1) с обрезкой длинного текста через truncate.
 import { cx } from 'class-variance-authority';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 

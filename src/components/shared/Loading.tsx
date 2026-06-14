@@ -1,3 +1,4 @@
+// Спиннер загрузки, центрированный в контейнере.
 import { Spinner } from '@/components/ui/spinner';
 import { cx } from 'class-variance-authority';
 

@@ -1,3 +1,4 @@
+// Alert-компонент для отображения ошибок: иконка, опциональный заголовок и текст описания.
 import type { ReactNode } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { AlertCircleIcon } from 'lucide-react';

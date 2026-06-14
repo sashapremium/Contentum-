@@ -1,3 +1,5 @@
+// Хлебные крошки навигации. Каждый элемент: ссылка (url) или кнопка (onClick).
+// Последний элемент всегда отображается как текущая страница (без ссылки).
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import {
