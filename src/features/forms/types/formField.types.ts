@@ -35,10 +35,6 @@ export const MultipleValidationSchema = z
 
 export type MultipleValidation = z.infer<typeof MultipleValidationSchema>;
 
-/**
- * Catch-all if backend sends validation for other field types later.
- * Keeps it flexible without losing safety for known keys above.
- */
 export const UnknownValidationSchema = z.record(z.string(), z.unknown());
 export type UnknownValidation = z.infer<typeof UnknownValidationSchema>;
 

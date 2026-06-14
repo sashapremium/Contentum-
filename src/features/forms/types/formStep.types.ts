@@ -2,11 +2,6 @@ import { z } from 'zod';
 import { FormFieldSchema } from './formField.types';
 import { StepSchema } from './step.types';
 
-/**
- * Placeholder for fields until you describe field types.
- * We validate that it’s an object with at least `name` and `type` strings
- * to avoid accepting totally broken data, but everything else is deferred.
- */
 export const FormFieldPlaceholderSchema = z
   .object({
     name: z.string().min(1),
@@ -32,10 +27,6 @@ export const FormModeSchema = z.object({
 
 export type FormMode = z.infer<typeof FormModeSchema>;
 
-/**
- * Your step example is a "form" step.
- * Later you’ll likely also have result/generation steps — we’ll add a discriminated union then.
- */
 export const FormStepSchema = z.object({
   step: StepSchema,
   type: z.literal('form'),
@@ -47,8 +38,5 @@ export const FormStepSchema = z.object({
 
 export type FormStep = z.infer<typeof FormStepSchema>;
 
-/**
- * Useful when backend returns an array of steps.
- */
 export const FormStepsSchema = z.array(FormStepSchema);
 export type FormSteps = z.infer<typeof FormStepsSchema>;

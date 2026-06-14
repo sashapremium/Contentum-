@@ -7,11 +7,6 @@ import type { FormField } from './types/formField.types';
 import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 import { localToDate } from '@/lib/dateTime';
 
-/**
- * Derives proper default values for React Hook Form
- * @param step backend step with modes
- * @param modeName selected mode key
- */
 export function buildDefaultValues(
   step: FormStep,
   modeName: string,
@@ -32,9 +27,6 @@ export function buildDefaultValues(
   return values;
 }
 
-/**
- * Default values based on type
- */
 function defaultByType(type: string): unknown {
   switch (type) {
     case 'text':
@@ -51,9 +43,6 @@ function defaultByType(type: string): unknown {
   }
 }
 
-/**
- * Build dynamic Zod schema from backend config
- */
 export function buildZodSchema(
   step: FormStep,
   modeName: string,
@@ -71,9 +60,6 @@ export function buildZodSchema(
   return z.object(shape);
 }
 
-/**
- * Map backend field config → Zod schema
- */
 function buildFieldSchema(field: FormField): z.ZodTypeAny {
   const { required, validation } = field;
 

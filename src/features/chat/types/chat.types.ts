@@ -93,11 +93,6 @@ export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 export const ChatMessagesSchema = z.array(ChatMessageSchema);
 export type ChatMessages = z.infer<typeof ChatMessagesSchema>;
 
-/**
- * Chat type — extensible
- * Do NOT use z.enum(['announcement']) yet.
- * Backend will expand this.
- */
 export const ChatTypeSchema = z.string().min(1);
 
 export type ChatType = z.infer<typeof ChatTypeSchema>;
