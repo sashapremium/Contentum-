@@ -1,3 +1,5 @@
+// Страница создания нового чата: показывает стартовую форму (бриф) из payload списка чатов.
+// После создания перенаправляет на страницу созданного чата.
 import { POST, POST_TITLE } from '@/app/router/routes';
 import type { FormSubmit } from '@/features/forms/types/formField.types';
 import { useUserMeQuery } from '@/features/user/queries/useUserMeQuery';

@@ -1,3 +1,5 @@
+// Mutation для обновления чата: переход к следующему шагу формы или запрос генерации текста.
+// UPDATE_CHAT_MUTATION_KEY используется в Messages для отслеживания состояния pending.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateChat } from '../api/chat.api';
 import type {

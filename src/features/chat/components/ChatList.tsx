@@ -1,3 +1,4 @@
+// Список чатов в sidebar. Во время загрузки показывает 5 skeleton-заглушек.
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChatItem } from './ChatItem';
 import { SidebarMenu } from '@/components/ui/sidebar';

@@ -1,3 +1,4 @@
+// Mutation для переименования чата. После успеха инвалидирует список чатов.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ChatRenameRequest } from '../types/chat.types';
 import { renameChat } from '../api/chat.api';

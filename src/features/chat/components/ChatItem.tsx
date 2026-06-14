@@ -1,3 +1,5 @@
+// Элемент списка чата в sidebar: название, выделение активного, dropdown с действиями.
+// На мобильных при переходе закрывает sidebar.
 import {
   SidebarMenuItem,
   SidebarMenuButton,
