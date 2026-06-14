@@ -1,3 +1,4 @@
+// Запросы для брендбука учреждения: получение и удаление.
 import { api } from '@/lib/axios';
 import {
   type Brandbook,

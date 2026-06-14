@@ -1,3 +1,4 @@
+// Query для получения брендбука учреждения по id. Не выполняется если theatreId не задан.
 import { useQuery } from '@tanstack/react-query';
 import { fetchBrandbook } from '../api';
 import type { Brandbook } from '../types';
