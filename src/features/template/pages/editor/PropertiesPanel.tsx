@@ -5,7 +5,7 @@
 //
 // ColorField: HexColorPicker (react-colorful) + HexColorInput с дебаунсом.
 // RgbaColorField: то же, но для rgba(); отдельный Slider для прозрачности (0-255).
-//   parseRgba/rgbToHex — конвертация между rgba-строкой и hex.
+//   parseRgba/rgbToHex - конвертация между rgba-строкой и hex.
 // SliderField: Slider с локальным state и дебаунсом (500ms).
 //
 // Компоненты по типу слоя: PhotoProps (box, slot, gravity),

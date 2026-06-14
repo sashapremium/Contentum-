@@ -1,3 +1,5 @@
+// useIsMobile - возвращает true если ширина окна меньше 768px. Подписывается на matchMedia для реактивного обновления.
+
 import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768

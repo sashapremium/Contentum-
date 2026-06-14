@@ -1,8 +1,8 @@
 // Zod-схемы для шаблонов.
-// TemplateLayer — discriminated union по type: photo, gradient, image, text.
-// box — tuple [x, y, width, height] в пикселях холста.
-// TemplateFonts — Record<key, {file, family}> для загрузки шрифтов.
-// TemplateInputSchema — описание полей ввода для фото-сессий, генерируется из photo/text слоёв.
+// TemplateLayer - discriminated union по type: photo, gradient, image, text.
+// box - tuple [x, y, width, height] в пикселях холста.
+// TemplateFonts - Record<key, {file, family}> для загрузки шрифтов.
+// TemplateInputSchema - описание полей ввода для фото-сессий, генерируется из photo/text слоёв.
 
 import { z } from 'zod';
 
@@ -21,7 +21,10 @@ export const TemplateFontEntrySchema = z.object({
 });
 export type TemplateFontEntry = z.infer<typeof TemplateFontEntrySchema>;
 
-export const TemplateFontsSchema = z.record(z.string(), TemplateFontEntrySchema);
+export const TemplateFontsSchema = z.record(
+  z.string(),
+  TemplateFontEntrySchema,
+);
 export type TemplateFonts = z.infer<typeof TemplateFontsSchema>;
 
 export const TemplateBoxSchema = z.tuple([
@@ -135,4 +138,6 @@ export const TemplateDeleteResponseSchema = z.object({
   deleted: z.literal(true),
   templateId: z.string().min(1),
 });
-export type TemplateDeleteResponse = z.infer<typeof TemplateDeleteResponseSchema>;
+export type TemplateDeleteResponse = z.infer<
+  typeof TemplateDeleteResponseSchema
+>;

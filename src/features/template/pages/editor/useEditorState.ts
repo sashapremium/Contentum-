@@ -1,16 +1,16 @@
 // Состояние редактора шаблонов с поддержкой undo/redo.
 //
 // EditorState хранит: name, canvas, palette, fonts (FontEntry[]), imageAssets (ImageAsset[]),
-//   entries (EditorEntry[] — слои с uuid _id), selectedId.
+//   entries (EditorEntry[] - слои с uuid _id), selectedId.
 //
 // reducer обрабатывает 14 действий (ADD/REMOVE/UPDATE_ENTRY, UPDATE_BOX, MOVE_ENTRY, SELECT, шрифты, изображения).
 //
-// historyReducer — обёртка с past/present/future (MAX_HISTORY=50).
+// historyReducer - обёртка с past/present/future (MAX_HISTORY=50).
 //   SELECT не записывается в историю (NON_UNDOABLE), поэтому выбор слоя нельзя отменить.
 //   При UNDO/REDO selectedId сохраняется из текущего состояния.
 //
-// templateToState: Template → EditorState. Строит assetBaseUrl для загрузки превью ассетов.
-// stateToTemplate: EditorState → Template. Для editable text-слоёв очищает defaultText перед сохранением.
+// templateToState: Template - EditorState. Строит assetBaseUrl для загрузки превью ассетов.
+// stateToTemplate: EditorState - Template. Для editable text-слоёв очищает defaultText перед сохранением.
 // stateToPendingAssets: собирает File из fonts и imageAssets, у которых есть pendingFile.
 //
 // useEditorState: загружает шрифты через FontFace API при инициализации,

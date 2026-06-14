@@ -1,9 +1,9 @@
 // Синхронизация слоёв EditorState с объектами Fabric.js.
 //
 // layerToFabricObject: создаёт Fabric-объект по типу слоя.
-//   photo/image → placeholder Rect с пунктирной рамкой (синий PLACEHOLDER_STROKE).
-//   gradient → Rect с LinearGradient fill.
-//   text → Textbox; editable-слои отображаются синим и с рамкой.
+//   photo/image - placeholder Rect с пунктирной рамкой (синий PLACEHOLDER_STROKE).
+//   gradient - Rect с LinearGradient fill.
+//   text - Textbox; editable-слои отображаются синим и с рамкой.
 //   _id слоя хранится в obj.data для двусторонней привязки.
 //
 // loadImageAsset: асинхронно заменяет placeholder Rect реальным FabricImage.fromURL.
@@ -11,10 +11,10 @@
 //
 // reconcileCanvas: диффинг entries vs canvas-объекты.
 //   Удаляет объекты без соответствующего entry, создаёт новые, обновляет существующие.
-//   pendingBoxes — набор id, для которых сейчас идёт drag; их box пропускается при обновлении.
+//   pendingBoxes - набор id, для которых сейчас идёт drag; их box пропускается при обновлении.
 //   Восстанавливает z-порядок и активный объект после reconcile.
 //
-// fabricToBox: Fabric-объект → [x, y, width, height] с учётом scaleX/scaleY.
+// fabricToBox: Fabric-объект - [x, y, width, height] с учётом scaleX/scaleY.
 
 import {
   Canvas,

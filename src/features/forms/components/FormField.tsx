@@ -1,6 +1,6 @@
 // Рендерит нужный input по типу поля:
-//   text → Textarea, search/multiple → Combobox, select → Select,
-//   checkbox → Checkbox, datetime → DateTimePicker.
+//   text - Textarea, search/multiple - Combobox, select - Select,
+//   checkbox - Checkbox, datetime - DateTimePicker.
 
 import { Controller, useFormContext } from 'react-hook-form';
 import type {
