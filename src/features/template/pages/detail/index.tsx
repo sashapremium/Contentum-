@@ -1,3 +1,6 @@
+// Страница редактирования шаблона: загружает шаблон по theatreId+templateId из URL
+// и передаёт его в EditorPage в режиме update.
+
 import { useParams } from 'react-router';
 
 import { Error } from '@/components/shared/Error';

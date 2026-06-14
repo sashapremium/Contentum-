@@ -1,3 +1,9 @@
+// Zod-схемы для шаблонов.
+// TemplateLayer — discriminated union по type: photo, gradient, image, text.
+// box — tuple [x, y, width, height] в пикселях холста.
+// TemplateFonts — Record<key, {file, family}> для загрузки шрифтов.
+// TemplateInputSchema — описание полей ввода для фото-сессий, генерируется из photo/text слоёв.
+
 import { z } from 'zod';
 
 export const TemplateCanvasSchema = z.object({

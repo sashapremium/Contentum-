@@ -1,3 +1,5 @@
+// При успехе инвалидирует брендбук и фото-сессии, удаляет кэш деталей шаблона.
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteTemplate } from '../api';
 import type { TemplateDeleteResponse } from '../types';

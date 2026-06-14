@@ -1,3 +1,5 @@
+// Элемент сессии в sidebar: ссылка, active state по pathname, закрывает sidebar на мобильных при клике.
+
 import {
   SidebarMenuItem,
   SidebarMenuButton,

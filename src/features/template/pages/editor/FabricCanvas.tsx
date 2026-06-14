@@ -1,3 +1,9 @@
+// Холст редактора на базе Fabric.js. Масштабируется до MAX_DISPLAY_PX (700px) сохраняя пропорции.
+// Пересоздаётся при изменении размера холста (canvasW/canvasH).
+// reconcileCanvas синхронизирует entries с объектами на холсте после каждого изменения state.
+// fromFabricRef предотвращает петлю: перемещение объектом мышью → dispatch UPDATE_BOX → reconcile → сброс позиции.
+// object:modified дебаунсится (500ms) перед dispatch, чтобы не флудить историей при drag.
+
 import { useEffect, useRef } from 'react';
 import { Canvas, type FabricObject } from 'fabric';
 

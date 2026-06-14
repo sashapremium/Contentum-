@@ -1,3 +1,5 @@
+// Список фото-сессий в sidebar. Во время загрузки показывает 5 skeleton-заглушек.
+
 import { Skeleton } from '@/components/ui/skeleton';
 import { SidebarMenu } from '@/components/ui/sidebar';
 import { usePhotoSessionsQuery } from '../queries/usePhotoSessionsQuery';

@@ -1,3 +1,6 @@
+// CRUD-запросы для шаблонов, привязанных к учреждению (/theatres/:theatreId/brandbook/templates/).
+// buildFormData собирает FormData: manifest как JSON-строка, ассеты (шрифты, изображения) как отдельные поля.
+
 import { api } from '@/lib/axios';
 import {
   type Template,

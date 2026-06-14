@@ -1,3 +1,6 @@
+// Диалог изменения размера холста: пресеты (1:1, 16:9, 9:16, баннер 2:1) и ручной ввод.
+// Активный пресет подсвечивается сравнением текущих значений формы с preset.width/height.
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
