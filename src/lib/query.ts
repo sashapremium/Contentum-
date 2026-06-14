@@ -1,3 +1,6 @@
+// Глобальный QueryClient: retry не повторяет на 401, ошибки показываются через sonner toast,
+// refetchOnWindowFocus отключён.
+
 import { QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { mapApiError } from './apiErrorMapper';
