@@ -1,3 +1,6 @@
+// Zod-схемы для учреждений. Theatre - объект с id, name, address, hasBrandbook.
+// TheatreDeleteResponse содержит количество удалённых фото-сессий (sessionsDeleted).
+
 import { z } from 'zod';
 
 export const TheatreSchema = z.object({

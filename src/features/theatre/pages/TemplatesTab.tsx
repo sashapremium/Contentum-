@@ -1,3 +1,8 @@
+// Вкладка шаблонов: Select для выбора учреждения, список шаблонов из brandbook.
+// Список учреждений и шаблоны берутся из usePhotoSessionsQuery (brandbooks).
+// RenameTemplateDialog загружает полный шаблон через useTemplateQuery, затем сохраняет через useUpdateTemplateMutation.
+// Превью шаблона отображается через MessageImage.
+
 import { useState } from 'react';
 import { generatePath, Link, useNavigate } from 'react-router';
 

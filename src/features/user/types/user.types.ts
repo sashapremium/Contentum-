@@ -1,3 +1,5 @@
+// Zod-схемы для пользователя: id, email, role (только 'user').
+
 import { z } from 'zod';
 
 export const UserIdSchema = z.number().int();

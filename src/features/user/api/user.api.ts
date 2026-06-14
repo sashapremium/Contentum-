@@ -1,3 +1,5 @@
+// Получение данных текущего пользователя (GET /users/me).
+
 import { api } from '@/lib/axios';
 import { UserMeResponseSchema, type User } from '../types/user.types';
 

@@ -1,3 +1,4 @@
+// Query keys для кэша пользователей.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const USER_QUERY_KEYS = {
   all: ['users'] as const,

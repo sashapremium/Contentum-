@@ -1,3 +1,5 @@
+// Dropdown-меню пользователя с кнопкой выхода. Открывает LogoutDialog.
+
 import {
   DropdownMenuContent,
   DropdownMenuItem,

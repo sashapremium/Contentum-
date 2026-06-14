@@ -1,3 +1,5 @@
+// CRUD-запросы для учреждений (/theatres/).
+
 import { api } from '@/lib/axios';
 import {
   type Theatre,

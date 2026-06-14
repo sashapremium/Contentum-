@@ -1,3 +1,5 @@
+// Диалог подтверждения выхода из аккаунта. При подтверждении вызывает logout из useAuthStore.
+
 import { Dialog } from '@/components/ui/dialog';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';

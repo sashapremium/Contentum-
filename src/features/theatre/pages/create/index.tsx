@@ -1,3 +1,6 @@
+// Страница создания учреждения: форма с названием (обязательно) и адресом.
+// После успешного создания переходит на страницу учреждений.
+
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router';

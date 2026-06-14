@@ -1,3 +1,6 @@
+// Вкладка брендбуков: Select для выбора учреждения, данные через useBrandbookQuery.
+// Показывает список шаблонов с превью. Удаление брендбука через ConfirmDialog.
+
 import { useState } from 'react';
 
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
