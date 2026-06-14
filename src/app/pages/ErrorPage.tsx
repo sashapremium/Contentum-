@@ -1,3 +1,4 @@
+// Показывается при необработанных ошибках маршрута (errorElement в react-router)
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
 

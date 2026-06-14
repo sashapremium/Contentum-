@@ -1,3 +1,4 @@
+// Тестовая страница для проверки динамической системы форм в изоляции от бэкенда
 import { exampleForm } from '@/features/forms/exampleForm';
 import { FormContainer } from '@/features/forms/components/FormContainer';
 

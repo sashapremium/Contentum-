@@ -1,6 +1,7 @@
+// Стартовая страница, открывается по "/" для авторизованных пользователей
 import { PageWrapper } from '@/components/shared/PageWrapper';
 import { Button } from '@/components/ui/button';
-import { HEADER_ITEMS } from '@/features/home/constants';
+import { HEADER_ITEMS } from '@/features/home/constants'; // список разделов навигации: иконка, заголовок, ссылка
 import { Link } from 'react-router';
 
 export const EntryPage = () => {
