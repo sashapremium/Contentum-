@@ -1,3 +1,4 @@
+// Карточка с информацией о мероприятии: название, жанр, тип, дата (форматируется через date-fns), место, описание.
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

@@ -1,4 +1,3 @@
-// Mutation для запуска перегенерации сообщения. После успеха инвалидирует кэш чатов.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { reegenerateMessage } from '../api/briefs.api';
 import type {

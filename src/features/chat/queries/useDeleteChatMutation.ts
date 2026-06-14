@@ -1,4 +1,3 @@
-// Mutation для удаления чата. После успеха инвалидирует список чатов.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteChat } from '../api/chat.api';
 import { CHAT_QUERY_KEYS } from './chat.queryKeys';

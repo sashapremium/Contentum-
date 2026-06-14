@@ -1,4 +1,3 @@
-// Mutation для удаления брендбука учреждения. После успеха удаляет запись из кэша.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteBrandbook } from '../api';
 import type { BrandbookDeleteResponse } from '../types';

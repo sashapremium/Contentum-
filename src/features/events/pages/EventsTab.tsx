@@ -1,3 +1,4 @@
+// Вкладка мероприятий на странице учреждений: список с типом и датой, кнопки редактирования и удаления.
 import { useState } from 'react';
 import { generatePath, Link, useNavigate } from 'react-router';
 import { FilePlus, Settings2, Trash2 } from 'lucide-react';

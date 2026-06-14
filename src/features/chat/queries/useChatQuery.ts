@@ -1,5 +1,3 @@
-// Query для получения деталей чата по id: сообщения, текущий шаг формы.
-// Не выполняется если id не задан.
 import { useQuery } from '@tanstack/react-query';
 import { fetchChat } from '../api/chat.api';
 import { CHAT_QUERY_KEYS } from './chat.queryKeys';

@@ -1,4 +1,3 @@
-// Mutation для регистрации нового пользователя.
 import { useMutation } from '@tanstack/react-query';
 import { registerRequest } from '../api/auth.api';
 

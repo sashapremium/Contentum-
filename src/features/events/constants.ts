@@ -1,3 +1,4 @@
+// Опции для select-полей типа мероприятия и возрастного ограничения.
 export const EVENT_TYPE_OPTIONS = [
   { value: 'concert', label: 'Концерт' },
   { value: 'performance', label: 'Спектакль' },

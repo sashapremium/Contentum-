@@ -1,4 +1,3 @@
-// Query для получения списка чатов. Поддерживает фильтрацию (search, ordering, page).
 import { useQuery } from '@tanstack/react-query';
 import { fetchChats } from '../api/chat.api';
 import type {

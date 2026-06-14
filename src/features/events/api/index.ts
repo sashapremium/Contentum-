@@ -1,3 +1,4 @@
+// CRUD-запросы для мероприятий: список, детали, создание, обновление, удаление.
 import { api } from '@/lib/axios';
 import {
   type Event,

@@ -1,4 +1,3 @@
-// Mutation для создания чата. После успеха инвалидирует список чатов.
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createChat } from '../api/chat.api';
 import type {
