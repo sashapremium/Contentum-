@@ -1,5 +1,5 @@
-// Форма входа: поля email и пароль, валидация через Zod, обработка ошибок API.
-// После успешного входа перенаправляет на главную страницу.
+// Форма входа: поля email и пароль, валидация, обработка ошибок API
+// После успешного входа перенаправляет на главную страницу
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginRequestSchema } from '../types/auth.types';

@@ -1,4 +1,4 @@
-// Input для пароля с кнопкой показа/скрытия текста (иконки Eye/EyeOff).
+// Input для пароля с кнопкой показа/скрытия текста
 import { useState } from 'react';
 import {
   InputGroup,

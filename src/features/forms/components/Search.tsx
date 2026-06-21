@@ -1,6 +1,4 @@
-// Изолированный Combobox для поиска по списку опций без RHF-интеграции.
-// Используется как примитив - RHF-обёртка находится в FormField (тип search).
-
+// Изолированный Combobox для поиска по списку опций
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 

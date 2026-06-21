@@ -1,4 +1,4 @@
-// Query keys для кэша учреждений: list (все) и detail (по id).
+// Query keys для кэша учреждений
 
 export const THEATRE_QUERY_KEYS = {
   all: ['theatres'] as const,

@@ -1,4 +1,4 @@
-// Zod-схемы для мероприятий: объект, список (с мета-опциями), создание, обновление, удаление.
+// схемы для мероприятий
 import { z } from 'zod';
 
 export const EventSchema = z.object({
@@ -13,7 +13,7 @@ export const EventSchema = z.object({
 });
 export type Event = z.infer<typeof EventSchema>;
 
-// Мета-данные для форм создания: доступные типы и возрастные ограничения
+// Мета-данные для форм создания
 export const EventCreateMetaSchema = z.object({
   eventTypes: z.array(z.enum(['concert', 'performance', 'festival', 'show'])),
   ageLimits: z.array(z.enum(['0+', '6+', '12+', '16+', '18+'])),

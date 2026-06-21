@@ -1,17 +1,4 @@
 // Панель свойств выбранного слоя. Рендерит нужный набор полей по типу слоя.
-//
-// BoxFields: поля x/y/ширина/высота с дебаунсом (500ms) и Zod-валидацией целых чисел.
-//   Синхронизирует форму с внешним box через useEffect с проверкой реального изменения.
-//
-// ColorField: HexColorPicker (react-colorful) + HexColorInput с дебаунсом.
-// RgbaColorField: то же, но для rgba(); отдельный Slider для прозрачности (0-255).
-//   parseRgba/rgbToHex - конвертация между rgba-строкой и hex.
-// SliderField: Slider с локальным state и дебаунсом (500ms).
-//
-// Компоненты по типу слоя: PhotoProps (box, slot, gravity),
-//   GradientProps (box, colorFrom, colorTo, opacity),
-//   ImageLayerProps (box, file из ассетов, align, opacity),
-//   TextLayerProps (box, name, defaultText, editable, font, color, fontSize, maxLines, align).
 
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';

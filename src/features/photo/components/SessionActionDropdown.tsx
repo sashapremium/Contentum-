@@ -1,6 +1,4 @@
-// Dropdown действий над сессией: переименование через Dialog+Form, удаление через ConfirmDialog.
-// После удаления выполняет navigate('/').
-
+//  действий над сессией: переименование через, удаление
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { z } from 'zod';

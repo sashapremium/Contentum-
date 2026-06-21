@@ -1,7 +1,4 @@
-// Детальная страница фото-сессии.
-// ImagePositionModal - canvas-кроппер: drag-to-position через pointer events, canvas.toBlob для обрезки по заданным dimensions.
-// PhotoImageInput - input файла с превью и диалогом полного размера. При наличии dimensions открывает ImagePositionModal.
-// PhotoDetailForm - форма текстовых полей и изображений из inputSchema. При submit передаёт тексты и файлы в updatePhotoSession.
+// Детальная страница фото-сессии
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router';

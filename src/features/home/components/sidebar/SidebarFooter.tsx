@@ -1,4 +1,4 @@
-// Footer sidebar: карточка текущего пользователя с меню выхода.
+// карточка текущего пользователя с меню выхода.
 
 import {
   SidebarFooter as UISidebarFooter,

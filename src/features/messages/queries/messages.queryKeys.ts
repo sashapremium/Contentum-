@@ -1,4 +1,4 @@
-// Query keys для кэша сообщений: list привязан к id чата.
+//  для кэша сообщений list привязан к id чата.
 
 export const MESSAGES_QUERY_KEYS = {
   all: ['messages'] as const,

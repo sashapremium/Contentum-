@@ -1,6 +1,4 @@
-// Zod-схемы для всех типов полей формы.
-// FormField - discriminated union по полю type: text, search, select, multiple, checkbox, datetime.
-// Схемы используют .loose() чтобы не падать на неизвестных полях от бэкенда.
+// схемы для всех типов полей формы
 
 import { z } from 'zod';
 import { StepSchema } from './step.types';

@@ -1,5 +1,4 @@
-// Рендерит ChatMessage по типу: regenerationRequest - MessageRegen (выравнивание вправо),
-// generatedText - MessageGenerated, form - MessageForm.
+// Рендерит ChatMessage по типу
 
 import { cx } from 'class-variance-authority';
 import type { ChatId, ChatMessage } from '@/features/chat/types/chat.types';

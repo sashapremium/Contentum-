@@ -1,16 +1,15 @@
 // Router на базе react-router v6.
 // Защищённые роуты вложены под "/" и обёрнуты в ProtectedRoute.
-// Каждый роут имеет errorElement - страницу ошибки при сбое рендеринга.
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import LoginPage from '@/features/auth/pages/LoginPage';
-import HomePage from '@/features/home/pages/HomePage'; // корневой layout-компонент с навигацией, оборачивает все защищённые роуты
+import HomePage from '@/features/home/pages/HomePage'; // корневой компонент с навигацией
 import ChatPage from '@/features/chat/pages/ChatPage';
 import { MetricsPage } from '@/features/chat/pages/MetricsPage';
 import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'; // перенаправляет на /login при отсутствии токена
 import NotFoundPage from '../pages/NotFoundPage';
 import ErrorPage from '../pages/ErrorPage';
-import TestFormsPage from '../pages/TestForms'; // только для разработки
+import TestFormsPage from '../pages/TestForms';
 import {
   THEATRE_EVENT_CREATE,
   THEATRE_EVENT_DETAIL,
@@ -37,7 +36,7 @@ import { TheatreCreatePage } from '@/features/theatre/pages/create';
 import { EventCreatePage } from '@/features/events/pages/create';
 import { EventDetailPage } from '@/features/events/pages/detail';
 
-// Дерево роутов: публичные (/login, *) и защищённые (всё под "/")
+// Дерево роутов
 const router = createBrowserRouter([
   {
     path: '/login',
@@ -138,7 +137,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-// Root компонент роутера, монтируется в main.tsx
+// Root компонент роутера
 export function AppRouter() {
   return <RouterProvider router={router} />;
 }

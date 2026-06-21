@@ -1,4 +1,4 @@
-// Сохранение и чтение JWT-токенов в localStorage. Ключи: access_token, refresh_token.
+// Сохранение и чтение JWT-токенов в localStorage
 export const tokenStorage = {
   save(tokens: { access: string; refresh: string }) {
     localStorage.setItem('access_token', tokens.access);

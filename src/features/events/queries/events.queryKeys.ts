@@ -1,4 +1,4 @@
-// Query keys для кэша мероприятий: all, list, detail (по id).
+// для кэша мероприятий
 export const EVENT_QUERY_KEYS = {
   all: ['events'] as const,
   list: () => ['events', 'list'] as const,

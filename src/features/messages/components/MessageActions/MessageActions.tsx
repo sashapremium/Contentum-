@@ -1,5 +1,4 @@
-// Действия над сообщением. Для generatedText показывает кнопку перегенерации.
-// Для form и regenerationRequest не рендерит ничего.
+// Действия над сообщение
 
 import type { ChatId, ChatMessage } from '@/features/chat/types/chat.types';
 import { RegenAction } from './RegenAction';

@@ -1,7 +1,6 @@
-// Хлебные крошки навигации. Каждый элемент: ссылка (url) или кнопка (onClick).
-// Последний элемент всегда отображается как текущая страница (без ссылки).
-import { Fragment } from "react";
-import { Link } from "react-router-dom";
+// Хлебные крошки навигации
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from '@/components/ui/breadcrumb';
 
 type BreadcrumbLinkItem =
   | { url: string; onClick?: never; label: string }

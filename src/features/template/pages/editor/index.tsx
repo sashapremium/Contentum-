@@ -1,8 +1,4 @@
-// Главный компонент редактора шаблонов.
-// Управляет: название (nameForm с RHF), undo/redo через dispatch, save/delete мутации.
-// При save: stateToTemplate собирает manifest, stateToPendingAssets - новые файлы ассетов.
-// Горячие клавиши: Ctrl+Z  UNDO, Ctrl+X  REDO (не срабатывают в input/textarea).
-// Любой dispatch сбрасывает ошибку мутации через mutation.reset().
+// Главный компонент редактора шаблонов
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';

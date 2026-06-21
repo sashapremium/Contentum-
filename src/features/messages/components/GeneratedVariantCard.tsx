@@ -1,6 +1,4 @@
-// Карточка одного сгенерированного варианта: label (Слабый/Средний/Лучший вариант),
-// CircularProgress с общей оценкой, текст с разворотом, список метрик, кнопка копирования.
-// CircularProgress - SVG с анимацией stroke-dashoffset при монтировании.
+// Карточка одного сгенерированного варианта с общей оценкой, текст с разворотом, список метрик, кнопка копирования.
 
 import { useEffect, useRef, useState } from 'react';
 import { CheckIcon, CircleCheck, CircleX, CopyIcon } from 'lucide-react';

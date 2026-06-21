@@ -1,4 +1,4 @@
-// Вкладка учреждений: список, кнопка создания, редактирование через UpdateTheatreDialog (RHF + Zod), удаление через ConfirmDialog.
+// Вкладка учреждений: список, кнопка создания, редактирование через, удаление
 
 import { useState } from 'react';
 import { Link } from 'react-router';

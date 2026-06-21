@@ -1,4 +1,4 @@
-// CRUD-запросы для учреждений (/theatres/).
+// CRUD-запросы для учреждений
 
 import { api } from '@/lib/axios';
 import {
@@ -16,7 +16,9 @@ export async function fetchTheatres(): Promise<TheatreListResponse> {
   return TheatreListResponseSchema.parse(response.data);
 }
 
-export async function createTheatre(payload: TheatreCreateRequest): Promise<Theatre> {
+export async function createTheatre(
+  payload: TheatreCreateRequest,
+): Promise<Theatre> {
   const response = await api.post('/theatres/', payload);
   return TheatreSchema.parse(response.data);
 }
@@ -26,12 +28,17 @@ export async function fetchTheatre(id: number): Promise<Theatre> {
   return TheatreSchema.parse(response.data);
 }
 
-export async function updateTheatre(id: number, payload: TheatreCreateRequest): Promise<Theatre> {
+export async function updateTheatre(
+  id: number,
+  payload: TheatreCreateRequest,
+): Promise<Theatre> {
   const response = await api.patch(`/theatres/${id}/`, payload);
   return TheatreSchema.parse(response.data);
 }
 
-export async function deleteTheatre(id: number): Promise<TheatreDeleteResponse> {
+export async function deleteTheatre(
+  id: number,
+): Promise<TheatreDeleteResponse> {
   const response = await api.delete(`/theatres/${id}/`);
   return TheatreDeleteResponseSchema.parse(response.data);
 }

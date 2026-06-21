@@ -1,4 +1,4 @@
-// Диалог сравнения метрик всех вариантов. Вкладки: "Сводка" (MetricsSummaryTab) и "По вариантам" (MetricsVariantsTab).
+// Диалог сравнения метрик всех вариантов
 
 import {
   Dialog,
@@ -6,12 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import { MetricsSummaryTab } from './MetricsSummaryTab';
 import { MetricsVariantsTab } from './MetricsVariantsTab';

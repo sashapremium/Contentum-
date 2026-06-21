@@ -1,7 +1,4 @@
-// Zod-схемы для фото-сессий.
-// PhotoSessionsListResponse - ответ со списком сессий, брендбуков и учреждений (для страницы создания).
-// PhotoSession - детали сессии: inputSchema описывает нужные текстовые и image-поля, history - прошлые результаты генерации.
-// PhotoSessionUpdateSchema - union: rename (title) или generate (texts + images + templateId).
+// схемы для фото-сессий
 
 import { z } from 'zod';
 

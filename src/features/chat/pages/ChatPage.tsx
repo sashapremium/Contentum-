@@ -1,4 +1,4 @@
-// Страница чата: загружает чат по id из URL, показывает список сообщений.
+// Страница чата: загружает чат по id из URL, показывает список сообщений
 import { useParams } from 'react-router-dom';
 import { useChatQuery } from '../queries/useChatQuery';
 import { Error } from '@/components/shared/Error';

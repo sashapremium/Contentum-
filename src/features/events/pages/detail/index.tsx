@@ -1,4 +1,4 @@
-// Страница редактирования мероприятия: загружает данные по id из URL и показывает форму обновления.
+// Страница редактирования мероприятия
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useParams } from 'react-router';

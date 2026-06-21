@@ -1,4 +1,4 @@
-// Sticky header для страниц. На мобильных показывает кнопку открытия sidebar.
+// Sticky header для страниц
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import type { ReactNode } from 'react';
 

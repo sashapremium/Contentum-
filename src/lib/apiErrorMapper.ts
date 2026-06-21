@@ -1,5 +1,4 @@
-// Маппинг ошибок Axios и Zod в читаемые сообщения на русском.
-// Обрабатывает: ZodError, AxiosError (ошибки полей, detail/error, сетевые), известные строки от бэкенда.
+// Маппинг ошибок Axios и Zod в читаемые сообщения на русском
 
 import type { AxiosError } from 'axios';
 import { z, type ZodError } from 'zod';

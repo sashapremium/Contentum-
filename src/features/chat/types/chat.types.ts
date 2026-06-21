@@ -1,6 +1,3 @@
-// Zod-схемы и типы для чатов.
-// Сообщение (ChatMessage) - discriminated union из трёх типов: form (шаг бриефа),
-// generatedText (варианты текста с метриками), regenerationRequest (запрос перегенерации).
 import { FieldsSchema } from '@/features/forms/types/formField.types';
 import { FormStepSchema } from '@/features/forms/types/formStep.types';
 import { StepSchema } from '@/features/forms/types/step.types';
@@ -17,7 +14,7 @@ export type ChatMessageType = z.infer<typeof ChatMessageTypeSchema>;
 export const FormPayloadSchema = FormStepSchema;
 export type FormPayload = z.infer<typeof FormPayloadSchema>;
 
-// Значение метрики: число, булево или 'disabled' (метрика отключена на бэкенде)
+// Значение метрики: число, булево
 export const MetricValueSchema = z.union([
   z.number(),
   z.boolean(),
@@ -82,7 +79,6 @@ export type RegenerationRequestMessage = z.infer<
   typeof RegenerationRequestMessageSchema
 >;
 
-// Итоговый discriminated union по полю type
 export const ChatMessageSchema = z.discriminatedUnion('type', [
   FormMessageSchema,
   GeneratedTextMessageSchema,

@@ -1,5 +1,4 @@
-// Форма шага бриефа внутри сообщения. Берёт FormStep из payload сообщения,
-// при submit вызывает useUpdateChatMutation для перехода к следующему шагу.
+// Форма шага бриефа внутри сообщения
 
 import { useUpdateChatMutation } from '@/features/chat/queries/useUpdateChatMutation';
 import type { ChatId, FormMessage } from '@/features/chat/types/chat.types';

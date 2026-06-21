@@ -1,6 +1,6 @@
-// Список сообщений чата. Следит за активной UPDATE_CHAT_MUTATION через useMutationState
-// и показывает pending bubble с текстом про генерацию или обработку шага.
-// Автоскролл к последнему сообщению при изменении списка или появлении pending-обновления.
+// Список сообщений чата
+// показывает pending bubble с текстом про генерацию или обработку шага
+// Автоскролл к последнему сообщению при изменении списка
 
 import { mapApiError } from '@/lib/apiErrorMapper';
 import { Error } from '@/components/shared/Error';
@@ -63,8 +63,7 @@ export const Messages = ({ chatId, sendLoading }: MessagesProps) => {
   const isRegeneration =
     typeof pendingStep === 'string' &&
     pendingStep.toLowerCase().includes('regen');
-  const isGeneration =
-    pendingStep === 3 || isRegeneration;
+  const isGeneration = pendingStep === 3 || isRegeneration;
   const showPendingBubble = Boolean(activeUpdate) || sendLoading || isFetching;
   const pendingTitle = isGeneration
     ? isRegeneration

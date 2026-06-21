@@ -1,5 +1,4 @@
 // При успехе инвалидирует три кэша: брендбук учреждения, список фото-сессий и детали шаблона.
-// Фото-сессии инвалидируются, потому что они хранят snapshot шаблона и должны обновиться.
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateTemplate, type TemplateWithAssetsPayload } from '../api';

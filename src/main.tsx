@@ -1,4 +1,4 @@
-// Точка входа: создаёт React root, устанавливает русскую локаль для Zod.
+// Точка входа: создаёт React root
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -12,5 +12,5 @@ z.config(ru());
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

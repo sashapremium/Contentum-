@@ -1,6 +1,4 @@
-// Утилиты для работы с датой и временем.
-// LocalDateTime - объект {y, m, d, hh, mm}. parseLocalDateTime парсит строку ISO,
-// buildLocalDateTime собирает строку из Date + time-строки, localToDate - обратное.
+// Утилиты для работы с датой и временем
 
 type LocalDateTime = {
   y: number;

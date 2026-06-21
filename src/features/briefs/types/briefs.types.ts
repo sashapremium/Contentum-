@@ -1,4 +1,4 @@
-// Zod-схемы для запроса перегенерации: статус и тело запроса.
+// схемы для запроса перегенерации: статус и тело запроса.
 import { z } from 'zod';
 
 export const StatusSchema = z.enum(['regeneration']);

@@ -1,4 +1,4 @@
-// Dropdown с действиями над чатом: переименование (через диалог с формой) и удаление (через ConfirmDialog).
+//действия над чатом: переименование и удаление
 import { useState } from 'react';
 import {
   ChatRenameSchema,

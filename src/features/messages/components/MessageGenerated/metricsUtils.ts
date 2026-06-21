@@ -1,8 +1,4 @@
-// Утилиты для работы с метриками сгенерированного текста.
-// categorizeMetrics разделяет метрики на score (0-1), count (>1) и bool.
-// scoreColor возвращает цвет (зелёный/жёлтый/красный) по значению score.
-// getVariantLabels присваивает каждому варианту label: лучший по OVERALL_SCORE - "Лучший вариант",
-//   худший - "Слабый", остальные - "Средний".
+// Утилиты для работы с метриками сгенерированного текста
 
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 

@@ -1,5 +1,4 @@
-// Карточка пользователя в footer sidebar: аватар с иконкой по role, email, dropdown-меню.
-// При загрузке показывает Skeleton, при ошибке - Error с текстом из mapApiError.
+// Карточка пользователя в footer sidebar: аватар с иконкой по role, email, dropdown-меню
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {

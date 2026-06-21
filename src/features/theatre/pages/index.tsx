@@ -1,6 +1,5 @@
-// Страница учреждений: три вкладки - "Учреждения", "Мероприятия", "Шаблоны".
-// Активная вкладка хранится в хэше URL (#theatres / #events / #templates).
-// Выбранное учреждение для вкладки шаблонов хранится в query param ?theatre=id.
+// Страница учреждений
+// Активная вкладка хранится в хэше
 
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 

@@ -1,4 +1,4 @@
-// Запросы для брендбука учреждения: получение и удаление.
+// Запросы для брендбука учреждения
 import { api } from '@/lib/axios';
 import {
   type Brandbook,
@@ -12,7 +12,9 @@ export async function fetchBrandbook(theatreId: number): Promise<Brandbook> {
   return BrandbookSchema.parse(response.data);
 }
 
-export async function deleteBrandbook(theatreId: number): Promise<BrandbookDeleteResponse> {
+export async function deleteBrandbook(
+  theatreId: number,
+): Promise<BrandbookDeleteResponse> {
   const response = await api.delete(`/theatres/${theatreId}/brandbook/`);
   return BrandbookDeleteResponseSchema.parse(response.data);
 }

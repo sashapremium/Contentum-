@@ -1,4 +1,4 @@
-// Zod-схемы для пользователя: id, email, role (только 'user').
+// схемы для пользователя: id, email, role
 
 import { z } from 'zod';
 

@@ -1,5 +1,4 @@
 // Форма регистрации: email, полное имя, пароль и его подтверждение.
-// При успехе вызывает onSuccess (переключает AuthForm на вкладку входа).
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

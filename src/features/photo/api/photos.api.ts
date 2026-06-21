@@ -1,6 +1,4 @@
-// CRUD-запросы для фото-сессий.
-// updatePhotoSession определяет тип ответа по наличию поля versionNumber в ответе.
-// buildGenerateFormData собирает FormData: тексты как JSON-строка, изображения как отдельные поля.
+// CRUD-запросы для фото-сессий
 
 import { api } from '@/lib/axios';
 import {

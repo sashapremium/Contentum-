@@ -1,5 +1,5 @@
-// Optimistic update: сразу добавляет временное сообщение с uuid в кэш (onMutate),
-// откатывает его при ошибке (onError), инвалидирует список при успехе (onSuccess).
+// сразу добавляет временное сообщение с uuid в кэш
+// откатывает его при ошибке, инвалидирует список при успехе
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage } from '../api/messages.api';
@@ -24,7 +24,7 @@ export const useSendMessageMutation = (chatId: string) => {
       });
 
       const previousMessages = qc.getQueryData<Messages>(
-        MESSAGES_QUERY_KEYS.list(chatId)
+        MESSAGES_QUERY_KEYS.list(chatId),
       );
 
       const tempId = uuid();
@@ -39,7 +39,7 @@ export const useSendMessageMutation = (chatId: string) => {
 
       qc.setQueryData<Messages>(
         MESSAGES_QUERY_KEYS.list(chatId),
-        (old = []) => [...old, optimistic]
+        (old = []) => [...old, optimistic],
       );
 
       return { previousMessages, tempId };
@@ -50,7 +50,7 @@ export const useSendMessageMutation = (chatId: string) => {
 
       qc.setQueryData<Messages>(
         MESSAGES_QUERY_KEYS.list(chatId),
-        (ctx as { previousMessages: Messages }).previousMessages ?? []
+        (ctx as { previousMessages: Messages }).previousMessages ?? [],
       );
     },
 

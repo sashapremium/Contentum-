@@ -1,4 +1,4 @@
-// Вкладка "По вариантам": сетка карточек MetricsVariantCard для каждого варианта.
+// Вкладка по вариантам, сетка карточек  для каждого варианта.
 
 import type { GeneratedText } from '@/features/chat/types/chat.types';
 import { MetricsVariantCard } from './MetricsVariantCard';

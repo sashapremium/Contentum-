@@ -1,4 +1,4 @@
-// Получение сообщений чата (GET /chats/:id/messages/, page_size 100) и отправка нового сообщения (POST /messages/).
+// Получение сообщений чата  и отправка нового сообщения
 
 import { api } from '@/lib/axios';
 import {
@@ -20,7 +20,7 @@ export async function fetchMessages(chatId: string): Promise<Messages> {
 }
 
 export async function sendMessage(
-  body: SendMessageBody
+  body: SendMessageBody,
 ): Promise<SendMessageResponse> {
   const validated = SendMessageBodySchema.parse(body);
 

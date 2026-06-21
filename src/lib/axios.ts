@@ -1,15 +1,12 @@
 // Axios instance для всех запросов к API.
-// Request interceptor добавляет Bearer токен из store.
-// Response interceptor на 401: ставит запросы в очередь (failedQueue), делает refresh и повторяет.
-// При ошибке refresh - вызывает logout и очищает query cache.
 
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/features/auth/store/auth.store';
 import { tokenStorage } from '@/features/auth/utils/tokenStorage';
 import { queryClient } from '@/lib/query';
 
-// const API_PREFIX = 'http://localhost:8000/api';
-const API_PREFIX = '/api';
+// const API_PREFIX = '/api';
+const API_PREFIX = 'http://localhost:8000/api';
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;

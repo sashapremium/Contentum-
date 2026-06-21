@@ -1,4 +1,4 @@
-// Обёртка над EventInfo с загрузкой по id: показывает skeleton во время загрузки или ошибку.
+// Обёртка над EventInfo с загрузкой по id
 import { Skeleton } from '@/components/ui/skeleton';
 import { EventInfo } from './EventInfo';
 import { useEventQuery } from '../queries/useEventQuery';

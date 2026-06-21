@@ -1,4 +1,4 @@
-// Zod-схемы и типы для аутентификации: вход, регистрация, access/refresh токены.
+// схемы и типы для аутентификации: вход, регистрация, access/refresh токены.
 import { ZOD_FIELDS } from '@/lib/zodFieldMapper';
 import { z } from 'zod';
 
@@ -39,7 +39,7 @@ export const RefreshResponseSchema = z.object({
 
 export type RefreshResponse = z.infer<typeof RefreshResponseSchema>;
 
-// Тело запроса для регистрации. Включает проверку совпадения паролей через refine
+// Тело запроса для регистрации
 export const RegisterRequestSchema = z
   .object({
     email: z.email().min(1).max(254),

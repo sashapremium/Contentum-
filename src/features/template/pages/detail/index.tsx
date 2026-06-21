@@ -1,5 +1,4 @@
-// Страница редактирования шаблона: загружает шаблон по theatreId+templateId из URL
-// и передаёт его в EditorPage в режиме update.
+// Страница редактирования шаблона
 
 import { useParams } from 'react-router';
 
@@ -12,7 +11,10 @@ import { useTemplateQuery } from '../../queries/useTemplateQuery';
 import { EditorPage } from '../editor';
 
 export const TemplateDetailPage = () => {
-  const { theatreId, templateId } = useParams<{ theatreId: string; templateId: string }>();
+  const { theatreId, templateId } = useParams<{
+    theatreId: string;
+    templateId: string;
+  }>();
   const query = useTemplateQuery(Number(theatreId), templateId);
 
   if (query.isLoading) return <Loading />;

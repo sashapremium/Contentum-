@@ -1,5 +1,4 @@
-// Кнопка перегенерации текста с Tooltip.
-
+// Кнопка перегенерации текста
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,

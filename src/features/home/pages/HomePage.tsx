@@ -1,4 +1,4 @@
-// Корневая страница для всех авторизованных роутов. Оборачивает Outlet в HomeLayout.
+// Корневая страница для всех авторизованных роутов
 
 import { Outlet } from 'react-router-dom';
 import { HomeLayout } from '../components/layout/HomeLayout';

@@ -1,4 +1,3 @@
-// Пример конфига FormStep для тестовой страницы. Содержит все типы полей и варианты валидации.
 export const exampleForm = {
   step: 0,
   type: 'form' as const,

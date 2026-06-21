@@ -1,6 +1,4 @@
-// Список сгенерированных вариантов. На мобильных - Tabs (активна вкладка лучшего варианта),
-// на десктопе - grid. Внизу ссылка на страницу подробного анализа метрик.
-
+// Список сгенерированных вариантов
 import { Link, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

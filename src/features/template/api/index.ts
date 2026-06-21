@@ -1,5 +1,4 @@
-// CRUD-запросы для шаблонов, привязанных к учреждению (/theatres/:theatreId/brandbook/templates/).
-// buildFormData собирает FormData: manifest как JSON-строка, ассеты (шрифты, изображения) как отдельные поля.
+// CRUD-запросы для шаблонов, привязанных к учреждению.
 
 import { api } from '@/lib/axios';
 import {
@@ -15,7 +14,11 @@ export interface TemplateWithAssetsPayload {
   replaceAssets?: boolean;
 }
 
-function buildFormData({ manifest, assets, replaceAssets }: TemplateWithAssetsPayload): FormData {
+function buildFormData({
+  manifest,
+  assets,
+  replaceAssets,
+}: TemplateWithAssetsPayload): FormData {
   const formData = new FormData();
   formData.append('template', JSON.stringify(manifest));
   if (replaceAssets !== undefined) {
@@ -32,12 +35,20 @@ export async function createTemplate(
   payload: Template | TemplateWithAssetsPayload,
 ): Promise<Template> {
   const body = 'manifest' in payload ? buildFormData(payload) : payload;
-  const response = await api.post(`/theatres/${theatreId}/brandbook/templates/`, body);
+  const response = await api.post(
+    `/theatres/${theatreId}/brandbook/templates/`,
+    body,
+  );
   return TemplateSchema.parse(response.data);
 }
 
-export async function fetchTemplate(theatreId: number, templateId: string): Promise<Template> {
-  const response = await api.get(`/theatres/${theatreId}/brandbook/templates/${templateId}/`);
+export async function fetchTemplate(
+  theatreId: number,
+  templateId: string,
+): Promise<Template> {
+  const response = await api.get(
+    `/theatres/${theatreId}/brandbook/templates/${templateId}/`,
+  );
   return TemplateSchema.parse(response.data);
 }
 
@@ -47,7 +58,10 @@ export async function updateTemplate(
   payload: Template | TemplateWithAssetsPayload,
 ): Promise<Template> {
   const body = 'manifest' in payload ? buildFormData(payload) : payload;
-  const response = await api.patch(`/theatres/${theatreId}/brandbook/templates/${templateId}/`, body);
+  const response = await api.patch(
+    `/theatres/${theatreId}/brandbook/templates/${templateId}/`,
+    body,
+  );
   return TemplateSchema.parse(response.data);
 }
 
@@ -55,6 +69,8 @@ export async function deleteTemplate(
   theatreId: number,
   templateId: string,
 ): Promise<TemplateDeleteResponse> {
-  const response = await api.delete(`/theatres/${theatreId}/brandbook/templates/${templateId}/`);
+  const response = await api.delete(
+    `/theatres/${theatreId}/brandbook/templates/${templateId}/`,
+  );
   return TemplateDeleteResponseSchema.parse(response.data);
 }

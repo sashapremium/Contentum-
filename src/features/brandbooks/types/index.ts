@@ -1,7 +1,7 @@
-// Zod-схемы для брендбука: шаблон (с превью и количеством динамических полей), брендбук учреждения, ответ на удаление.
+// схемы для брендбука: шаблон, брендбук учреждения, ответ на удаление
 import { z } from 'zod';
 
-// Шаблон внутри брендбука: шрифтовое семейство, превью, счётчики динамических текстов и изображений
+// Шаблон внутри брендбука
 export const BrandbookTemplateSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
@@ -12,7 +12,7 @@ export const BrandbookTemplateSchema = z.object({
 });
 export type BrandbookTemplate = z.infer<typeof BrandbookTemplateSchema>;
 
-// Брендбук учреждения: id и название театра, список шаблонов
+// Брендбук учреждения
 export const BrandbookSchema = z.object({
   theatreId: z.number().int(),
   theatreName: z.string().min(1),
@@ -24,4 +24,6 @@ export const BrandbookDeleteResponseSchema = z.object({
   deleted: z.literal(true),
   theatreId: z.number().int(),
 });
-export type BrandbookDeleteResponse = z.infer<typeof BrandbookDeleteResponseSchema>;
+export type BrandbookDeleteResponse = z.infer<
+  typeof BrandbookDeleteResponseSchema
+>;

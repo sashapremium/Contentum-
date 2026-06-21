@@ -1,4 +1,4 @@
-// Страница создания шаблона: открывает EditorPage в режиме create.
+// Страница создания шаблона
 
 import { EditorPage } from '../editor';
 

@@ -1,4 +1,4 @@
-// Страница входа, публичный роут /login.
+// Страница входа, публичный роут /login
 import { AuthForm } from '../components/AuthForm';
 
 export default function LoginPage() {

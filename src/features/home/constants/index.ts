@@ -1,4 +1,4 @@
-// Кнопки навигации в header sidebar: посты, фото, учреждения.
+// Кнопки навигации в header sidebar
 
 import {
   POST_TITLE,

@@ -1,4 +1,4 @@
-// CRUD-запросы для мероприятий: список, детали, создание, обновление, удаление.
+// CRUD-запросы для мероприятий: список, детали, создание, обновление, удаление
 import { api } from '@/lib/axios';
 import {
   type Event,
@@ -26,7 +26,10 @@ export async function fetchEvent(id: string): Promise<Event> {
   return EventSchema.parse(response.data);
 }
 
-export async function updateEvent(id: number, payload: EventUpdateRequest): Promise<Event> {
+export async function updateEvent(
+  id: number,
+  payload: EventUpdateRequest,
+): Promise<Event> {
   const response = await api.patch(`/events/${id}/`, payload);
   return EventSchema.parse(response.data);
 }
